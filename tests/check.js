@@ -87,6 +87,21 @@ check('route: historyMode', () => {
   assert.strictEqual(ctx.historyMode(T, {view:'timeline', id:'bsi'}, ch), 'push');
 });
 
+check('steps: shape', () => {
+  const S = ctx.STEPS, C = ctx.CHAPTERS;
+  assert.strictEqual(C.length, 7);
+  assert.strictEqual(S.length, 32);
+  const want = [0, ...Array(8).fill(1), ...Array(4).fill(2), ...Array(3).fill(3), ...Array(4).fill(4), ...Array(5).fill(5), ...Array(7).fill(6)];
+  assert.deepStrictEqual([...S.map(s => s.ch)], want);
+  S.forEach((s, i) => {
+    for (const k of ['t', 'g', 'adv']) assert.ok(typeof s[k] === 'string' && s[k].length, `step ${i} ${k}`);
+    assert.ok(Array.isArray(s.cam) && Array.isArray(s.look), `step ${i} cam/look`);
+    assert.ok(!('h' in s), `step ${i} still has h`);
+  });
+  assert.strictEqual(S[1].t, '光从景物出发');
+  assert.strictEqual(S[31].t, '计算摄影：夜景、人像、超分');
+});
+
 // ---------------------------------------------------------------------------
 // Run all checks and report
 // ---------------------------------------------------------------------------

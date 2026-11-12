@@ -6,7 +6,7 @@ $('steps').onclick=e=>e.target.dataset.i&&go(+e.target.dataset.i);
 $('prev').onclick=()=>go(step-1);$('next').onclick=()=>go(step+1);
 addEventListener('keydown',e=>{if(e.target.tagName==='INPUT')return;if(e.key==='ArrowRight')go(step+1);if(e.key==='ArrowLeft')go(step-1)});
 function go(i){if(i<0||i>=STEPS.length)return;step=i;const s=STEPS[i];
-  $('title').textContent=`${i+1}. ${s.t}`;$('body').innerHTML=s.h;$('panel').scrollTop=0;
+  $('title').textContent=`${i+1}. ${s.t}`;$('body').innerHTML=s.adv;$('panel').scrollTop=0;
   [...$('steps').children].forEach((b,n)=>b.setAttribute('aria-current',n===i));
   $('prev').disabled=i===0;$('next').disabled=i===STEPS.length-1;
   for(const k in GR)GR[k].visible=k===s.g;
