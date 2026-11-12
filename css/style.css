@@ -82,6 +82,28 @@ h2{font-size:22px;margin:0;text-wrap:balance;line-height:1.25}
 #compwrap{border-top:1px solid var(--line);padding-top:10px}#compwrap summary{cursor:pointer;font-size:13.5px;color:var(--fg)}
 #complist{margin:8px 0 0;font-size:13px;line-height:1.6}#complist dt{color:var(--light);font-weight:600;margin-top:8px}#complist dd{margin:2px 0 0;color:var(--fg)}
 #txs{font-size:13.5px;line-height:1.6;color:var(--fg);min-height:3.2em}
-.steps{grid-template-columns:repeat(12,1fr)}
-.steps button{font-size:11px;padding:7px 0}
-.steps button{font-size:12px}
+
+/* Task 3: minimal styles for new panel structure */
+#prog{height:3px;background:var(--light);transition:width .2s;border-radius:2px;min-width:0}
+#chnav,#sub{display:flex;flex-wrap:wrap;gap:4px}
+#chnav button,#sub button{font:600 12px var(--font);padding:5px 10px;border:1px solid var(--line);background:transparent;color:var(--dim);border-radius:6px;cursor:pointer;white-space:nowrap}
+#chnav button[aria-current=true],#sub button[aria-current=true]{background:var(--light);color:#1a1200;border-color:var(--light)}
+#adv,#hard{font-size:14.5px;line-height:1.7;color:var(--fg)}
+#adv p,#hard p{margin:0 0 .7em}
+#adv b,#hard b{color:var(--light);font-weight:600}
+#adv i,#hard i{color:var(--charge);font-style:normal}
+#adv .f,#hard .f{font-family:var(--mono);font-size:13px;background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:8px 10px;margin:0 0 .7em;color:var(--fg);display:block}
+#adv h3,#hard h3{font-size:15px;margin:1em 0 .5em}
+#adv table,#hard table{table-layout:fixed;width:100%;border-collapse:collapse;font-size:12.5px;margin:0 0 .8em}
+#adv th,#adv td,#hard th,#hard td{border:1px solid var(--line);padding:5px 6px;text-align:left;vertical-align:top}
+#adv th,#hard th{color:var(--dim);font-weight:500}
+#adv .bad,#hard .bad{color:var(--r)}
+#adv .good,#hard .good{color:#19c2a0}
+#adv .iq,#hard .iq{font-size:15px;margin:1em 0 .5em}
+#adv .iqt td,#hard .iqt td{font-size:12px;line-height:1.55}
+#adv .iqt td:first-child,#hard .iqt td:first-child{white-space:nowrap;color:var(--fg);font-weight:600}
+#adv .iqt b,#hard .iqt b{color:var(--light);font-weight:600}
+#adv .cmp td:first-child,#hard .cmp td:first-child{color:var(--dim)}
+#lead:empty,#evo:empty{display:none}
+#advwrap>summary,#hardwrap>summary{cursor:pointer;font-size:13px;color:var(--dim);padding:4px 0}
+#prevt,#nextt{font-size:12px;color:var(--dim);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;min-width:0}
