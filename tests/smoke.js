@@ -37,6 +37,12 @@ async function smoke() {
     expect($('hardwrap').hidden === !STEPS[i].hard, `[layout] hard visibility ${i}`);
   }
 
+  // ---- [visual] ----
+  const css = getComputedStyle(document.documentElement);
+  expect(css.getPropertyValue('--accent').trim().toLowerCase() === '#c8502d', '[visual] accent token');
+  expect(getComputedStyle($('panel')).backgroundColor !== getComputedStyle($('view')).backgroundColor, '[visual] paper vs stage');
+  expect(document.documentElement.scrollWidth <= innerWidth, '[visual] no horizontal scroll');
+
   // collect any JS errors that fired during the test
   window.removeEventListener('error', onerr);
   errors.forEach(e => fails.push('[error] ' + e));
