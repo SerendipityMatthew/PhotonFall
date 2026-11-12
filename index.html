@@ -52,6 +52,9 @@
   <div id="snrwrap" data-pn hidden><div class="ctl" style="border:0;padding:0"><label for="np">像素边长 <output id="npo"></output><input id="np" type="range" min="0.8" max="6" step="0.1" value="3.8"></label><label for="nr">读出噪声 <output id="nro"></output><input id="nr" type="range" min="0.5" max="10" step="0.1" value="2"></label><label for="nd">暗电流产生的电子 <output id="ndo"></output><input id="nd" type="range" min="0" max="200" step="1" value="5"></label></div><canvas id="snr" class="pc" width="330" height="200"></canvas><canvas id="npatch" class="pc" width="330" height="70"></canvas><div class="cap">同一次曝光里暗 · 中 · 亮三处各收到多少电子，按同样亮度显示（相当于把暗处用高 ISO 拉亮）</div></div>
   <div id="adcwrap" data-pn hidden><canvas id="adcc" class="pc" width="330" height="210"></canvas></div>
   <div id="shutwrap" data-pn hidden><canvas id="shc" class="pc" width="330" height="180"></canvas></div>
+  <div class="row" id="coatpn" data-pn hidden><button id="coatbtn">关掉镀膜（看脏画面）</button></div>
+  <div class="row" id="shutpn" data-pn hidden><button id="shutbtn">切快门速度</button></div>
+  <div class="row" id="storpn" data-pn hidden><button id="storbtn">换存储卡</button></div>
   <div class="nav"><button id="prev">上一步</button><button id="next">下一步</button></div>
 </aside>
 <main id="view"><div id="hint">点标注看元器件说明 · 拖动旋转 · 双指滑动或 Shift+拖动平移 · 双指捏合或鼠标滚轮缩放</div></main>
@@ -71,6 +74,7 @@
 <script src="js/readout.js"></script>
 <script src="js/isp.js"></script>
 <script src="js/components.js"></script>
+<script src="js/extras-chapters.js"></script>
 <script src="js/app.js"></script>
 </body>
 </html>

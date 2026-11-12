@@ -1,6 +1,6 @@
 /* 步骤切换、动画循环与启动 */
 /* ---------- 步骤切换 ---------- */
-let step=0;const goal={p:V(),l:V()}, GR={macro,micro,tx,arch,chip,cap5,pdaf,ibis,mls,quad,stk4};
+let step=0;const goal={p:V(),l:V()}, GR={macro,micro,tx,arch,chip,cap5,pdaf,ibis,mls,quad,stk4,coat,shut,hdr,cs,vid,stor,compu};
 $('steps').innerHTML=STEPS.map((s,i)=>`<button role="tab" title="${s.t}" data-i="${i}">${i+1}</button>`).join('');
 $('steps').onclick=e=>e.target.dataset.i&&go(+e.target.dataset.i);
 $('prev').onclick=()=>go(step-1);$('next').onclick=()=>go(step+1);
@@ -41,6 +41,13 @@ function frame(){requestAnimationFrame(frame);const dt=Math.min(clock.getDelta()
   else if(mls.visible)animMls(t);
   else if(quad.visible)animQuad(t,dt);
   else if(stk4.visible)animStk4(t,dt);
+  else if(coat.visible)animCoat(t,dt);
+  else if(shut.visible)animShut(t,dt);
+  else if(hdr.visible)animHdr(t,dt);
+  else if(cs.visible)animCs(t,dt);
+  else if(vid.visible)animVid(t,dt);
+  else if(stor.visible)animStor(t,dt);
+  else if(compu.visible)animCompu(t,dt);
   else{
     mp.forEach((p,n)=>{p.y-=dt*1.1;
       if(p.y<1&&p.c!==p.px.c||p.y<DEPTH[p.c]){if(p.y<DEPTH[p.c]&&Math.random()<QE[p.c])p.px.e=Math.min(FULL,p.px.e+1);spawn(p);mph.setColorAt(n,col.set(BAY[p.c]));}
