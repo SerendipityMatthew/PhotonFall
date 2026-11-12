@@ -18,9 +18,11 @@
   --accent-ink:#a8401f;
   --accent-soft:rgba(200,80,45,.12);
   --mark:rgba(200,80,45,.16);   /* 荧光笔底 */
+  --accent-glow:#f0a487;        /* 高亮标注的亮边 */
   /* 舞台 */
   --stage:#0d1420;      /* 与 core.js 的 setClearColor(0x0d1420) 一致 */
   --stage-2:#162033;
+  --stage-border:#1b2433;  /* 书页与舞台之间的分隔线 */
   --stage-ink:#e6ebf4;
   --stage-dim:#9aa6bb;
   /* 拜耳三色（RAW 值色块、Task 5 画布） */
@@ -59,7 +61,7 @@ button{font-family:inherit}
   padding:20px 26px 0 max(26px,env(safe-area-inset-left,0px));
   /* 书脊：靠舞台一侧的一道淡阴影 */
   box-shadow:inset -14px 0 18px -16px rgba(60,40,20,.28);
-  border-right:1px solid #1b2433}
+  border-right:1px solid var(--stage-border)}
 #panel>*{min-width:0;flex-shrink:0}
 
 /* 书眉 */
@@ -237,7 +239,7 @@ figcaption,.cap{font-size:12px;line-height:1.5;color:var(--ink-dim);margin-top:6
 .lb.lbc{pointer-events:auto;cursor:pointer;border-color:rgba(154,166,187,.45)}
 .lb.lbc:hover,.lb.lbc:focus-visible{border-color:var(--accent);outline:none;background:rgba(22,32,51,.95)}
 /* 高亮态（Task 6 切换） */
-.lb.hl{z-index:2;background:var(--accent);border-color:#f0a487;color:#fff;font-weight:600;
+.lb.hl{z-index:2;background:var(--accent);border-color:var(--accent-glow);color:#fff;font-weight:600;
   box-shadow:0 0 0 4px rgba(200,80,45,.28),0 4px 14px rgba(0,0,0,.45)}
 
 /* 元器件说明卡：一张纸片浮在舞台上 */
