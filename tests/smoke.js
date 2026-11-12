@@ -43,6 +43,15 @@ async function smoke() {
   expect(getComputedStyle($('panel')).backgroundColor !== getComputedStyle($('view')).backgroundColor, '[visual] paper vs stage');
   expect(document.documentElement.scrollWidth <= innerWidth, '[visual] no horizontal scroll');
 
+  // ---- [palette] ----
+  const cvs = {airy:5, pdc:4, ibc:8, spec:10, snr:20, adcc:22, shc:23, tm:14, pot:14};
+  for (const [id, st] of Object.entries(cvs)) {
+    navigate({view:'step', n:st}); await wait(300);
+    const d = $(id).getContext('2d').getImageData(1, 1, 2, 2).data;
+    const lum = (d[0] + d[1] + d[2]) / 3;
+    expect(lum > 200, `[palette] ${id} background light (${lum|0})`);
+  }
+
   // collect any JS errors that fired during the test
   window.removeEventListener('error', onerr);
   errors.forEach(e => fails.push('[error] ' + e));

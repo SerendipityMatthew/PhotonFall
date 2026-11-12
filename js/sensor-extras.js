@@ -1,14 +1,15 @@
 /* 滤色片透光曲线、微透镜偏移、四合一 */
 /* ---------- 滤色片透光曲线（示意形状） ---------- */
 {const c=cx2('spec'),Wc=330,Hc=190,L=34,B=24,X=l=>L+(l-380)/(1000-380)*(Wc-L-8),Y=v=>Hc-B-v*(Hc-B-40);
- c.font=FONT;c.strokeStyle='rgba(147,160,184,.25)';c.fillStyle='#93a0b8';c.lineWidth=1;
+ c.fillStyle=PAL.paper;c.fillRect(0,0,Wc,Hc);
+ c.font=FONT;c.strokeStyle=PAL.grid;c.fillStyle=PAL.dim;c.lineWidth=1;
  for(let l=400;l<=1000;l+=100){c.beginPath();c.moveTo(X(l),40);c.lineTo(X(l),Hc-B);c.stroke();c.fillText(l,X(l)-10,Hc-B+13);}c.fillText('波长 nm',Wc-52,Hc-2);
  [0,.5,1].forEach(v=>{c.beginPath();c.moveTo(L,Y(v));c.lineTo(Wc-8,Y(v));c.stroke();c.fillText(v*100+'%',2,Y(v)+4);});
  const sig=(l,a,w)=>1/(1+Math.exp(-(l-a)/w)), ir=l=>.85*sig(l,760,22);
  const plot=(f,col,dash)=>{c.strokeStyle=col;c.setLineDash(dash||[]);c.lineWidth=2;c.beginPath();for(let l=380;l<=1000;l+=2)c.lineTo(X(l),Y(Math.max(0,f(l))));c.stroke();c.setLineDash([]);};
- plot(l=>Math.max(.9*sig(l,588,12),ir(l)),'#ef5a5f');plot(l=>Math.max(.82*Math.exp(-(((l-535)/42)**2)),.95*ir(l)),'#48c26a');plot(l=>Math.max(.86*Math.exp(-(((l-455)/36)**2)),.9*ir(l)),'#5a95ff');
- plot(l=>.8*Math.exp(-(((l-620)/250)**2))*(1-Math.exp(-(1110-l)/60)),'#e6ebf4',[4,3]);plot(l=>1-sig(l,665,8),'#4fd8e8',[2,3]);
- c.fillStyle='#e6ebf4';c.fillText('红 · 绿 · 蓝：三种滤色片的透过率',L,12);c.fillText('白虚线：硅的量子效率',L,25);c.fillStyle='#4fd8e8';c.fillText('青虚线：红外截止滤光片',L+150,25);}
+ plot(l=>Math.max(.9*sig(l,588,12),ir(l)),PAL.r);plot(l=>Math.max(.82*Math.exp(-(((l-535)/42)**2)),.95*ir(l)),PAL.g);plot(l=>Math.max(.86*Math.exp(-(((l-455)/36)**2)),.9*ir(l)),PAL.b);
+ plot(l=>.8*Math.exp(-(((l-620)/250)**2))*(1-Math.exp(-(1110-l)/60)),PAL.dim,[4,3]);plot(l=>1-sig(l,665,8),PAL.cyan,[2,3]);
+ c.fillStyle=PAL.ink;c.fillText('红 · 绿 · 蓝：三种滤色片的透过率',L,12);c.fillText('灰虚线：硅的量子效率',L,25);c.fillStyle=PAL.cyan;c.fillText('青虚线：红外截止滤光片',L+150,25);}
 
 /* ---------- 微透镜偏移 ---------- */
 const mls=new THREE.Group();mls.visible=false;scene.add(mls);

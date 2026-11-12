@@ -9,12 +9,13 @@ function J1(x){const ax=Math.abs(x);if(ax<8){const y=x*x;return x*(72362614232.0
   const z=8/ax,y=z*z,xx=ax-2.356194491,b1=1+y*(.183105e-2+y*(-.3516396496e-4+y*(.2457520174e-5+y*-.240337019e-6))),b2=.04687499995+y*(-.2002690873e-3+y*(.8449199096e-5+y*(-.88228987e-6+y*.105787412e-6)));
   const a=Math.sqrt(.636619772/ax)*(Math.cos(xx)*b1-z*Math.sin(xx)*b2);return x<0?-a:a;}
 function drawAiry(){const c=cx2('airy'),Wc=320,Hc=170,N=st.N,lam=.55,pit=3.76,s=Wc/64,id=c.createImageData(Wc,Hc);
-  for(let y=0;y<Hc;y++)for(let x=0;x<Wc;x++){const r=Math.hypot(x-Wc/2,y-Hc/2)/s,u=Math.PI*r/(lam*N)+1e-6,v=Math.sqrt((2*J1(u)/u)**2),o=(y*Wc+x)*4;id.data[o]=255*v;id.data[o+1]=196*v;id.data[o+2]=92*v;id.data[o+3]=255;}
-  c.putImageData(id,0,0);c.strokeStyle='rgba(147,160,184,.45)';c.lineWidth=1;const g=pit*s;
+  const PR=0xf7,PG=0xf3,PB=0xea; // PAL.paper blended with amber photon colour
+  for(let y=0;y<Hc;y++)for(let x=0;x<Wc;x++){const r=Math.hypot(x-Wc/2,y-Hc/2)/s,u=Math.PI*r/(lam*N)+1e-6,v=Math.sqrt((2*J1(u)/u)**2),o=(y*Wc+x)*4;id.data[o]=PR+Math.round((255-PR)*v);id.data[o+1]=PG+Math.round((196-PG)*v);id.data[o+2]=PB+Math.round((92-PB)*v);id.data[o+3]=255;}
+  c.putImageData(id,0,0);c.strokeStyle=PAL.grid;c.lineWidth=1;const g=pit*s;
   for(let x=(Wc/2-g/2)%g;x<Wc;x+=g){c.beginPath();c.moveTo(x,0);c.lineTo(x,Hc);c.stroke();}for(let y=(Hc/2-g/2)%g;y<Hc;y+=g){c.beginPath();c.moveTo(0,y);c.lineTo(Wc,y);c.stroke();}
-  const d=2.44*lam*N;c.strokeStyle='#4fd8e8';c.beginPath();c.arc(Wc/2,Hc/2,d/2*s,0,7);c.stroke();
-  c.fillStyle='rgba(13,20,32,.8)';c.fillRect(0,0,Wc,20);c.fillRect(0,Hc-18,Wc,18);c.font=FONT;c.fillStyle='#e6ebf4';c.fillText(`f/${N}　艾里斑直径 ${d.toFixed(1)} µm ≈ ${(d/pit).toFixed(1)} 个像素`,8,14);
-  c.fillStyle='#93a0b8';c.fillText('网格 = 3.76 µm 像素　视野宽 64 µm　绿光 550 nm',8,Hc-5);}
+  const d=2.44*lam*N;c.strokeStyle=PAL.cyan;c.beginPath();c.arc(Wc/2,Hc/2,d/2*s,0,7);c.stroke();
+  c.fillStyle=PAL.paper;c.fillRect(0,0,Wc,20);c.fillRect(0,Hc-18,Wc,18);c.font=FONT;c.fillStyle=PAL.ink;c.fillText(`f/${N}　艾里斑直径 ${d.toFixed(1)} µm ≈ ${(d/pit).toFixed(1)} 个像素`,8,14);
+  c.fillStyle=PAL.dim;c.fillText('网格 = 3.76 µm 像素　视野宽 64 µm　绿光 550 nm',8,Hc-5);}
 
 /* ---------- 像差：畸变、横向色差、暗角（夸张显示） ---------- */
 function applyAb(){const id=vg.getImageData(0,0,W,HH),s=id.data,o=vg.createImageData(W,HH),d=o.data,k=-.14+.24*(st.f-50)/100,ca=.014,R=Math.hypot(W/2,HH/2),vig=Math.min(.75,.7*(2/st.N)**2);
@@ -52,10 +53,10 @@ const PDR=[-1.5,-1,-.5,.5,1,1.5].map(x=>({pts:[V(x,6.5,0),V(x*.25,2.5,0),V(x<0?.
 const pdph=new THREE.InstancedMesh(new THREE.SphereGeometry(.06,8,6),basic(0xffffff),PDR.length*3);pdaf.add(pdph);PDR.forEach((r,i)=>{for(let k=0;k<3;k++)pdph.setColorAt(i*3+k,new THREE.Color(r.c));});
 function animPdaf(t){PDR.forEach((r,i)=>{for(let k=0;k<3;k++){const q=((t*.35+k/3+i*.13)%1)*2,s=Math.min(1,q|0);M.position.lerpVectors(r.pts[s],r.pts[s+1],q-s);M.scale.setScalar(1);M.updateMatrix();pdph.setMatrixAt(i*3+k,M.matrix);}});pdph.instanceMatrix.needsUpdate=true;}
 function drawPdaf(){const d=+$('pdd').value,c=cx2('pdc'),Wc=330,Hc=150,n=48,sh=d*7,bl=.6+Math.abs(d)*4,T=x=>.12+.7*.5*(Math.tanh((x-18)/bl*1.2)-Math.tanh((x-30)/bl*1.2));
-  c.clearRect(0,0,Wc,Hc);c.font=FONT;
+  c.fillStyle=PAL.paper;c.fillRect(0,0,Wc,Hc);c.font=FONT;
   [[-1,'#ffa94d','右 PD 读出（出瞳左半边的光）'],[1,'#b48cff','左 PD 读出（出瞳右半边的光）']].forEach(([sg,col,nm],k)=>{c.strokeStyle=col;c.lineWidth=2;c.beginPath();
     for(let i=0;i<=n;i++)c.lineTo(10+i/n*(Wc-20),Hc-24-T(i+sg*sh/2)*(Hc-50));c.stroke();c.fillStyle=col;c.fillText(nm,10,14+k*15);});
-  c.fillStyle='#e6ebf4';c.fillText(Math.abs(d)<.03?'两幅重合：已合焦':`错开 ${Math.abs(sh).toFixed(1)} 个像素，往${d>0?'右':'左'}错 → ${d>0?'后焦':'前焦'}`,10,Hc-6);
+  c.fillStyle=PAL.ink;c.fillText(Math.abs(d)<.03?'两幅重合：已合焦':`错开 ${Math.abs(sh).toFixed(1)} 个像素，往${d>0?'右':'左'}错 → ${d>0?'后焦':'前焦'}`,10,Hc-6);
   $('pddo').value=Math.abs(d)<.03?'合焦':(d>0?'后焦 ':'前焦 ')+Math.abs(d).toFixed(2);}
 $('pdd').oninput=drawPdaf;
 
@@ -73,10 +74,11 @@ const rig=new THREE.Group(), mount=new THREE.Group();ibis.add(rig);rig.add(mount
 const ibDot=new THREE.Mesh(new THREE.SphereGeometry(.08,12,8),basic(0xffe27a));rig.add(ibDot);
 label(ibis,'镜头',V(-2,1.5,0));label(ibis,'传感器',V(0,-.85,1.3));label(ibis,'音圈电机（线圈 + 磁铁）',V(.2,1.2,0));label(ibis,'陀螺仪',V(1.2,1.65,1.2));label(ibis,'点光源在传感器上的像',V(-.3,.5,-1));
 let ibOn=false;const ibHist=[];$('ibon').onclick=()=>{ibOn=!ibOn;$('ibon').textContent=ibOn?'关闭机身防抖':'打开机身防抖';ibHist.length=0;};
+{const c=cx2('ibc'),Wc=330,Hc=150;c.fillStyle=PAL.paper;c.fillRect(0,0,Wc,Hc);} // 初始底色
 function animIbis(t){const a=.035*(Math.sin(5.3*t)+.6*Math.sin(11.7*t+1.3)),b=.035*(Math.sin(4.1*t+2)+.6*Math.sin(9.3*t+.4));rig.rotation.z=a;rig.rotation.y=b;
   const E=6,dy=-2*Math.tan(a)*E,dz=2*Math.tan(b)*E;ibDot.position.set(-.07,dy,dz);mount.position.set(0,ibOn?dy:0,ibOn?dz:0);
   ibHist.push([dy-mount.position.y,dz-mount.position.z]);if(ibHist.length>90)ibHist.shift();
-  const c=cx2('ibc'),Wc=330,Hc=150;c.clearRect(0,0,Wc,Hc);c.strokeStyle='rgba(147,160,184,.2)';c.lineWidth=1;
+  const c=cx2('ibc'),Wc=330,Hc=150;c.fillStyle=PAL.paper;c.fillRect(0,0,Wc,Hc);c.strokeStyle=PAL.grid;c.lineWidth=1;
   for(let x=0;x<Wc;x+=15){c.beginPath();c.moveTo(x,0);c.lineTo(x,Hc);c.stroke();}for(let y=0;y<Hc;y+=15){c.beginPath();c.moveTo(0,y);c.lineTo(Wc,y);c.stroke();}
-  c.strokeStyle='#ffe27a';c.lineWidth=4;c.lineCap='round';c.beginPath();ibHist.forEach(([y,z])=>c.lineTo(Wc/2+z*90,Hc/2-y*90));if(ibHist.length===1)c.lineTo(Wc/2+.1,Hc/2);c.stroke();c.lineWidth=1;
-  c.font=FONT;c.fillStyle='#e6ebf4';c.fillText(ibOn?'防抖开：像几乎停在同一处，没有拖影':'防抖关：曝光期间像在传感器上划出拖影',8,14);c.fillStyle='#93a0b8';c.fillText('网格 = 像素（放大示意）',8,Hc-6);}
+  c.strokeStyle=PAL.amber;c.lineWidth=4;c.lineCap='round';c.beginPath();ibHist.forEach(([y,z])=>c.lineTo(Wc/2+z*90,Hc/2-y*90));if(ibHist.length===1)c.lineTo(Wc/2+.1,Hc/2);c.stroke();c.lineWidth=1;
+  c.font=FONT;c.fillStyle=PAL.ink;c.fillText(ibOn?'防抖开：像几乎停在同一处，没有拖影':'防抖关：曝光期间像在传感器上划出拖影',8,14);c.fillStyle=PAL.dim;c.fillText('网格 = 像素（放大示意）',8,Hc-6);}
