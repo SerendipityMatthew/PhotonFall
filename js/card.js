@@ -190,7 +190,7 @@ $('zoom').addEventListener('click', e => { if (e.target === $('zoom')) closeZoom
 $('zoomclose').onclick = () => closeZoom();
 
 /* 统一 Esc 分层处理：每次只关最上层，依次为：
-   放大小图 → 目录弹层 → 操作提示 → 元器件说明卡片 → 详细抽屉 → 时间轴抽屉。
+   放大小图 → 目录弹层 → 操作提示 → 元器件说明卡片 → 详细抽屉（时间轴里跳过） → 时间轴抽屉。
    Tab 在放大层里循环，不离开。Range 输入框不使用 Esc，无需特殊处理。 */
 addEventListener('keydown', e => {
   if (zoomed && e.key === 'Tab') { e.preventDefault(); $('zoomclose').focus(); return; }
@@ -200,19 +200,19 @@ addEventListener('keydown', e => {
   // 2. 目录弹层
   if (!$('toc').hidden) { e.preventDefault(); closeToc(); return; }
   // 3. 操作提示
-  if (!$('onboard').hidden) { e.preventDefault(); if (typeof hideOnboard === 'function') hideOnboard(); return; }
+  if (!$('onboard').hidden) { e.preventDefault(); markOnboard(); hideOnboard(); return; }   // Esc 也算看过，下次不再自动弹
   // 4. 元器件说明卡片（由 components.js 创建，id=compcard）
   const cc = document.getElementById('compcard'); if (cc && !cc.hidden) { e.preventDefault(); cc.hidden = true; return; }
-  // 5. 详细抽屉（手机 max 档回到 mid；其他情况关闭）
-  if (drawerOpen) {
+  // 5. 详细抽屉（手机 max 档回到 mid；其他情况关闭）。在时间轴里它被盖住看不见，跳过，回讲解时还要恢复
+  const inTimeline = typeof route !== 'undefined' && route && route.view === 'timeline';
+  if (drawerOpen && !inTimeline) {
     e.preventDefault();
-    if (typeof isPhone === 'function' && isPhone() && typeof sheetState !== 'undefined' && sheetState === 'max')
-      { if (typeof setSheet === 'function') setSheet('mid', true); }
+    if (isPhone() && sheetState === 'max') { setSheet('mid', true); $('detailbtn').focus({preventScroll: true}); }   // 焦点和电脑一样回到「详细」
     else closeDrawer();
     return;
   }
   // 6. 时间轴抽屉
-  if (typeof route !== 'undefined' && route && route.view === 'timeline' && !$('tldrawer').hidden) {
+  if (inTimeline && !$('tldrawer').hidden) {
     e.preventDefault();
     navigate({view: 'timeline', id: null});
   }

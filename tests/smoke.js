@@ -33,6 +33,21 @@ async function smoke() {
   const inp = $('zo'); inp.focus();
   inp.dispatchEvent(new KeyboardEvent('keydown', {key:'ArrowRight', bubbles:true})); await wait(100);
   expect(step === 6, '[keys] ignored in input');
+  inp.blur();
+  openToc(); await wait(40);
+  $('toc').querySelector('button').dispatchEvent(new KeyboardEvent('keydown', {key:'ArrowRight', bubbles:true})); await wait(100);
+  expect(step === 6, '[keys] ignored while TOC open');
+  closeToc();
+  showOnboard(); await wait(40);
+  dispatchEvent(new KeyboardEvent('keydown', {key:'ArrowRight'})); await wait(100);
+  expect(step === 6, '[keys] ignored while tips open');
+  hideOnboard();
+  {
+    const orig = syncTabs; let n = 0;
+    syncTabs = function () { n++; return orig.apply(this, arguments); };
+    try { navigate({view:'step', n:7}); } finally { syncTabs = orig; }
+    expect(n === 1, `[keys] syncTabs once per step (${n})`);
+  }
 
   // ---- [layout] ----
   const locWant = i => (innerWidth <= 768 ? locShort : locText)(i, STEPS, CHAPTERS);   // 手机顶栏用短写
@@ -192,6 +207,15 @@ async function smoke() {
   $('tldrawer').querySelector('[data-step]').click(); await wait(300);
   expect(route.view === 'step' && paused === false, '[timeline] 去看原理 → step');
   expect(document.activeElement !== document.body && $('card').contains(document.activeElement) && !$('timeline').contains(document.activeElement), '[timeline] focus lands in #card');
+  // 时间轴里：第一下 Esc 关时间轴抽屉，看不见的详细抽屉保持开着
+  navigate({view:'step', n:19}); await wait(100);
+  openDrawer(); await wait(40);
+  $('evo').querySelector('.evo-card').click(); await wait(300);
+  dispatchEvent(new KeyboardEvent('keydown', {key:'Escape'})); await wait(100);
+  expect(route.view === 'timeline' && $('tldrawer').hidden && drawerOpen, `[timeline] one Esc closes timeline drawer, 详细 stays (tl ${$('tldrawer').hidden}, drawer ${drawerOpen})`);
+  navigate({view:'step', n:19}); await wait(200);
+  expect(route.view === 'step' && drawerOpen && !$('drawer').hidden, '[timeline] 详细 restored after Esc in timeline');
+  closeDrawer(false);
   location.hash = '#/timeline/not-a-node'; await wait(300);
   expect(route.view === 'timeline' && $('tldrawer').hidden, '[timeline] unknown id → no drawer');
   for (const e of EVO) {
@@ -315,6 +339,10 @@ async function smoke() {
   expect(!$('onboard').hidden && $('onboard').textContent.includes('拖动画面可以转动'), '[onboard] shows when unseen');
   for (let k = 0; k < 3; k++) $('onboard').querySelector('button').click();
   expect($('onboard').hidden && onboardSeen(), '[onboard] done marks seen');
+  expect(document.activeElement === $('title'), '[onboard] auto-shown tips → focus #title after done');
+  try { localStorage.removeItem(ONBOARD_KEY); } catch {}
+  showOnboard(); dispatchEvent(new KeyboardEvent('keydown', {key:'Escape'}));
+  expect($('onboard').hidden && onboardSeen(), '[onboard] Esc also marks seen');
   $('helpbtn').click(); expect(!$('onboard').hidden, '[onboard] ? reopens'); hideOnboard();
   const orig = Storage.prototype.getItem; Storage.prototype.getItem = () => { throw new Error('blocked'); };
   let threw = false; try { expect(onboardSeen() === false, '[onboard] storage error → unseen'); } catch { threw = true; }

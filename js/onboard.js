@@ -36,11 +36,12 @@ function showOnboard(opener) {
 }
 
 function hideOnboard() {
+  if ($('onboard').hidden) return;
+  const inside = $('onboard').contains(document.activeElement);
   $('onboard').hidden = true;
-  if (_onboardOpener) {
-    _onboardOpener.focus({ preventScroll: true });
-    _onboardOpener = null;
-  }
+  /* 焦点还给 ? 按钮；首次自动弹出时没有开启按钮，交给本步标题，免得掉到 <body> */
+  if (inside) (_onboardOpener || $('title')).focus({ preventScroll: true });
+  _onboardOpener = null;
 }
 
 $('onboard-btn').addEventListener('click', () => {
