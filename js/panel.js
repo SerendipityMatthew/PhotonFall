@@ -3,13 +3,19 @@
 function renderPanel(i) {
   const s = STEPS[i];
 
+  /* 下面要整块重写 #chnav / #sub：先记住键盘焦点在哪个药丸上，重写后还给同一个 */
+  const fa = document.activeElement;
+  const fNav = fa && fa.closest && fa.closest('#chnav, #sub');
+  const fSel = !fNav ? '' : fa.dataset.ch !== undefined ? `[data-ch="${fa.dataset.ch}"]`
+    : fa.dataset.i !== undefined ? `[data-i="${fa.dataset.i}"]` : '[data-timeline]';
+
   /* #chnav ： 章节按钮 + 时间轴入口 */
   $('chnav').innerHTML = CHAPTERS.map(ch =>
     `<button data-ch="${ch.id}"${s.ch === ch.id ? ' aria-current="true"' : ''}>${ch.name}</button>`
   ).join('') + '<button data-timeline>🕰 时间轴</button>';
 
   /* #prog ： 进度条宽度 */
-  $('prog').style.width = (i / 31 * 100).toFixed(2) + '%';
+  $('prog').style.width = (i / (STEPS.length - 1) * 100).toFixed(2) + '%';
 
   /* #sub ： 本章各步按钮 */
   $('sub').innerHTML = STEPS.map((st, idx) =>
@@ -63,6 +69,10 @@ function renderPanel(i) {
   $('nextt').textContent = i < STEPS.length - 1 ? STEPS[i + 1].t : '';
   $('prev').disabled = i === 0;
   $('next').disabled = i === STEPS.length - 1;
+  /* 焦点所在的按钮刚变成不可用：交给另一个按钮，免得掉到 <body> */
+  if (fa === $('next') && fa.disabled) $('prev').focus();
+  if (fa === $('prev') && fa.disabled) $('next').focus();
+  if (fNav) (fNav.querySelector(fSel) || fNav.querySelector('[aria-current="true"]') || $('title')).focus({preventScroll: true});
 
   $('panel').scrollTop = 0;
 
