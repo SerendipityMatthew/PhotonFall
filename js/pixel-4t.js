@@ -24,7 +24,7 @@ const PHASE=[[1.5,'① 复位：RST 打开，FD 接到 VDD，上一次留下的�
 const tg=$('tm').getContext('2d');
 {tg.fillStyle=PAL.paper;tg.fillRect(0,0,340,150);} // 初始底色
 function drawTiming(t){const w=340,h=150,x0=62,xw=w-x0-8;tg.fillStyle=PAL.paper;tg.fillRect(0,0,w,h);tg.font='12px ui-monospace,Menlo,monospace';tg.lineWidth=1.5;
-  [['RST',SIG.RST,'#ffc45c'],['TX',SIG.TX,'#ffc45c'],['SEL',SIG.SEL,'#ffc45c'],['V(FD)',u=>(vfd(u)-1.8),PAL.cyan]].forEach(([n,fn,c],r)=>{const y=30+r*34;tg.fillStyle=PAL.dim;tg.fillText(n,6,y-4);tg.strokeStyle=c;tg.beginPath();
+  [['RST',SIG.RST,PAL.amber],['TX',SIG.TX,PAL.amber],['SEL',SIG.SEL,PAL.amber],['V(FD)',u=>(vfd(u)-1.8),PAL.cyan]].forEach(([n,fn,c],r)=>{const y=30+r*34;tg.fillStyle=PAL.dim;tg.fillText(n,6,y-4);tg.strokeStyle=c;tg.beginPath();
     for(let i=0;i<=240;i++){const u=i/240*TXT, v=+fn(u);tg.lineTo(x0+i/240*xw,y-v*18);}tg.stroke();});
   tg.strokeStyle=PAL.ink;tg.lineWidth=1;tg.beginPath();tg.moveTo(x0+t/TXT*xw,4);tg.lineTo(x0+t/TXT*xw,h-6);tg.stroke();}
 const pg=$('pot').getContext('2d');
@@ -35,7 +35,7 @@ function drawPot(t){const w=340,h=150, on=k=>SIG[k](t), nE=i=>t>1.9+i*.42, moved
   pg.fillStyle=PAL.paper;pg.fillRect(0,0,w,h);pg.font='12px ui-monospace,Menlo,monospace';pg.textAlign='center';
   pg.fillStyle='#1c2a40';pg.beginPath();pg.moveTo(16,h-18);pg.lineTo(16,14);R.forEach(([,a,b,y])=>{pg.lineTo(a,y);pg.lineTo(b,y);});pg.lineTo(324,14);pg.lineTo(324,h-18);pg.fill();
   pg.strokeStyle=PAL.dim;pg.lineWidth=1.5;pg.beginPath();pg.moveTo(16,14);R.forEach(([,a,b,y])=>{pg.lineTo(a,y);pg.lineTo(b,y);});pg.lineTo(324,14);pg.stroke();
-  R.forEach(([n,a,b,y])=>{const g=n==='TX'||n==='RST';pg.fillStyle=g&&on(n)?'#ffc45c':PAL.dim;pg.fillText(g?n+(on(n)?' 开':' 关'):n,(a+b)/2,h-4);});
+  R.forEach(([n,a,b,y])=>{const g=n==='TX'||n==='RST';pg.fillStyle=g&&on(n)?PAL.amber:PAL.dim;pg.fillText(g?n+(on(n)?' 开':' 关'):n,(a+b)/2,h-4);});
   pg.fillStyle=PAL.cyan;const dots=(n,a,y,cols)=>{for(let i=0;i<n;i++){pg.beginPath();pg.arc(a+12+(i%cols)*13,y-7-((i/cols)|0)*12,4.5,0,7);pg.fill();}};
   dots(nPD,16,78,8);dots(nFD,166,112,3);
   pg.fillStyle=PAL.dim;pg.textAlign='left';pg.fillText('↓ 坑越深，电子越愿意待',20,h-22>100?12:12);}
