@@ -69,6 +69,44 @@ async function smoke() {
   cam.position.set(0, 0, 500); await wait(50);
   expect(hl('FE 50-150mm F2 GM') === true, '[hl] off-screen label still works');
 
+  // ---- [hl-cam] ----  点关键词：镜头真的转过去，标注落在舞台里；读者自己转过的视角不被拉回预设
+  const visLabel = t => labels.find(l => { if (l.el.textContent !== t) return false; for (let o = l.g; o; o = o.parent) if (!o.visible) return false; return true; });
+  const onStage = t => { const p = visLabel(t).v.clone().project(cam); return p.z < 1 && Math.abs(p.x) <= 1 && Math.abs(p.y) <= 1; };
+  const settle = async () => { for (let k = 0; k < 60 && tween; k++) await wait(50); };
+  navigate({view:'step', n:1}); await wait(100); stopTour(); await settle();
+  hl('太阳', true); await wait(100); await settle();
+  expect(onStage('太阳'), '[hl-cam] step 1 太阳 on stage after nudge');
+  cam.position.set(0, 0, 500); ctr.update(); tween = false;
+  hl('太阳', true); await wait(100); await settle();
+  expect(onStage('太阳'), '[hl-cam] off-screen 太阳 brought on stage');
+  navigate({view:'step', n:13}); await wait(100); await settle();
+  const t13 = ctr.target.clone(), want13 = goal.l.clone().lerp(visLabel('微透镜').v, .4);
+  hl('微透镜', true); await wait(100); await settle();
+  expect(ctr.target.distanceTo(want13) < .05, `[hl-cam] step 13 target reached (${ctr.target.distanceTo(t13).toFixed(3)} of ${t13.distanceTo(want13).toFixed(3)})`);
+  expect(onStage('微透镜'), '[hl-cam] step 13 微透镜 on stage');
+  cam.position.add(new THREE.Vector3(2.5, 1, 0)); ctr.update(); tween = false;
+  const mine = cam.position.clone();
+  hl('微透镜', true); await wait(100); await settle();
+  expect(cam.position.distanceTo(mine) < .3, `[hl-cam] orbit kept (moved ${cam.position.distanceTo(mine).toFixed(2)})`);
+  hl('微透镜'); navigate({view:'step', n:14}); await wait(60);
+  expect(!hlRing.visible, '[hl-cam] ring cleared on step change');
+
+  // ---- [focus] ----  键盘焦点不因重绘或按钮失效而掉到 <body>
+  navigate({view:'step', n:13}); await wait(60);
+  let pill = $('sub').querySelector('[data-i="14"]'); pill.focus(); pill.click(); await wait(60);
+  expect(step === 14 && document.activeElement.closest && document.activeElement.closest('#sub') && document.activeElement.dataset.i === '14', '[focus] #sub pill keeps focus');
+  pill = $('chnav').querySelector('[data-ch="4"]'); pill.focus(); pill.click(); await wait(60);
+  expect(document.activeElement.closest && document.activeElement.closest('#chnav') && document.activeElement.dataset.ch === '4', '[focus] #chnav pill keeps focus');
+  navigate({view:'step', n:STEPS.length - 2}); await wait(60);
+  $('next').focus(); $('next').click(); await wait(60);
+  expect(step === STEPS.length - 1 && document.activeElement !== document.body && !document.activeElement.disabled, '[focus] next disabled → focus moves');
+  navigate({view:'step', n:1}); await wait(60);
+  $('prev').focus(); $('prev').click(); await wait(60);
+  expect(step === 0 && document.activeElement !== document.body && !document.activeElement.disabled, '[focus] prev disabled → focus moves');
+  navigate({view:'step', n:5}); await wait(60);
+  dispatchEvent(new KeyboardEvent('keydown', {key:'ArrowLeft', altKey:true})); await wait(60);
+  expect(step === 5, '[keys] Alt+← ignored');
+
   // ---- [hl-content] ----  每个关键词都能在它那一步找到标注
   for (let i = 0; i < 32; i++) {
     navigate({view:'step', n:i}); await wait(60);
@@ -88,6 +126,14 @@ async function smoke() {
   expect(tourOn === false, '[tour] user drag stops it');
   $('tourbtn').click();
   expect(tourOn === true, '[tour] replay');
+  const flow = $('flow');
+  expect(!!flow && flow.offsetHeight > 0, '[tour] step 0 diagram visible');
+  const curStage = () => { const c = flow && flow.querySelector('[aria-current]'); return c ? c.textContent : ''; };
+  await wait(100); const s0 = curStage();
+  tourT = 7.5; await wait(150);
+  expect(s0 !== '' && curStage() !== s0, `[tour] highlighted stage changes (${s0} → ${curStage()})`);
+  expect(visLabel('FE 50-150mm F2 GM').el.classList.contains('hl'), '[tour] lens label highlighted in lens stage');
+  expect($('advwrap').open === false, '[tour] 进阶 stays collapsed');
 
   // ---- [timeline] ----
   navigate({view:'step', n:17}); await wait(200);
