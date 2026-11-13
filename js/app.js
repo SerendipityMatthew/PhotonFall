@@ -45,12 +45,13 @@ $('sub').addEventListener('click', e => {
 addEventListener('keydown', e => {
   if (['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName)) return;
   if (route && route.view === 'timeline') return;
+  if (e.altKey || e.metaKey || e.ctrlKey) return;      // Alt+← 是浏览器后退，⌘← 等也留给系统
   if (e.key === 'ArrowRight') navigate({view: 'step', n: step + 1});
   if (e.key === 'ArrowLeft')  navigate({view: 'step', n: step - 1});
 });
 
-addEventListener('popstate',   () => { route = parseRoute(location.hash, 31); applyRoute(route); });
-addEventListener('hashchange', () => { route = parseRoute(location.hash, 31); applyRoute(route); });
+addEventListener('popstate',   () => { route = parseRoute(location.hash, STEPS.length - 1); applyRoute(route); });
+addEventListener('hashchange', () => { route = parseRoute(location.hash, STEPS.length - 1); applyRoute(route); });
 
 /* ---------- 步骤切换 ---------- */
 function go(i) {
@@ -199,7 +200,7 @@ function frame() {
 
 /* ---------- 启动 ---------- */
 rebuild();
-route = parseRoute(location.hash, 31);
+route = parseRoute(location.hash, STEPS.length - 1);
 history.replaceState(null, '', routeHash(route));
 const initN = route.view === 'step' ? route.n : 0;
 cam.position.set(...STEPS[initN].cam);
