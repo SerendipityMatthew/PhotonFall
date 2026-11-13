@@ -213,6 +213,11 @@ $('tocbtn').onclick = () => openToc($('tocbtn'));
 $('tocclose').onclick = closeToc;
 $('toc').addEventListener('click', e => {
   const b = e.target.closest('[data-i]');
-  if (b) { navigate({view: 'step', n: +b.dataset.i}); closeToc(); }
-  else if (e.target === $('toc')) closeToc();
+  if (b) {
+    /* 选了步骤：直接关闭弹层（不还焦点给开启按钮），导航，最后把焦点稳在 #title。
+       这样无论从顶栏还是时间轴里的目录跳步，时间轴和弹层都已消失，#title 始终可见。 */
+    $('toc').hidden = true;
+    navigate({view: 'step', n: +b.dataset.i});
+    $('title').focus({preventScroll: true});
+  } else if (e.target === $('toc')) closeToc();   // 点弹层外：还焦点给开启按钮
 });

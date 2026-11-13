@@ -235,14 +235,29 @@ async function smoke() {
   expect($('zoom').hidden, '[cardui] Esc closes zoom');
   expect(document.documentElement.scrollWidth <= innerWidth, '[cardui] no h-scroll');
 
-  // ---- [toc] ----  目录弹层跳步；时间轴隐藏卡片和抽屉；返回时抽屉状态恢复
+  // ---- [toc] ----  目录弹层：跳步、焦点、时间轴进出
+  // (3) Esc 返回开启按钮
   navigate({view:'step', n:3}); await wait(40);
   $('tocbtn').click(); await wait(40);
   expect(!$('toc').hidden, '[toc] opens');
+  dispatchEvent(new KeyboardEvent('keydown', {key:'Escape'})); await wait(40);
+  expect($('toc').hidden && document.activeElement === $('tocbtn'), '[toc] Esc returns focus to opener');
+  // (1) 顶栏目录跳步后焦点在 #title
+  $('tocbtn').click(); await wait(40);
   $('toc').querySelector('[data-i="20"]').click(); await wait(80);
   expect(step === 20 && $('toc').hidden, '[toc] jump closes');
+  expect(document.activeElement === $('title'), '[toc] jump focuses #title');
+  // 时间轴隐藏卡片和抽屉
   openDrawer(); navigate({view:'timeline', id:null}); await wait(80);
   expect($('card').getClientRects().length === 0 && $('drawer').getClientRects().length === 0, '[toc] timeline hides card+drawer');
+  // (2) 从时间轴目录跳步后焦点在 #title，时间轴已隐藏
+  $('tltocbtn').click(); await wait(40);
+  $('toc').querySelector('[data-i="5"]').click(); await wait(80);
+  expect(step === 5 && $('toc').hidden && $('timeline').hidden, '[toc] timeline TOC jump hides timeline');
+  expect(document.activeElement === $('title'), '[toc] jump from timeline focuses #title');
+  // 进出时间轴保留抽屉状态
+  navigate({view:'step', n:20}); await wait(60);
+  openDrawer(); navigate({view:'timeline', id:null}); await wait(80);
   history.back(); await wait(200);
   expect(step === 20 && drawerOpen && !$('drawer').hidden, '[toc] drawer restored after timeline');
   closeDrawer();
