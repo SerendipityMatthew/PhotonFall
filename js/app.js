@@ -55,7 +55,7 @@ function go(i) {
   for (const k in GR) GR[k].visible = k === s.g;
 
   /* 控件面板显示 */
-  $('ctl').hidden = $('vfwrap').hidden = s.g !== 'macro' || !!s.noCam;
+  $('ctl').hidden = $('vfwrap').hidden = $('hudwrap').hidden = s.g !== 'macro' || !!s.noCam;   // 读数 #hud 在抽屉「深入」最上面
   $('txwrap').hidden  = s.g !== 'tx';
   $('chipctl').hidden = s.g !== 'chip';
   $('dnwrap').hidden  = !s.dn;
@@ -81,7 +81,7 @@ function go(i) {
   if (s.noCam) startTour();
   else stopTour();
 
-  /* 卡片与抽屉：先填文字，再按可见性把面板搬到位，最后列元器件、更新抽屉标签 */
+  /* 卡片与抽屉：先填文字，再按可见性把面板搬到位，再列元器件，最后按三个标签有没有内容更新抽屉标签 */
   renderPanel(i);
   renderCard(i);
   placePanels(i);

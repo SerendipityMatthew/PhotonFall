@@ -69,6 +69,7 @@
   </div>
 </div>
 <div id="parking" hidden>
+    <div id="hudwrap" hidden><div id="hud"></div></div>
     <div id="vfwrap" hidden>
       <figure id="vffig"><canvas id="vf" width="360" height="240"></canvas><figcaption>取景器（实时，按公式计算）</figcaption></figure>
       <figure><canvas id="photo" width="360" height="240"></canvas><figcaption id="exif">按「拍照」后，这里是拍到的照片</figcaption></figure>
@@ -81,7 +82,6 @@
       <label for="sh">快门 <output id="sho"></output><input id="sh" type="range" min="0" max="6" step="1" value="3"></label>
       <label for="iso">ISO <output id="isoo"></output><input id="iso" type="range" min="0" max="7" step="1" value="0"></label>
       <div class="row"><button id="shoot">拍照</button></div>
-      <div id="hud"></div>
     </div>
     <div id="txwrap" hidden><canvas id="pot" width="340" height="150"></canvas><canvas id="tm" width="340" height="150"></canvas><div id="txs"></div></div>
     <div class="row" id="chipctl" hidden><button id="stk">把电路叠到像素下面（堆栈式）</button></div>

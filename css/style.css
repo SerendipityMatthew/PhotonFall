@@ -108,9 +108,8 @@ body:has(#drawer:not([hidden])) #topbar{right:calc(var(--drawer-w) + var(--gap) 
 #cardfig::after{content:"⤢ 点图放大";align-self:flex-end;margin-top:-6px;font:500 11.5px/1 var(--sans);color:var(--ink-dim);pointer-events:none;transition:color .15s}
 #cardfig:hover::after,#cardfig:focus-visible::after{color:var(--accent-ink)}
 #cardfig:focus-visible{outline-offset:4px}
-/* 卡片里的控件不再套一层框，读数退到次要位置 */
+/* 卡片里的控件不再套一层框（镜头读数 #hud 在详细抽屉「深入」最上面） */
 #cardctl .ctl{background:none;border:0;padding:0;gap:10px}
-#cardctl #hud{font-size:11px;line-height:1.65;background:none;border-top:1px dashed var(--line);border-radius:0;padding:8px 0 0}
 #cardfig canvas{width:100%;display:block}
 #cardfig figcaption{font-size:11.5px}
 

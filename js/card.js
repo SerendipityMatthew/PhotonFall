@@ -49,7 +49,10 @@ function placePanels(i) {
   }
   arrange($('cardctl'), ctl);
   arrange($('drawerfigs'), figs);
-  syncTabs();
+  /* 取景器步骤控件很多：取景器放在控件上面，打开卡片就能看到拖滑块的效果；其他步骤控件在前。
+     顺序已对就不动（免得卡片里正聚焦的控件失焦）；抽屉标签由 go() 在列完元器件后统一更新 */
+  const figFirst = s.fig === 'vffig', [a, b] = figFirst ? [$('cardfig'), $('cardctl')] : [$('cardctl'), $('cardfig')];
+  if (a.nextElementSibling !== b) b.before(a);
 }
 
 /* ---------- 抽屉 ---------- */

@@ -218,6 +218,16 @@ async function smoke() {
     else expect($('cardfig').children.length === 0, `[card] step ${i} no fig`);
     expect($('loc').textContent === locWant(i), `[card] step ${i} loc`);
   }
+  // 取景器步骤：关键小图先于控件，打开卡片就能看到至少一半；读数 #hud 在详细抽屉里
+  navigate({view:'step', n:1}); await wait(100);
+  if (innerWidth > 768) {
+    const c = $('card').getBoundingClientRect(), f = $('cardfig').getBoundingClientRect(), nv = $('card').querySelector('.nav').getBoundingClientRect();
+    const seen = Math.max(0, Math.min(f.bottom, nv.top) - Math.max(f.top, c.top));
+    expect(f.height > 0 && seen >= f.height * .5, `[card] step 1 viewfinder ≥50% visible (${seen|0}/${f.height|0})`);
+    expect($('drawer').contains($('hud')) && !$('card').contains($('hud')), '[card] #hud in drawer, not card');
+  } else expect($('drawer').contains($('hud')) && $('cardfig').compareDocumentPosition($('cardctl')) & Node.DOCUMENT_POSITION_FOLLOWING, '[card] phone: fig before controls, #hud in drawer');
+  navigate({view:'step', n:4}); await wait(60);
+  expect($('cardctl').compareDocumentPosition($('cardfig')) & Node.DOCUMENT_POSITION_FOLLOWING, '[card] step 4 controls before fig');
   navigate({view:'step', n:16}); await wait(60);
   $('detailbtn').click(); await wait(60);
   expect(drawerOpen && !$('drawer').hidden, '[card] detail opens drawer');
