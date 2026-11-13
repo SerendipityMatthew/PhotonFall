@@ -75,6 +75,7 @@ function go(i) {
   st.ab = !!s.ab && $('abon').checked;
   if ((s.pn || []).includes('pdafwrap')) drawPdaf();
   if ((s.pn || []).includes('snrwrap')) drawSnr();
+  if ((s.pn || []).includes('reflwrap')) drawRefl();
 
   /* 镜位 */
   goal.p.set(...s.cam);

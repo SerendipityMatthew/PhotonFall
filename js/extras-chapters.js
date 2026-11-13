@@ -21,6 +21,35 @@ function animCoat(t,dt){const amp=coatOn?.04:1;
   for(let n=0;n<24;n++){const u=((t*.4+n/24)%1),x=-3.8+u*7.4;M.position.set(x,0,0);M.scale.setScalar(1);M.updateMatrix();coatPh.setMatrixAt(n,M.matrix);}
   coatPh.instanceMatrix.needsUpdate=true;}
 
+/* ---------- 8. 讲解栏小图：可见光反射率曲线 ----------
+   薄膜特征矩阵（无吸收、忽略色散），s、p 两个偏振取平均。L 从空气一侧往玻璃排，每层 [n, 厚度 nm]。
+   无吸收时矩阵保持「对角实数、非对角纯虚数」的形状，所以只存四个实数：[[a, ib], [ic, d]]。 */
+function tfR(L,ns,lam,th){const s0=Math.sin(th);let R=0;
+  for(const p of [0,1]){const eta=n=>{const c=Math.sqrt(1-(s0/n)**2);return p?n/c:n*c;};let a=1,b=0,c=0,d=1;
+    for(const [n,t] of L){const e=eta(n),dl=2*Math.PI*n*t*Math.sqrt(1-(s0/n)**2)/lam,C=Math.cos(dl),S=Math.sin(dl),ib=S/e,ic=e*S;
+      [a,b,c,d]=[a*C-b*ic,a*ib+b*C,c*C+d*ic,d*C-c*ib];}
+    const e0=eta(1),es=eta(ns),xr=e0*a-d*es,xi=e0*b*es-c,yr=e0*a+d*es,yi=e0*b*es+c;R+=(xr*xr+xi*xi)/(yr*yr+yi*yi);}
+  return R/2;}
+const RF_NS=1.52, RF=[
+  ['裸玻璃（正对时约 4%）',[],PAL.ink,[5,3]],
+  ['单层 MgF₂（550 nm 最低，两头翘起 → 泛紫）',[[1.38,550/4/1.38]],PAL.accent],
+  ['六层宽带膜（正对时整段 < 0.5%）',[[1.38,82],[2.1,8],[1.38,12],[2.1,127],[1.38,31],[2.1,16]],PAL.cyan],   // MgF₂ / Ta₂O₅ 交替，按 400–700 nm 最大反射最小优化
+  ['亚波长结构（渐变折射率近似，示意）',Array.from({length:40},(_,i)=>{const t=(i+.5)/40;return [1+(RF_NS-1)*(10*t**3-15*t**4+6*t**5),500/40];}),PAL.amber],
+];
+function drawRefl(){const c=cx2('reflc'),Wc=330,Hc=230,L=40,T=62,B=Hc-34,deg=+$('refla').value,th=deg*Math.PI/180;
+  const X=l=>L+(l-400)/300*(Wc-L-10), Y=r=>B-(Math.log10(Math.min(10,Math.max(.001,r*100)))+3)/4*(B-T);
+  c.fillStyle=PAL.paper;c.fillRect(0,0,Wc,Hc);c.font=FONT;c.lineWidth=1;c.strokeStyle=PAL.grid;c.fillStyle=PAL.dim;
+  [.00001,.0001,.001,.01,.1].forEach((r,i)=>{c.beginPath();c.moveTo(L,Y(r));c.lineTo(Wc-10,Y(r));c.stroke();c.fillText(['.001%','.01%','0.1%','1%','10%'][i],2,Y(r)+4);});
+  for(let l=400;l<=700;l+=100){c.beginPath();c.moveTo(X(l),T);c.lineTo(X(l),B);c.stroke();c.fillText(l,X(l)-10,B+22);}
+  for(let l=400;l<=700;l+=2){c.fillStyle=`hsl(${Math.max(0,Math.min(270,270-(l-420)/(650-420)*270))},75%,55%)`;c.fillRect(X(l),B+3,X(l+2)-X(l)+.5,6);}   // 可见光色条（示意色）
+  c.fillStyle=PAL.dim;c.fillText('波长 nm',Wc-58,Hc-3);
+  RF.forEach(([nm,lay,col,dash],k)=>{c.strokeStyle=col;c.setLineDash(dash||[]);c.lineWidth=2;c.beginPath();
+    for(let l=400;l<=700;l+=3)c.lineTo(X(l),Y(tfR(lay,RF_NS,l,th)));c.stroke();c.setLineDash([]);
+    c.fillStyle=col;c.fillRect(L,6+k*13,14,3);c.fillStyle=PAL.ink;c.fillText(nm,L+20,11+k*13);});
+  $('reflao').value=deg+'°'+(deg?'（斜着进来）':'（正对镜片）');}
+$('refla').oninput=drawRefl;
+drawRefl();
+
 /* ---------- 27. 机械快门与同步速度 ---------- */
 const shut=new THREE.Group();shut.visible=false;scene.add(shut);
 {const l=new THREE.DirectionalLight(0xffffff,.95);l.position.set(2,6,5);shut.add(l);shut.add(new THREE.AmbientLight(0x8899aa,.4));}

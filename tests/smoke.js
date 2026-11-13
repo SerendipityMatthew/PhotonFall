@@ -154,6 +154,30 @@ async function smoke() {
     for (const t of PARTS) expect(!shown(t), `[lensparts] ${t} hidden on step ${i}`);
   }
 
+  // ---- [refl] ----  第 8 步：反射率小图纸色底、曲线已画，拖入射角曲线会变
+  navigate({view:'step', n:8}); await wait(200);
+  expect(!$('reflwrap').hidden && !$('coatpn').hidden, '[refl] chart and coating button shown on step 8');
+  const rc = $('reflc').getContext('2d'), rw = $('reflc').width, rh = $('reflc').height;
+  const bg = rc.getImageData(1, 1, 1, 1).data;
+  expect(Math.abs(bg[0] - 0xf7) < 3 && Math.abs(bg[1] - 0xf3) < 3 && Math.abs(bg[2] - 0xea) < 3, `[refl] paper background (${bg[0]},${bg[1]},${bg[2]})`);
+  const snap = () => rc.getImageData(0, 0, rw, rh).data;
+  const px0 = snap();
+  let inked = 0;
+  for (let i = 0; i < px0.length; i += 4) if (Math.abs(px0[i] - 0xf7) + Math.abs(px0[i + 1] - 0xf3) + Math.abs(px0[i + 2] - 0xea) > 60) inked++;
+  expect(inked > 500, `[refl] curves drawn (${inked} inked px)`);
+  const accentDrawn = (() => { for (let i = 0; i < px0.length; i += 4) if (Math.abs(px0[i] - 0xc8) < 12 && Math.abs(px0[i + 1] - 0x50) < 12 && Math.abs(px0[i + 2] - 0x2d) < 12) return true; return false; })();
+  expect(accentDrawn, '[refl] single-layer curve (accent colour) drawn');
+  const a0 = $('refla').value;
+  $('refla').value = 50; $('refla').dispatchEvent(new Event('input'));
+  const px1 = snap();
+  let diff = 0;
+  for (let i = 0; i < px0.length; i += 4) if (px0[i] !== px1[i] || px0[i + 1] !== px1[i + 1] || px0[i + 2] !== px1[i + 2]) diff++;
+  expect(diff > 300, `[refl] curves move with incidence angle (${diff} px changed)`);
+  expect($('reflao').value.includes('50'), '[refl] angle readout');
+  $('refla').value = a0; $('refla').dispatchEvent(new Event('input'));
+  navigate({view:'step', n:9}); await wait(60);
+  expect($('reflwrap').hidden, '[refl] chart hidden on other steps');
+
   // ---- [timeline] ----
   navigate({view:'step', n:19}); await wait(200);
   expect($('evo').querySelectorAll('.evo-card').length === evoForStep(19).length, '[timeline] cards on step');
