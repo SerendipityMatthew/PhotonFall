@@ -8,15 +8,15 @@ COAT_X.forEach((x,i)=>{const g=add(coat,new THREE.CylinderGeometry(1.4,1.4,.08,3
 add(coat,new THREE.BoxGeometry(.08,2.4,2.4),std(0x2a3142),3.6,0,0);
 label(coat,'强光入射',V(-3.8,0,0));label(coat,'镜片（6 面）',V(0,1.8,0));label(coat,'传感器',V(3.9,0,0));label(coat,'鬼影 = 对称光斑',V(2.2,1.6,0));
 const coatMain=new THREE.LineSegments(new THREE.BufferGeometry().setAttribute('position',new THREE.Float32BufferAttribute([-3.8,0,0,3.6,0,0],3)),new THREE.LineBasicMaterial({color:0xffe27a,transparent:true,opacity:.9}));coat.add(coatMain);
-const coatGhostRays=new THREE.LineSegments(new THREE.BufferGeometry(),new THREE.LineBasicMaterial({color:0xff9a4a,transparent:true,opacity:.6}));coat.add(coatGhostRays);
+const coatGhostRays=new THREE.LineSegments(new THREE.BufferGeometry(),new THREE.LineBasicMaterial({color:0xffe27a,transparent:true,opacity:.6}));coat.add(coatGhostRays);
 {const p=[];for(let i=0;i<COAT_X.length-1;i++){const a=COAT_X[i],b=COAT_X[i+1];p.push(b,0,0,a,.25,0,a,.25,0,3.6,.5+i*.08,0);}coatGhostRays.geometry.setAttribute('position',new THREE.Float32BufferAttribute(p,3));}
-const flareQ=add(coat,new THREE.PlaneGeometry(2.4,2.4),basic(0xffd880,{transparent:true,opacity:0,depthWrite:false}),3.58,0,0);flareQ.rotation.y=Math.PI/2;
-const ghostSpots=new THREE.InstancedMesh(new THREE.CircleGeometry(.14,16),basic(0xffd880,{transparent:true,opacity:.95,depthWrite:false}),8);ghostSpots.rotation.y=Math.PI/2;ghostSpots.position.x=3.57;coat.add(ghostSpots);
+const flareQ=add(coat,new THREE.PlaneGeometry(2.4,2.4),basic(0xffe27a,{transparent:true,opacity:0,depthWrite:false}),3.58,0,0);flareQ.rotation.y=Math.PI/2;
+const ghostSpots=new THREE.InstancedMesh(new THREE.CircleGeometry(.14,16),basic(0xffe27a,{transparent:true,opacity:.95,depthWrite:false}),8);ghostSpots.rotation.y=Math.PI/2;ghostSpots.position.x=3.57;coat.add(ghostSpots);
 const coatPh=new THREE.InstancedMesh(new THREE.SphereGeometry(.08,8,6),basic(0xffe27a),24);coat.add(coatPh);
 let coatOn=true;
 function animCoat(t,dt){const amp=coatOn?.04:1;
   flareQ.material.opacity=amp*.22;coatGhostRays.material.opacity=amp*.5;
-  for(let i=0;i<8;i++){const y=(i-3.5)*.26,s=amp*(.5+.4*Math.sin(t*1.5+i));M.position.set(0,y,0);M.scale.setScalar(s);M.updateMatrix();ghostSpots.setMatrixAt(i,M.matrix);ghostSpots.setColorAt(i,col.set(0xffd880).multiplyScalar(.6+.4*Math.sin(t+i)));}
+  for(let i=0;i<8;i++){const y=(i-3.5)*.26,s=amp*(.5+.4*Math.sin(t*1.5+i));M.position.set(0,y,0);M.scale.setScalar(s);M.updateMatrix();ghostSpots.setMatrixAt(i,M.matrix);ghostSpots.setColorAt(i,col.set(0xffe27a).multiplyScalar(.6+.4*Math.sin(t+i)));}
   ghostSpots.instanceMatrix.needsUpdate=true;if(ghostSpots.instanceColor)ghostSpots.instanceColor.needsUpdate=true;
   for(let n=0;n<24;n++){const u=((t*.4+n/24)%1),x=-3.8+u*7.4;M.position.set(x,0,0);M.scale.setScalar(1);M.updateMatrix();coatPh.setMatrixAt(n,M.matrix);}
   coatPh.instanceMatrix.needsUpdate=true;}
@@ -25,7 +25,7 @@ function animCoat(t,dt){const amp=coatOn?.04:1;
 const shut=new THREE.Group();shut.visible=false;scene.add(shut);
 {const l=new THREE.DirectionalLight(0xffffff,.95);l.position.set(2,6,5);shut.add(l);shut.add(new THREE.AmbientLight(0x8899aa,.4));}
 const SHUT_W=4,SHUT_H=3;
-add(shut,new THREE.BoxGeometry(SHUT_W,SHUT_H,.12),std(0x1a2534),0,0,-.1);
+add(shut,new THREE.BoxGeometry(SHUT_W,SHUT_H,.12),std(0x2a3142),0,0,-.1);
 {const c=mkCanvas(96,72),g=c.getContext('2d');drawScene(g,96,72);const tex=new THREE.CanvasTexture(c);add(shut,new THREE.PlaneGeometry(SHUT_W*.95,SHUT_H*.95),new THREE.MeshBasicMaterial({map:tex}),0,0,-.03);}
 const shutFront=add(shut,new THREE.BoxGeometry(SHUT_W,SHUT_H,.04),std(0xd94a3b,{transparent:true,opacity:.85}),0,SHUT_H,.05);
 const shutBack=add(shut,new THREE.BoxGeometry(SHUT_W,SHUT_H,.04),std(0x3b67d9,{transparent:true,opacity:.85}),0,SHUT_H,.1);

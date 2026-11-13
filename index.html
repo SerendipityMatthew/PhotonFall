@@ -8,61 +8,96 @@
 </head>
 <body>
 <aside id="panel">
-  <h1>相机成像 · 从光到画面</h1>
-  <div class="steps" id="steps" role="tablist" aria-label="步骤"></div>
-  <h2 id="title"></h2>
-  <div id="body"></div>
-  <details id="compwrap" hidden><summary>本步出现的元器件（<span id="compn"></span>）· 也可以直接点 3D 里的标注</summary><dl id="complist"></dl></details>
-  <div id="vfwrap" hidden>
-    <figure><canvas id="vf" width="360" height="240"></canvas><figcaption>取景器（实时，按公式计算）</figcaption></figure>
-    <figure><canvas id="photo" width="360" height="240"></canvas><figcaption id="exif">按「拍照」后，这里是拍到的照片</figcaption></figure>
+  <nav id="chnav"></nav>
+  <div id="prog" role="progressbar" aria-valuemin="0" aria-valuemax="100"></div>
+  <nav id="sub"></nav>
+  <h2 id="title" tabindex="-1"></h2>
+  <div id="lead"></div>
+  <div id="ctlslot">
+    <div id="vfwrap" hidden>
+      <figure><canvas id="vf" width="360" height="240"></canvas><figcaption>取景器（实时，按公式计算）</figcaption></figure>
+      <figure><canvas id="photo" width="360" height="240"></canvas><figcaption id="exif">按「拍照」后，这里是拍到的照片</figcaption></figure>
+    </div>
+    <div class="ctl" id="ctl">
+      <label for="zo">变焦（焦距）<output id="zoo"></output><input id="zo" type="range" min="50" max="150" step="1" value="85"></label>
+      <label for="fo">对焦距离 <output id="foo"></output><input id="fo" type="range" min="0" max="1" step="0.001" value="0.5"></label>
+      <div class="row"><button data-s="1.2">对到前景</button><button data-s="3">对到主体</button><button data-s="8">对到背景灯</button></div>
+      <label for="ap">光圈 <output id="apo"></output><input id="ap" type="range" min="0" max="7" step="1" value="0"></label>
+      <label for="sh">快门 <output id="sho"></output><input id="sh" type="range" min="0" max="6" step="1" value="3"></label>
+      <label for="iso">ISO <output id="isoo"></output><input id="iso" type="range" min="0" max="7" step="1" value="0"></label>
+      <div class="row"><button id="shoot">拍照</button></div>
+      <div id="hud"></div>
+    </div>
+    <div id="txwrap" hidden><canvas id="pot" width="340" height="150"></canvas><canvas id="tm" width="340" height="150"></canvas><div id="txs"></div></div>
+    <div class="row" id="chipctl" hidden><button id="stk">把电路叠到像素下面（堆栈式）</button></div>
+    <div id="dnwrap" hidden><div class="f" style="margin-bottom:6px">本轮读出的 RAW 值（10 bit，0–1023）</div><div id="dn"></div></div>
+    <div id="isp" hidden>
+      <figure><canvas id="i0" width="96" height="64"></canvas><figcaption>① RAW（灰度，黑电平 64）</figcaption></figure>
+      <figure><canvas id="i1" width="96" height="64"></canvas><figcaption>② 扣黑电平</figcaption></figure>
+      <figure><canvas id="i2" width="96" height="64"></canvas><figcaption>③ 暗角校正</figcaption></figure>
+      <figure><canvas id="i3" width="96" height="64"></canvas><figcaption>④ 去马赛克（线性）</figcaption></figure>
+      <figure><canvas id="i4" width="96" height="64"></canvas><figcaption>⑤ 白平衡</figcaption></figure>
+      <figure><canvas id="i5" width="96" height="64"></canvas><figcaption>⑥ 色彩矩阵</figcaption></figure>
+      <figure><canvas id="i6" width="96" height="64"></canvas><figcaption>⑦ 伽马与色调</figcaption></figure>
+      <figure><canvas id="i7" width="96" height="64"></canvas><figcaption>⑧ 降噪</figcaption></figure>
+      <figure><canvas id="i8" width="96" height="64"></canvas><figcaption>⑨ 锐化</figcaption></figure>
+    </div>
+    <div id="airywrap" data-pn hidden><canvas id="airy" class="pc" width="320" height="170"></canvas><div class="cap">衍射：一个点经过当前光圈后，在传感器上实际成的光斑</div></div>
+    <div id="abwrap" data-pn hidden><label class="chk"><input type="checkbox" id="abon" checked> 显示未校正的像差（夸张）</label></div>
+    <div id="moire" data-pn hidden><div class="two"><figure><canvas id="mo1" class="pc px" width="120" height="80"></canvas><figcaption>无低通滤镜：细纹变成假的粗纹和彩色</figcaption></figure><figure><canvas id="mo2" class="pc px" width="120" height="80"></canvas><figcaption>有低通滤镜：太细的纹被抹成灰色</figcaption></figure></div><div class="cap">同一张由内向外越来越细的同心圆纹，经拜耳采样和去马赛克后的结果，按真实算法计算</div></div>
+    <div id="pdafwrap" data-pn hidden><label class="chkl" for="pdd" style="display:grid;grid-template-columns:1fr auto;font-size:13px;color:var(--dim)">离焦程度 <output id="pddo" style="font-family:var(--mono);color:var(--fg)"></output><input id="pdd" type="range" min="-1" max="1" step="0.01" value="0.5" style="grid-column:1/-1;width:100%;accent-color:var(--light)"></label><canvas id="pdc" class="pc" width="330" height="150"></canvas><div class="cap">一排对焦像素对着一根亮条：左 PD 和右 PD 各自读出的亮度</div></div>
+    <div id="ibwrap" data-pn hidden><div class="row"><button id="ibon">打开机身防抖</button></div><canvas id="ibc" class="pc" width="330" height="150"></canvas><div class="cap">最近 1.5 秒里，点光源的像在传感器上划过的轨迹</div></div>
+    <div id="specwrap" data-pn hidden><canvas id="spec" class="pc" width="330" height="190"></canvas><div class="cap">示意形状，各家滤色片的实际曲线不同</div></div>
+    <div id="mlsctl" data-pn hidden><div class="row"><button id="mlsbtn"></button></div></div>
+    <div id="quadctl" data-pn hidden><div class="row"><button data-q="raw" aria-pressed="true">四合一排列</button><button data-q="bin">合并（暗光）</button><button data-q="remo">重排成拜耳（亮光）</button></div><div class="cap">每格平均 9 个电子：单格散粒噪声 3，信噪比 3。四格合并：信号 36，噪声 6，信噪比 6。</div></div>
+    <div id="snrwrap" data-pn hidden><div class="ctl" style="border:0;padding:0"><label for="np">像素边长 <output id="npo"></output><input id="np" type="range" min="0.8" max="6" step="0.1" value="3.8"></label><label for="nr">读出噪声 <output id="nro"></output><input id="nr" type="range" min="0.5" max="10" step="0.1" value="2"></label><label for="nd">暗电流产生的电子 <output id="ndo"></output><input id="nd" type="range" min="0" max="200" step="1" value="5"></label></div><canvas id="snr" class="pc" width="330" height="200"></canvas><canvas id="npatch" class="pc" width="330" height="70"></canvas><div class="cap">同一次曝光里暗 · 中 · 亮三处各收到多少电子，按同样亮度显示（相当于把暗处用高 ISO 拉亮）</div></div>
+    <div id="adcwrap" data-pn hidden><canvas id="adcc" class="pc" width="330" height="210"></canvas></div>
+    <div id="shutwrap" data-pn hidden><canvas id="shc" class="pc" width="330" height="180"></canvas></div>
+    <div id="tourpn" data-pn hidden>
+      <ol id="flow" aria-label="一张照片走过的路">
+        <li data-k="light"><b>光</b><small>景物反光</small></li>
+        <li data-k="lens"><b>镜头</b><small>聚成像</small></li>
+        <li data-k="sensor"><b>传感器</b><small>光变成电</small></li>
+        <li data-k="adc"><b>电路</b><small>电变数字</small></li>
+        <li data-k="isp"><b>ISP</b><small>算出颜色</small></li>
+        <li data-k="photo"><b>照片</b><small>存成文件</small></li>
+      </ol>
+      <p class="cap">导览跟着光走到传感器表面为止。之后的事在芯片里，看不见：电路把每格攒下的电读成数字（RAW），ISP 再把这堆数字算成一张彩色照片，存进卡里（第 5 章）。</p>
+      <div class="row"><button id="tourbtn">重播</button></div>
+    </div>
+    <div class="row" id="coatpn" data-pn hidden><button id="coatbtn">关掉镀膜（看脏画面）</button></div>
+    <div class="row" id="shutpn" data-pn hidden><button id="shutbtn">切快门速度</button></div>
+    <div class="row" id="storpn" data-pn hidden><button id="storbtn">换存储卡</button></div>
   </div>
-  <div class="ctl" id="ctl">
-    <label for="zo">变焦（焦距）<output id="zoo"></output><input id="zo" type="range" min="50" max="150" step="1" value="85"></label>
-    <label for="fo">对焦距离 <output id="foo"></output><input id="fo" type="range" min="0" max="1" step="0.001" value="0.5"></label>
-    <div class="row"><button data-s="1.2">对到前景</button><button data-s="3">对到主体</button><button data-s="8">对到背景灯</button></div>
-    <label for="ap">光圈 <output id="apo"></output><input id="ap" type="range" min="0" max="7" step="1" value="0"></label>
-    <label for="sh">快门 <output id="sho"></output><input id="sh" type="range" min="0" max="6" step="1" value="3"></label>
-    <label for="iso">ISO <output id="isoo"></output><input id="iso" type="range" min="0" max="7" step="1" value="0"></label>
-    <div class="row"><button id="shoot">拍照</button></div>
-    <div id="hud"></div>
+  <details id="advwrap"><summary>进阶</summary><div id="adv"></div></details>
+  <details id="hardwrap"><summary>硬核</summary><div id="hard"></div></details>
+  <div id="evo"></div>
+  <details id="compwrap" hidden><summary>本步元器件（<span id="compn"></span>）</summary><dl id="complist"></dl></details>
+  <div class="nav">
+    <button id="prev">上一步</button><span id="prevt"></span>
+    <button id="next">下一步</button><span id="nextt"></span>
   </div>
-  <div id="txwrap" hidden><canvas id="pot" width="340" height="150"></canvas><canvas id="tm" width="340" height="150"></canvas><div id="txs"></div></div>
-  <div class="row" id="chipctl" hidden><button id="stk">把电路叠到像素下面（堆栈式）</button></div>
-  <div id="dnwrap" hidden><div class="f" style="margin-bottom:6px">本轮读出的 RAW 值（10 bit，0–1023）</div><div id="dn"></div></div>
-  <div id="isp" hidden>
-    <figure><canvas id="i0" width="96" height="64"></canvas><figcaption>① RAW（灰度，黑电平 64）</figcaption></figure>
-    <figure><canvas id="i1" width="96" height="64"></canvas><figcaption>② 扣黑电平</figcaption></figure>
-    <figure><canvas id="i2" width="96" height="64"></canvas><figcaption>③ 暗角校正</figcaption></figure>
-    <figure><canvas id="i3" width="96" height="64"></canvas><figcaption>④ 去马赛克（线性）</figcaption></figure>
-    <figure><canvas id="i4" width="96" height="64"></canvas><figcaption>⑤ 白平衡</figcaption></figure>
-    <figure><canvas id="i5" width="96" height="64"></canvas><figcaption>⑥ 色彩矩阵</figcaption></figure>
-    <figure><canvas id="i6" width="96" height="64"></canvas><figcaption>⑦ 伽马与色调</figcaption></figure>
-    <figure><canvas id="i7" width="96" height="64"></canvas><figcaption>⑧ 降噪</figcaption></figure>
-    <figure><canvas id="i8" width="96" height="64"></canvas><figcaption>⑨ 锐化</figcaption></figure>
-  </div>
-  <div id="airywrap" data-pn hidden><canvas id="airy" class="pc" width="320" height="170"></canvas><div class="cap">衍射：一个点经过当前光圈后，在传感器上实际成的光斑</div></div>
-  <div id="abwrap" data-pn hidden><label class="chk"><input type="checkbox" id="abon" checked> 显示未校正的像差（夸张）</label></div>
-  <div id="moire" data-pn hidden><div class="two"><figure><canvas id="mo1" class="pc px" width="120" height="80"></canvas><figcaption>无低通滤镜：细纹变成假的粗纹和彩色</figcaption></figure><figure><canvas id="mo2" class="pc px" width="120" height="80"></canvas><figcaption>有低通滤镜：太细的纹被抹成灰色</figcaption></figure></div><div class="cap">同一张由内向外越来越细的同心圆纹，经拜耳采样和去马赛克后的结果，按真实算法计算</div></div>
-  <div id="pdafwrap" data-pn hidden><label class="chkl" for="pdd" style="display:grid;grid-template-columns:1fr auto;font-size:13px;color:var(--dim)">离焦程度 <output id="pddo" style="font-family:var(--mono);color:var(--fg)"></output><input id="pdd" type="range" min="-1" max="1" step="0.01" value="0.5" style="grid-column:1/-1;width:100%;accent-color:var(--light)"></label><canvas id="pdc" class="pc" width="330" height="150"></canvas><div class="cap">一排对焦像素对着一根亮条：左 PD 和右 PD 各自读出的亮度</div></div>
-  <div id="ibwrap" data-pn hidden><div class="row"><button id="ibon">打开机身防抖</button></div><canvas id="ibc" class="pc" width="330" height="150"></canvas><div class="cap">最近 1.5 秒里，点光源的像在传感器上划过的轨迹</div></div>
-  <div id="specwrap" data-pn hidden><canvas id="spec" class="pc" width="330" height="190"></canvas><div class="cap">示意形状，各家滤色片的实际曲线不同</div></div>
-  <div id="mlsctl" data-pn hidden><div class="row"><button id="mlsbtn"></button></div></div>
-  <div id="quadctl" data-pn hidden><div class="row"><button data-q="raw" aria-pressed="true">四合一排列</button><button data-q="bin">合并（暗光）</button><button data-q="remo">重排成拜耳（亮光）</button></div><div class="cap">每格平均 9 个电子：单格散粒噪声 3，信噪比 3。四格合并：信号 36，噪声 6，信噪比 6。</div></div>
-  <div id="snrwrap" data-pn hidden><div class="ctl" style="border:0;padding:0"><label for="np">像素边长 <output id="npo"></output><input id="np" type="range" min="0.8" max="6" step="0.1" value="3.8"></label><label for="nr">读出噪声 <output id="nro"></output><input id="nr" type="range" min="0.5" max="10" step="0.1" value="2"></label><label for="nd">暗电流产生的电子 <output id="ndo"></output><input id="nd" type="range" min="0" max="200" step="1" value="5"></label></div><canvas id="snr" class="pc" width="330" height="200"></canvas><canvas id="npatch" class="pc" width="330" height="70"></canvas><div class="cap">同一次曝光里暗 · 中 · 亮三处各收到多少电子，按同样亮度显示（相当于把暗处用高 ISO 拉亮）</div></div>
-  <div id="adcwrap" data-pn hidden><canvas id="adcc" class="pc" width="330" height="210"></canvas></div>
-  <div id="shutwrap" data-pn hidden><canvas id="shc" class="pc" width="330" height="180"></canvas></div>
-  <div class="row" id="coatpn" data-pn hidden><button id="coatbtn">关掉镀膜（看脏画面）</button></div>
-  <div class="row" id="shutpn" data-pn hidden><button id="shutbtn">切快门速度</button></div>
-  <div class="row" id="storpn" data-pn hidden><button id="storbtn">换存储卡</button></div>
-  <div class="nav"><button id="prev">上一步</button><button id="next">下一步</button></div>
 </aside>
 <main id="view"><div id="hint">点标注看元器件说明 · 拖动旋转 · 双指滑动或 Shift+拖动平移 · 双指捏合或鼠标滚轮缩放</div></main>
+<section id="timeline" hidden aria-labelledby="tltitle">
+  <header id="tlhead">
+    <div class="tl-run"><button type="button" id="tlback"><span>回到讲解</span><small id="tlbackt"></small></button><span class="tl-brand">PhotonFall · 光子落点</span></div>
+    <p class="tl-kicker">技术演进</p>
+    <h2 id="tltitle">相机是怎么一步步变成今天这样的</h2>
+    <p class="tl-lede">六个年代，五条线索。每一项技术都解决了一个老问题，又留下一个新问题，推着下一项出现。点卡片看来龙去脉，再一键回到讲解里看原理。</p>
+  </header>
+  <div id="tlaxis"></div>
+  <div id="tllanes"></div>
+  <p id="tlnote">各年代列宽相同，不按真实年份比例；同一格里按年份从上到下排。</p>
+  <aside id="tldrawer" role="dialog" aria-modal="false" aria-labelledby="tldtitle" tabindex="-1" hidden></aside>
+</section>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 <script src="js/core.js"></script>
+<script src="js/route.js"></script>
 <script src="js/steps.js"></script>
+<script src="js/evolution.js"></script>
 <script src="js/lens.js"></script>
 <script src="js/pixel-array.js"></script>
 <script src="js/pixel-4t.js"></script>
@@ -75,6 +110,10 @@
 <script src="js/isp.js"></script>
 <script src="js/components.js"></script>
 <script src="js/extras-chapters.js"></script>
+<script src="js/highlight.js"></script>
+<script src="js/tour.js"></script>
+<script src="js/timeline.js"></script>
+<script src="js/panel.js"></script>
 <script src="js/app.js"></script>
 </body>
 </html>
