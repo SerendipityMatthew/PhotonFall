@@ -35,9 +35,10 @@ async function smoke() {
   expect(step === 6, '[keys] ignored in input');
 
   // ---- [layout] ----
+  const locWant = i => (innerWidth <= 768 ? locShort : locText)(i, STEPS, CHAPTERS);   // 手机顶栏用短写
   for (let i = 0; i < STEPS.length; i++) {
     navigate({view:'step', n:i}); await wait(30);
-    expect($('loc').textContent === locText(i, STEPS, CHAPTERS), `[layout] location shown ${i}`);
+    expect($('loc').textContent === locWant(i), `[layout] location shown ${i}`);
     expect($('hardh').hidden === !STEPS[i].hard && $('tabdeep').contains($('hardh')), `[layout] hard heading visibility ${i}`);
   }
 
@@ -215,7 +216,7 @@ async function smoke() {
       expect($('cardctl').contains(el), `[card] step ${i} control ${id} in card`); }
     if (STEPS[i].fig) expect($('cardfig').contains($(STEPS[i].fig)), `[card] step ${i} fig ${STEPS[i].fig} in card`);
     else expect($('cardfig').children.length === 0, `[card] step ${i} no fig`);
-    expect($('loc').textContent === locText(i, STEPS, CHAPTERS), `[card] step ${i} loc`);
+    expect($('loc').textContent === locWant(i), `[card] step ${i} loc`);
   }
   navigate({view:'step', n:16}); await wait(60);
   $('detailbtn').click(); await wait(60);
@@ -289,6 +290,26 @@ async function smoke() {
   const orig = Storage.prototype.getItem; Storage.prototype.getItem = () => { throw new Error('blocked'); };
   let threw = false; try { expect(onboardSeen() === false, '[onboard] storage error → unseen'); } catch { threw = true; }
   Storage.prototype.getItem = orig; expect(!threw, '[onboard] storage error does not throw');
+
+  // ---- [sheet] ----  手机：小卡是底部抽屉，三档，拖把手吸附
+  if (innerWidth <= 768) {
+    navigate({view:'step', n:1}); await wait(80);
+    expect(sheetState === 'mid' && $('card').getBoundingClientRect().height <= innerHeight * 0.52, '[sheet] mid ≤ ~50vh');
+    expect($('loc').textContent === locShort(1, STEPS, CHAPTERS), '[sheet] short loc');
+    $('detailbtn').click(); await wait(80);
+    expect(sheetState === 'max', '[sheet] detail expands');
+    setSheet('min'); await wait(80);
+    expect($('card').getBoundingClientRect().height < 90, '[sheet] min is a strip');
+    const g = $('grip').getBoundingClientRect(), x = g.left + g.width/2, y0 = g.top + 4;
+    $('grip').dispatchEvent(new PointerEvent('pointerdown', {clientX:x, clientY:y0, pointerId:1, bubbles:true}));
+    expect(ctr.enabled === false, '[sheet] drag disables orbit');
+    $('grip').dispatchEvent(new PointerEvent('pointermove', {clientX:x, clientY:y0 - 300, pointerId:1, bubbles:true}));
+    $('grip').dispatchEvent(new PointerEvent('pointerup', {clientX:x, clientY:y0 - 300, pointerId:1, bubbles:true}));
+    await wait(80);
+    expect(ctr.enabled === true && sheetState !== 'min', '[sheet] drag up snaps, orbit restored');
+    setSheet('mid');
+    expect(document.documentElement.scrollWidth <= innerWidth, '[sheet] no h-scroll');
+  }
 
   // collect any JS errors that fired during the test
   window.removeEventListener('error', onerr);

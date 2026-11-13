@@ -4,6 +4,9 @@
 
 let drawerOpen = false, drawerTab = 'deep', cardFolded = false;
 
+/* 手机（≤768px）：小卡变底部抽屉（sheet.js）。只在这一处判断，变宽变窄时 sheet.js 重新布置 */
+const PHONE = matchMedia('(max-width:768px)'), isPhone = () => PHONE.matches;
+
 /* 所有面板按 HTML 里的顺序记下来；不用的时候都停在 #parking */
 const PANELS = [...$('parking').children];
 
@@ -83,21 +86,24 @@ function openDrawer(tab) {
   drawerOpen = true;
   $('drawer').hidden = false;
   $('detailbtn').setAttribute('aria-expanded', 'true');
+  if (isPhone() && sheetState !== 'max') setSheet('max', true);   // 手机：三个标签就在底部抽屉里，抽屉拉到最高
   $('drawert').focus({preventScroll: true});
 }
 
-function closeDrawer() {
+function closeDrawer(refocus = true) {
   if (!drawerOpen) return;
   drawerOpen = false;
   $('drawer').hidden = true;
   $('detailbtn').setAttribute('aria-expanded', 'false');
-  $('detailbtn').focus({preventScroll: true});
+  if (isPhone() && sheetState === 'max') setSheet('mid', true);    // 手机：回到默认高度
+  if (refocus) $('detailbtn').focus({preventScroll: true});
 }
 
 /* ---------- 卡片收起 ---------- */
 /* 收起后只剩一条「标题 · 展开」；切步时保持 */
 function toggleCard(force) {
   cardFolded = force === undefined ? !cardFolded : !!force;
+  if (isPhone()) { setSheet(cardFolded ? 'min' : 'mid', true); return; }   // 手机：收起 = 抽屉最低一档
   $('card').classList.toggle('folded', cardFolded);
   $('cardfold').textContent = cardFolded ? '展开' : '收起';
   $('cardfold').setAttribute('aria-expanded', String(!cardFolded));
@@ -129,7 +135,7 @@ function closeZoom(refocus = true) {
 /* ---------- 卡片 ---------- */
 function renderCard(i) {
   const fa = document.activeElement;
-  $('loc').textContent = locText(i, STEPS, CHAPTERS);
+  $('loc').textContent = (isPhone() ? locShort : locText)(i, STEPS, CHAPTERS);
 
   $('cardevo').innerHTML = evoForStep(i).map(e =>
     `<button type="button" class="evo-chip" data-id="${e.id}"><span aria-hidden="true">🕰</span> <time>${e.year}</time> · ${e.title}</button>`).join('');
@@ -151,7 +157,11 @@ $('cardevo').addEventListener('click', e => {
   const b = e.target.closest('.evo-chip');
   if (b) navigate({view: 'timeline', id: b.dataset.id});
 });
-$('detailbtn').onclick = () => drawerOpen ? closeDrawer() : openDrawer();
+$('detailbtn').onclick = () => {
+  if (drawerOpen) return closeDrawer();
+  openDrawer();
+  if (isPhone()) $('card').scrollTop = $('drawer').offsetTop - $('grip').offsetHeight;   // 手机：直接看到标签
+};
 $('drawerclose').onclick = closeDrawer;
 document.querySelector('.drawer-tabs').addEventListener('click', e => {
   const b = e.target.closest('[data-tab]');
