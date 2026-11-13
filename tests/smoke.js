@@ -300,6 +300,12 @@ async function smoke() {
   expect(!$('toc').hidden, '[toc] opens');
   dispatchEvent(new KeyboardEvent('keydown', {key:'Escape'})); await wait(40);
   expect($('toc').hidden && document.activeElement === $('tocbtn'), '[toc] Esc returns focus to opener');
+  // 位置小药丸也是目录按钮
+  expect($('loc').tagName === 'BUTTON' && ($('loc').getAttribute('aria-label') || '').includes($('loc').textContent), '[toc] #loc is a button named 目录：位置');
+  $('loc').click(); await wait(40);
+  expect(!$('toc').hidden, '[toc] #loc opens toc');
+  dispatchEvent(new KeyboardEvent('keydown', {key:'Escape'})); await wait(40);
+  expect($('toc').hidden && document.activeElement === $('loc'), '[toc] Esc returns focus to #loc');
   // (1) 顶栏目录跳步后焦点在 #title
   $('tocbtn').click(); await wait(40);
   $('toc').querySelector('[data-i="20"]').click(); await wait(80);

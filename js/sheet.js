@@ -61,7 +61,7 @@ function sheetLayout() {
     $('cardfold').setAttribute('aria-expanded', String(!cardFolded));
   }
   if (typeof STEPS !== 'undefined' && typeof step !== 'undefined')
-    $('loc').textContent = (phone ? locShort : locText)(step, STEPS, CHAPTERS);
+    setLoc(step);
 }
 PHONE.addEventListener('change', sheetLayout);
 

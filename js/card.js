@@ -141,9 +141,16 @@ function closeZoom(refocus = true) {
 }
 
 /* ---------- 卡片 ---------- */
+/* 顶栏位置小药丸：手机用短写；它也是目录按钮，名字带上当前位置 */
+function setLoc(i) {
+  const t = (isPhone() ? locShort : locText)(i, STEPS, CHAPTERS);
+  $('loc').textContent = t;
+  $('loc').setAttribute('aria-label', '目录：' + t);
+}
+
 function renderCard(i) {
   const fa = document.activeElement;
-  $('loc').textContent = (isPhone() ? locShort : locText)(i, STEPS, CHAPTERS);
+  setLoc(i);
 
   $('cardevo').innerHTML = evoForStep(i).map(e =>
     `<button type="button" class="evo-chip" data-id="${e.id}"><span aria-hidden="true">🕰</span> <time>${e.year}</time> · ${e.title}</button>`).join('');
@@ -262,6 +269,7 @@ document.querySelector('.drawer-tabs').addEventListener('keydown', e => {
 });
 
 $('tocbtn').onclick = () => openToc($('tocbtn'));
+$('loc').onclick = () => openToc($('loc'));
 $('tocclose').onclick = closeToc;
 $('toc').addEventListener('click', e => {
   const b = e.target.closest('[data-i]');
