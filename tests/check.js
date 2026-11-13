@@ -113,6 +113,23 @@ check('steps: content', () => {
   assert.ok(!ctx.STEPS[0].adv.includes('Task 7'), 'step 0 adv written');
 });
 
+check('evo: data', () => {
+  const E = ctx.EVO, eras = new Set(ctx.ERAS.map(e => e.id)), lanes = ctx.LANES.map(l => l.id);
+  assert.ok(E.length >= 20 && E.length <= 25, `count ${E.length}`);
+  assert.strictEqual(new Set(E.map(e => e.id)).size, E.length, 'unique ids');
+  for (const e of E) {
+    assert.ok(/^[a-z0-9-]+$/.test(e.id), `id ${e.id}`);
+    assert.ok(eras.has(e.era), `${e.id} era`);
+    assert.ok(lanes.includes(e.lane), `${e.id} lane`);
+    for (const k of ['title', 'solved', 'newProblem', 'driver', 'industry', 'story'])
+      assert.ok(typeof e[k] === 'string' && e[k].length, `${e.id} ${k}`);
+    assert.ok(e.steps.length && e.steps.every(n => Number.isInteger(n) && n >= 1 && n <= 31), `${e.id} steps`);
+    assert.strictEqual(typeof e.draw, 'function', `${e.id} draw`);
+  }
+  for (const l of lanes) assert.ok(E.filter(e => e.lane === l).length >= 3, `lane ${l} ≥ 3`);
+  for (let n = 2; n <= 31; n++) assert.ok(ctx.evoForStep(n).length >= 1, `step ${n} has a card`);
+});
+
 // ---------------------------------------------------------------------------
 // Run all checks and report
 // ---------------------------------------------------------------------------
