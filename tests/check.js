@@ -4,6 +4,7 @@ const fs   = require('fs');
 const path = require('path');
 const vm   = require('vm');
 const assert = require('assert');
+const J = x => JSON.parse(JSON.stringify(x));
 
 // ---------------------------------------------------------------------------
 // Load project files into an isolated vm context
@@ -11,7 +12,7 @@ const assert = require('assert');
 const root   = path.resolve(__dirname, '..');
 const vmCtx  = vm.createContext({});
 
-for (const rel of ['js/route.js', 'js/steps.js', 'js/evolution.js']) {
+for (const rel of ['js/route.js', 'js/steps.js', 'js/evolution.js', 'js/layout.js']) {
   const abs = path.join(root, rel);
   if (fs.existsSync(abs)) {
     vm.runInContext(fs.readFileSync(abs, 'utf8'), vmCtx, { filename: abs });
@@ -28,7 +29,11 @@ vm.runInContext(
   'this.ERAS         = typeof ERAS         !== "undefined" ? ERAS         : undefined;' +
   'this.LANES        = typeof LANES        !== "undefined" ? LANES        : undefined;' +
   'this.EVO          = typeof EVO          !== "undefined" ? EVO          : undefined;' +
-  'this.evoForStep   = typeof evoForStep   !== "undefined" ? evoForStep   : undefined;',
+  'this.evoForStep   = typeof evoForStep   !== "undefined" ? evoForStep   : undefined;' +
+  'this.mentioned    = typeof mentioned    !== "undefined" ? mentioned    : undefined;' +
+  'this.locText      = typeof locText      !== "undefined" ? locText      : undefined;' +
+  'this.locShort     = typeof locShort     !== "undefined" ? locShort     : undefined;' +
+  'this.CARD_CTL     = typeof CARD_CTL     !== "undefined" ? CARD_CTL     : undefined;',
   vmCtx
 );
 
@@ -38,6 +43,7 @@ const ctx = {};
 const GLOBAL_KEYS = [
   'parseRoute', 'routeHash', 'historyMode',
   'CHAPTERS', 'STEPS', 'ERAS', 'LANES', 'EVO', 'evoForStep',
+  'mentioned', 'locText', 'locShort', 'CARD_CTL',
 ];
 for (const k of GLOBAL_KEYS) {
   const v = vmCtx[k];
@@ -135,6 +141,24 @@ check('evo: data', () => {
   assert.ok(ctx.evoForStep(7).length >= 1 && ctx.evoForStep(8).length >= 1, 'new steps 7, 8 have cards');
   for (const l of lanes) assert.ok(E.filter(e => e.lane === l).length >= 3, `lane ${l} ≥ 3`);
   for (let n = 2; n <= last; n++) assert.ok(ctx.evoForStep(n).length >= 1, `step ${n} has a card`);
+});
+
+check('layout: mentioned', () => {
+  assert.deepStrictEqual(J(ctx.mentioned('a<k data-hl="微透镜">x</k>b<k data-hl="左 PD">y</k><k data-hl="微透镜">z</k>')), ['微透镜','左 PD']);
+  assert.deepStrictEqual(J(ctx.mentioned('无关键词')), []);
+});
+check('layout: locText', () => {
+  const S = ctx.STEPS, C = ctx.CHAPTERS;
+  assert.strictEqual(ctx.locText(0, S, C), '先看全景');
+  assert.strictEqual(ctx.locText(1, S, C), '1 镜头 · 第 1/10 步');
+  assert.strictEqual(ctx.locText(16, S, C), '3 像素 · 第 2/3 步');
+  assert.strictEqual(ctx.locText(32, S, C), '6 周边 · 第 6/6 步');
+  assert.strictEqual(ctx.locShort(16, S, C), '3 像素 · 2/3');
+});
+check('layout: fig', () => {
+  const want = {1:'vffig',2:'vffig',3:'vffig',4:'pdc',5:'vffig',6:'vffig',7:'vffig',8:'reflc',9:'vffig',10:'ibc',12:'spec',16:'pot',17:'pot',22:'snr',23:'dnwrap',24:'adcc',25:'shc',26:'i8fig'};
+  ctx.STEPS.forEach((s, i) => assert.strictEqual(s.fig, want[i], `step ${i} fig`));
+  assert.strictEqual(ctx.CARD_CTL.length, 13);
 });
 
 // ---------------------------------------------------------------------------

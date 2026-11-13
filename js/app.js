@@ -2,6 +2,8 @@
 
 /* ---------- 状态 ---------- */
 let step = 0, route;
+let showAllLabels = false;
+let curMentioned = new Set();
 const goal = {p: V(), l: V()};
 const GR = {macro, micro, tx, arch, chip, cap5, pdaf, ibis, mls, quad, stk4, coat, shut, hdr, cs, vid, stor, compu};
 
@@ -25,26 +27,17 @@ function applyRoute(r) {
 $('prev').onclick = () => navigate({view: 'step', n: step - 1});
 $('next').onclick = () => navigate({view: 'step', n: step + 1});
 
-$('chnav').addEventListener('click', e => {
-  const btn = e.target.closest('button');
-  if (!btn) return;
-  if (btn.dataset.ch !== undefined) {
-    const first = STEPS.findIndex(s => s.ch === +btn.dataset.ch);
-    if (first >= 0) navigate({view: 'step', n: first});
-  } else if ('timeline' in btn.dataset) {
-    navigate({view: 'timeline', id: null});
-  }
-});
-
-$('sub').addEventListener('click', e => {
-  const btn = e.target.closest('button');
-  if (!btn || btn.dataset.i === undefined) return;
-  navigate({view: 'step', n: +btn.dataset.i});
-});
+function updateLblBtn() {
+  $('lblbtn').setAttribute('aria-pressed', String(showAllLabels));
+  $('lblbtn').textContent = showAllLabels ? '标注：全部' : '标注：提到的';
+}
+$('lblbtn').onclick = () => { showAllLabels = !showAllLabels; updateLblBtn(); };
 
 addEventListener('keydown', e => {
   if (['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName)) return;
   if (route && route.view === 'timeline') return;
+  if (e.defaultPrevented) return;
+  if (!$('zoom').hidden || !$('toc').hidden || !$('onboard').hidden) return;   // 放大图 / 目录 / 操作提示开着：方向键不翻步
   if (e.altKey || e.metaKey || e.ctrlKey) return;      // Alt+← 是浏览器后退，⌘← 等也留给系统
   if (e.key === 'ArrowRight') navigate({view: 'step', n: step + 1});
   if (e.key === 'ArrowLeft')  navigate({view: 'step', n: step - 1});
@@ -63,7 +56,7 @@ function go(i) {
   for (const k in GR) GR[k].visible = k === s.g;
 
   /* 控件面板显示 */
-  $('ctl').hidden = $('vfwrap').hidden = s.g !== 'macro' || !!s.noCam;
+  $('ctl').hidden = $('vfwrap').hidden = $('hudwrap').hidden = s.g !== 'macro' || !!s.noCam;   // 读数 #hud 在抽屉「深入」最上面
   $('txwrap').hidden  = s.g !== 'tx';
   $('chipctl').hidden = s.g !== 'chip';
   $('dnwrap').hidden  = !s.dn;
@@ -83,14 +76,18 @@ function go(i) {
   tween = true;
 
   hlClear();
+  curMentioned = new Set(mentioned(STEPS[i].lead));
 
   /* 导览 */
   if (s.noCam) startTour();
   else stopTour();
 
-  /* 讲解栏 */
+  /* 卡片与抽屉：先填文字，再按可见性把面板搬到位，再列元器件，最后按三个标签有没有内容更新抽屉标签 */
   renderPanel(i);
+  renderCard(i);
+  placePanels(i);
   listComps();
+  syncTabs();
 }
 
 /* ---------- 动画循环 ---------- */
@@ -190,9 +187,10 @@ function frame() {
   }
   (STEPS[step].pn || []).forEach(id => PANIM[id] && PANIM[id](t, dt));
   const w = view.clientWidth, h = view.clientHeight;
+  const now = performance.now();
   labels.forEach(l => {
     tmp.copy(l.v).project(cam);
-    const on = l.g.visible && tmp.z < 1;
+    const on = l.g.visible && tmp.z < 1 && (showAllLabels || curMentioned.has(l.el.textContent) || (l.pinUntil || 0) > now);
     l.el.hidden = !on;
     if (on) l.el.style.transform = `translate(${((tmp.x + 1) / 2 * w).toFixed(1)}px,${((1 - tmp.y) / 2 * h).toFixed(1)}px) translate(-50%,-50%)`;
   });
@@ -201,6 +199,7 @@ function frame() {
 }
 
 /* ---------- 启动 ---------- */
+updateLblBtn();
 rebuild();
 route = parseRoute(location.hash, STEPS.length - 1);
 history.replaceState(null, '', routeHash(route));

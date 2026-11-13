@@ -33,6 +33,15 @@ function setFlow(k) {
   if (FLOW_HL[k]) hl(FLOW_HL[k]);          // 只高亮标注，不推镜头
 }
 
+/* 这一段的标注整段都显示：每帧续一小段 pinUntil（hl 本身只点亮 1.6 秒，关键词点击仍是 1.6 秒） */
+function pinFlow(k) {
+  const text = FLOW_HL[k];
+  if (!text) return;
+  const vis = l => { for (let o = l.g; o; o = o.parent) if (!o.visible) return false; return true; };
+  const l = labels.find(l => l.el.textContent === text && vis(l));
+  if (l) l.pinUntil = Math.max(l.pinUntil || 0, performance.now() + 250);
+}
+
 let tourOn = false;
 let tourT  = 0;   // tour 内部已流逝时间（秒）
 
@@ -68,6 +77,7 @@ function animTour(dt) {
       cam.position.set(mix(a.cam[0], b.cam[0]),  mix(a.cam[1], b.cam[1]),  mix(a.cam[2], b.cam[2]));
       ctr.target.set( mix(a.look[0], b.look[0]), mix(a.look[1], b.look[1]), mix(a.look[2], b.look[2]));
       setFlow(b.k);
+      pinFlow(b.k);
       return;
     }
     cumT += segDur;

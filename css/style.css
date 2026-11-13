@@ -1,6 +1,6 @@
 /* PhotonFall 样式：浅色科普书。
    左边是一页米白的书（讲解栏），右边是深色 3D 舞台——光路要在暗底上才看得清。
-   窄屏（≤768px）上下叠放：舞台在上约 45vh，书页在下。 */
+   窄屏（≤768px）：小卡变成底部抽屉（三档），舞台缩到抽屉上方。 */
 
 /* ---------- 色板与字体 ---------- */
 :root{
@@ -36,7 +36,16 @@
   --radius:10px;
   --shadow:0 1px 2px rgba(60,40,20,.06),0 4px 14px rgba(60,40,20,.08);
   --shadow-lg:0 2px 6px rgba(60,40,20,.08),0 18px 48px rgba(60,40,20,.22);
-  --paper-tint:rgba(239,232,218,.55);   /* 时间轴隔列的淡底（--paper-2 半透明） */
+  --paper-tint:rgba(239,232,218,.55);
+  /* 浮层：顶栏药丸的半透明纸、放大层压暗舞台的幕 */
+  --glass:rgba(255,253,248,.84);
+  --glass-line:rgba(203,191,169,.7);
+  --scrim:rgba(13,20,32,.66);
+  /* 浮层尺寸 */
+  --gap:12px;          /* 浮层离视口边、彼此之间的距离 */
+  --bar-h:34px;        /* 顶栏药丸高 */
+  --card-w:340px;
+  --drawer-w:min(460px,42vw);   /* 时间轴隔列的淡底（--paper-2 半透明） */
 
   /* 旧名字（index.html 内联样式和旧代码还在用） */
   --fg:var(--ink); --dim:var(--ink-dim); --light:var(--accent);
@@ -48,7 +57,7 @@
 *,*::before,*::after{box-sizing:border-box}
 html,body{height:100%}
 body{margin:0;font:15px/1.7 var(--sans);color:var(--ink);background:var(--stage);
-  display:grid;grid-template-columns:minmax(340px,420px) 1fr;overflow:hidden;
+  overflow:hidden;
   -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
 img{max-width:100%}
 [hidden]{display:none!important}
@@ -56,44 +65,105 @@ img{max-width:100%}
 :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 button{font-family:inherit}
 
-/* ---------- 书页（讲解栏） ---------- */
-#panel{position:relative;background:var(--paper);color:var(--ink);min-width:0;min-height:0;
+/* ---------- 骨架：3D 铺满，顶栏、浮动小卡、详细抽屉浮在上面 ---------- */
+/* 一页浅色纸片浮在暗舞台上：顶栏是一排半透明小药丸，左下一张小卡，右边按需拉出一页抽屉 */
+#prog{position:fixed;z-index:30;top:0;left:0;height:3px;background:var(--accent);transition:width .25s ease}
+
+#topbar{position:fixed;z-index:10;top:var(--gap);left:var(--gap);right:var(--gap);display:flex;align-items:center;gap:6px;pointer-events:none}
+/* 抽屉开着时顶栏右边让出抽屉的位置，「时间轴 / 标注 / ?」不被盖住 */
+body:has(#drawer:not([hidden])) #topbar{right:calc(var(--drawer-w) + var(--gap) * 2)}
+#topbar>*{pointer-events:auto;display:inline-flex;align-items:center;gap:5px;height:var(--bar-h);padding:0 13px;border-radius:999px;
+  font:500 13px/1 var(--sans);color:var(--ink);white-space:nowrap;
+  background:var(--glass);border:1px solid var(--glass-line);box-shadow:var(--shadow);
+  -webkit-backdrop-filter:blur(10px) saturate(1.2);backdrop-filter:blur(10px) saturate(1.2)}
+#topbar button{cursor:pointer;transition:background .15s,border-color .15s}
+#topbar button:hover{background:var(--card);border-color:var(--line-2)}
+#loc{min-width:0;overflow:hidden;text-overflow:ellipsis;font-weight:600;color:var(--ink)}
+#tlbtn{margin-left:auto}
+#helpbtn{width:var(--bar-h);justify-content:center;padding:0;font-weight:600;color:var(--ink-dim)}
+#topbar #lblbtn[aria-pressed=true]{background:var(--accent-soft);border-color:var(--accent);color:var(--accent-ink);font-weight:600}
+
+/* 浮动小卡：卡片自己滚，按钮行粘在卡片底部 */
+#card{position:fixed;z-index:10;left:var(--gap);bottom:var(--gap);width:var(--card-w);max-width:calc(100vw - var(--gap) * 2);
+  max-height:calc(100vh - var(--bar-h) - var(--gap) * 3);max-height:calc(100dvh - var(--bar-h) - var(--gap) * 3);
   overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:var(--line-2) transparent;
-  display:flex;flex-direction:column;gap:16px;
-  padding:20px 26px 0 max(26px,env(safe-area-inset-left,0px));
-  /* 书脊：靠舞台一侧的一道淡阴影 */
-  box-shadow:inset -14px 0 18px -16px rgba(60,40,20,.28);
-  border-right:1px solid var(--stage-border)}
-#panel>*{min-width:0;flex-shrink:0}
+  display:flex;flex-direction:column;gap:14px;padding:16px 18px 0;
+  background:var(--paper);color:var(--ink);border-radius:var(--radius);box-shadow:var(--shadow-lg)}
+#card>*{min-width:0;flex-shrink:0}
+#cardfold{position:absolute;top:12px;right:12px;font:500 12px/1 var(--sans);padding:5px 10px;border:1px solid var(--line);border-radius:999px;
+  background:var(--card);color:var(--ink-dim);cursor:pointer;transition:border-color .15s,color .15s}
+#cardfold:hover{border-color:var(--line-2);color:var(--ink)}
+#card #title{padding-right:52px}
+/* 收起：只剩一条「标题 · 展开」 */
+#card.folded{flex-direction:row;align-items:center;gap:10px;width:auto;max-width:min(var(--card-w),calc(100vw - var(--gap) * 2));padding:8px 8px 8px 16px;overflow:hidden}
+#card.folded>:not(#title):not(#cardfold){display:none}
+#card.folded #title{padding:0;margin:0;font:600 14px/1.3 var(--sans);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:pointer;flex-shrink:1}
+#card.folded #cardfold{position:static;order:2;color:var(--accent-ink);border-color:var(--line-2)}
 
-/* 书眉 */
-#panel::before{content:"PhotonFall · 光子落点";font:600 11px/1 var(--sans);letter-spacing:.18em;color:var(--ink-dim);
-  padding-bottom:12px;border-bottom:1px solid var(--line);margin-bottom:-4px}
+#grip,.toc-foot{display:none}
+#cardctl,#cardfig,#drawerfigs{display:flex;flex-direction:column;gap:12px;min-width:0}
+#cardctl:empty,#cardfig:empty,#cardevo:empty,#drawerfigs:empty{display:none}
+/* 关键小图：整块可点，右上角一个「放大」小标 */
+#cardfig{position:relative;cursor:zoom-in;border-radius:8px}
+#cardfig::after{content:"⤢ 点图放大";align-self:flex-end;margin-top:-6px;font:500 11.5px/1 var(--sans);color:var(--ink-dim);pointer-events:none;transition:color .15s}
+#cardfig:hover::after,#cardfig:focus-visible::after{color:var(--accent-ink)}
+#cardfig:focus-visible{outline-offset:4px}
+/* 卡片里的控件不再套一层框（镜头读数 #hud 在详细抽屉「深入」最上面） */
+#cardctl .ctl{background:none;border:0;padding:0;gap:10px}
+#cardfig canvas{width:100%;display:block}
+#cardfig figcaption{font-size:11.5px}
 
-/* 章节导航：一排圆角药丸，当前章砖红实底 */
-#chnav{display:flex;flex-wrap:wrap;gap:6px}
-#chnav button{font:500 12.5px/1 var(--sans);padding:7px 12px;border:1px solid var(--line-2);border-radius:999px;
-  background:transparent;color:var(--ink-dim);cursor:pointer;white-space:nowrap;transition:background .15s,color .15s,border-color .15s}
-#chnav button:hover{background:var(--paper-2);color:var(--ink)}
-#chnav button[aria-current=true]{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600;box-shadow:0 1px 3px rgba(168,64,31,.35)}
-#chnav [data-timeline]{border-style:dashed;color:var(--ink-dim)}
+/* 来龙去脉小药丸：比演进卡轻，只是一行索引 */
+#cardevo{display:flex;flex-wrap:wrap;gap:6px}
+.evo-chip{display:inline-flex;align-items:baseline;gap:4px;max-width:100%;font:500 12px/1.35 var(--sans);padding:5px 10px;border:0;border-radius:999px;
+  background:var(--paper-2);color:var(--ink-dim);cursor:pointer;text-align:left;transition:background .15s,color .15s}
+.evo-chip time{font:600 11.5px/1 var(--mono);color:var(--accent-ink)}
+.evo-chip:hover{background:var(--accent-soft);color:var(--ink)}
 
-/* 进度条（宽度由 JS 设置）：压在 #sub 的上边线上，那条线就是轨道 */
-#prog{position:relative;z-index:1;height:2px;background:var(--accent);border-radius:2px;transition:width .25s ease;margin-bottom:-18px}
+/* 详细抽屉：右侧浮起的一页，标题和标签固定，内容自己滚 */
+#drawer{position:fixed;z-index:15;top:var(--gap);right:var(--gap);bottom:var(--gap);width:var(--drawer-w);display:flex;flex-direction:column;overflow:hidden;
+  background:var(--paper);color:var(--ink);border-radius:var(--radius);box-shadow:var(--shadow-lg);animation:tl-in .22s cubic-bezier(.2,.8,.2,1)}
+.drawer-head{flex:none;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:14px 16px 0 22px}
+#drawert{font-size:19px;margin:0}
+#drawert:focus{outline:none}
+#drawerclose{width:32px;height:32px;border-radius:50%;border:1px solid var(--line);background:var(--card);color:var(--ink-dim);font:400 19px/1 var(--sans);cursor:pointer;transition:border-color .15s,color .15s}
+#drawerclose:hover{border-color:var(--line-2);color:var(--ink)}
+.drawer-tabs{flex:none;display:flex;gap:4px;margin:8px 22px 0;border-bottom:1px solid var(--line)}
+.drawer-tabs button{font:500 13.5px/1 var(--sans);padding:10px 8px 9px;margin-bottom:-1px;border:0;border-bottom:2px solid transparent;background:none;color:var(--ink-dim);cursor:pointer}
+.drawer-tabs button:hover{color:var(--ink)}
+.drawer-tabs button[aria-selected=true]{color:var(--accent-ink);border-bottom-color:var(--accent);font-weight:600}
+#tabdeep,#tabevo,#tabcomp{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:18px 22px 26px;
+  scrollbar-width:thin;scrollbar-color:var(--line-2) transparent}
+#tabdeep{display:flex;flex-direction:column;gap:14px}
+#tabdeep>*{flex-shrink:0}
+/* 「进阶」「硬核」两枚小标签：进阶淡、硬核浓 */
+#advh,#hardh{font:700 11px/1 var(--sans);letter-spacing:.14em;align-self:flex-start;padding:5px 8px;border-radius:4px;margin:6px 0 -8px}
+#advh{background:var(--accent-soft);color:var(--accent-ink)}
+#hardh{background:var(--ink);color:var(--paper)}
+#compwrap h3{font:600 14px/1.4 var(--sans);margin:0}
 
-/* 本章各步：像目录里的小节，当前步下划砖红线 */
-#sub{display:flex;flex-wrap:wrap;gap:2px 14px;border-top:2px solid var(--line);padding-top:4px;border-bottom:1px solid var(--line)}
-#sub button{font:500 13px/1.3 var(--sans);padding:6px 0 8px;border:0;border-bottom:2px solid transparent;margin-bottom:-1px;
-  background:none;color:var(--ink-dim);cursor:pointer;white-space:nowrap;text-align:left}
-#sub button:hover{color:var(--ink)}
-#sub button[aria-current=true]{color:var(--accent-ink);border-bottom-color:var(--accent);font-weight:600}
+/* 小图放大：舞台压暗，中间一张纸 */
+#zoom{position:fixed;z-index:40;inset:0;display:grid;place-items:center;padding:var(--gap);background:var(--scrim);
+  -webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);animation:zoom-in .18s ease-out}
+.zoom-box{position:relative;width:min(760px,100%);max-height:100%;overflow:visible;padding:18px 18px 14px;background:var(--paper);border-radius:var(--radius);box-shadow:var(--shadow-lg)}
+#zoomclose{position:absolute;z-index:1;top:-14px;right:-14px;width:34px;height:34px;border-radius:50%;border:1px solid var(--line-2);background:var(--card);box-shadow:var(--shadow);
+  color:var(--ink-dim);font:400 20px/1 var(--sans);cursor:pointer}
+#zoomclose:hover{color:var(--ink);border-color:var(--ink-dim)}
+#zoombody canvas{display:block;width:100%;height:auto;max-height:calc(100dvh - 130px);object-fit:contain;border-radius:6px}
+#zoombody figcaption{font-size:12.5px}
+#zoombody #dn{font-size:16px;gap:6px}
+#zoombody #dn span{padding:14px 0}
+#zoomcap{margin:8px 0 0;font-size:12.5px;line-height:1.55;color:var(--ink-dim)}
+#zoomcap:empty{display:none}
+@keyframes zoom-in{from{opacity:0}}
+#i8fig canvas{image-rendering:pixelated}
 
 /* 标题 */
 #title:focus{outline:none}
-#title,h2{font:700 25px/1.32 var(--serif);margin:4px 0 0;color:var(--ink);text-wrap:pretty;letter-spacing:.01em}
+#title,h2{font:700 22px/1.35 var(--serif);margin:2px 0 0;color:var(--ink);text-wrap:pretty;letter-spacing:.01em}
 
 /* 导读：讲解栏里最显眼的一块 */
-#lead{font-size:17px;line-height:1.85;color:var(--ink);border-left:3px solid var(--accent);padding:2px 0 2px 16px}
+#lead{font-size:15.5px;line-height:1.8;color:var(--ink);border-left:3px solid var(--accent);padding:1px 0 1px 14px}
 #lead p{margin:0 0 .6em}#lead p:last-child{margin-bottom:0}
 #lead:empty{display:none}
 
@@ -103,31 +173,11 @@ button{font-family:inherit}
 /* 正文里对应 3D 物体颜色的图例字（内联 color 是给暗底配的）：垫一小块舞台色 */
 :is(#lead,#adv,#hard) span[style*="color"]{background:var(--stage);padding:1px 6px;border-radius:4px;font-size:.9em;font-weight:600}
 
-/* ---------- 折叠块：进阶 / 硬核 ---------- */
-#advwrap,#hardwrap,#compwrap{border:1px solid var(--line);border-radius:var(--radius);background:var(--card)}
-#advwrap>summary,#hardwrap>summary,#compwrap>summary{list-style:none;cursor:pointer;display:block;position:relative;
-  padding:11px 40px 11px 14px;font:600 14px/20px var(--sans);color:var(--ink);border-radius:var(--radius);user-select:none}
-#advwrap>summary::before,#hardwrap>summary::before,#compwrap>summary::before{display:inline-block;vertical-align:middle;margin:-2px 10px 0 0}
-#advwrap>summary::-webkit-details-marker,#hardwrap>summary::-webkit-details-marker,#compwrap>summary::-webkit-details-marker{display:none}
-#advwrap>summary::after,#hardwrap>summary::after,#compwrap>summary::after{content:"";position:absolute;right:18px;top:50%;margin-top:-6px;width:8px;height:8px;
-  border-right:1.6px solid var(--ink-dim);border-bottom:1.6px solid var(--ink-dim);transform:rotate(45deg);transition:transform .2s,margin .2s}
-details[open]>summary::after{transform:rotate(225deg);margin-top:-2px}
-#advwrap>summary:hover,#hardwrap>summary:hover,#compwrap>summary:hover{background:var(--paper-2)}
-details[open]>summary{border-bottom:1px solid var(--line);border-radius:var(--radius) var(--radius) 0 0}
-
-/* 进阶：前面一个砖红圆点徽记 */
-#advwrap>summary::before{content:"+";width:20px;height:20px;border-radius:50%;text-align:center;
-  background:var(--accent-soft);color:var(--accent-ink);font:700 14px/20px var(--sans)}
-/* 硬核：深墨色标签 + 方格纸内页，像工程笔记 */
-#hardwrap{border-color:var(--line-2)}
-/* summary 自带的“硬核”两字藏起来（读屏仍能读到），换成墨色标签 */
-#hardwrap>summary{font-size:0}
-#hardwrap>summary::before{content:"硬核";font:700 11px/1 var(--sans);letter-spacing:.14em;padding:5px 6px 5px 8px;border-radius:4px;background:var(--ink);color:var(--paper)}
-#hard{border-radius:0 0 var(--radius) var(--radius);
+#hard{border-radius:var(--radius);
   background-image:repeating-linear-gradient(0deg,transparent 0 23px,rgba(120,100,70,.07) 23px 24px),
     repeating-linear-gradient(90deg,transparent 0 23px,rgba(120,100,70,.07) 23px 24px)}
 
-#adv,#hard{padding:14px 16px 6px;font-size:14.5px;line-height:1.8;color:var(--ink)}
+#adv,#hard{padding:6px 0;font-size:14.5px;line-height:1.8;color:var(--ink)}
 #adv p,#hard p{margin:0 0 .8em}
 #adv h3,#hard h3,.iq{font:700 15.5px/1.4 var(--serif);margin:1.1em 0 .5em;color:var(--ink)}
 
@@ -145,10 +195,7 @@ details[open]>summary{border-bottom:1px solid var(--line);border-radius:var(--ra
 .iqt td{font-size:12px}
 .iqt td:first-child{white-space:nowrap;color:var(--ink);font-weight:600}
 
-/* ---------- 控件（#ctlslot 里的各面板） ---------- */
-#ctlslot{display:flex;flex-direction:column;gap:14px;min-width:0}
-#ctlslot:not(:has(>:not([hidden]))){display:none}
-#ctlslot>*{min-width:0}
+/* ---------- 控件（各面板，按步骤搬进卡片或抽屉） ---------- */
 .ctl{display:grid;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px}
 .ctl label,.chkl{display:grid;grid-template-columns:1fr auto;align-items:baseline;font-size:13px;color:var(--ink-dim);gap:2px 8px}
 .ctl output,.chkl output{font:500 12.5px var(--mono);color:var(--ink)!important;font-variant-numeric:tabular-nums}
@@ -205,11 +252,9 @@ figcaption,.cap{font-size:12px;line-height:1.5;color:var(--ink-dim);margin-top:6
 #isp canvas{width:100%;image-rendering:pixelated;border-radius:4px;display:block;box-shadow:0 0 0 1px rgba(40,30,20,.18)}
 #isp figcaption{font-size:11px;line-height:1.4;margin-top:4px}
 
-/* ---------- 演进卡：讲解页底部，像书页边上的一张索引卡 ---------- */
+/* ---------- 演进卡：详细抽屉「来龙去脉」里，像书页边上的一张索引卡 ---------- */
 #evo{display:grid;gap:10px}
 #evo:empty{display:none}
-.evo-h{display:flex;align-items:center;gap:10px;margin:6px 0 0;font:600 11px/1 var(--sans);letter-spacing:.18em;color:var(--ink-dim)}
-.evo-h::after{content:"";flex:1;height:1px;background:var(--line)}
 .evo-card{position:relative;background:var(--card);border:1px solid var(--line);border-top:3px solid var(--accent);border-radius:4px var(--radius) var(--radius) var(--radius);
   padding:12px 14px 10px;box-shadow:var(--shadow);font-size:13.5px;line-height:1.7;color:var(--ink);cursor:pointer;transition:border-color .15s,box-shadow .15s,transform .15s}
 .evo-card:hover{border-color:var(--line-2);border-top-color:var(--accent);box-shadow:var(--shadow-lg);transform:translateY(-1px)}
@@ -235,8 +280,8 @@ figcaption,.cap{font-size:12px;line-height:1.5;color:var(--ink-dim);margin-top:6
 .evo-box[data-k=industry] b{color:var(--ink-dim)}
 
 /* ---------- 时间轴：一整张跨页大表，年代是列，线索是行 ---------- */
-body.tl #panel,body.tl #view{display:none}
-#timeline{grid-column:1/-1;min-width:0;min-height:0;height:100%;display:flex;flex-direction:column;overflow:hidden;
+body.tl :is(#view,#topbar,#prog,#card,#drawer){display:none!important}
+#timeline{position:relative;min-width:0;min-height:0;height:100%;display:flex;flex-direction:column;overflow:hidden;
   background:var(--paper);color:var(--ink);
   --tl-pad:max(28px,env(safe-area-inset-left,0px));--tl-lw:calc(var(--tl-pad) + 92px);
   --tl-cw:max(212px,calc((100vw - var(--tl-lw) - var(--tl-pad)) / 6));
@@ -317,37 +362,26 @@ body.tl-open #tlaxis,body.tl-open .tl-lane{grid-template-columns:var(--tl-cols) 
 .tl-go button:hover{border-color:var(--accent);background:var(--paper)}
 
 /* ---------- 本步元器件：像书后的术语表 ---------- */
-#compwrap{background:transparent;border-style:dashed;border-color:var(--line-2)}
-#compwrap>summary{font-weight:500;color:var(--ink-dim)}
-#compwrap>summary::before{content:"";width:14px;height:11px;border:1.6px solid var(--ink-dim);border-radius:2px 2px 3px 3px;
-  box-shadow:inset 6px 0 0 -4.4px var(--ink-dim)}
 #complist{margin:0;padding:6px 16px 12px;font-size:13px;line-height:1.65}
 #complist dt{font:700 14px/1.4 var(--serif);color:var(--accent-ink);margin-top:10px}
 #complist dd{margin:2px 0 0;color:var(--ink);padding-bottom:10px;border-bottom:1px dotted var(--line-2)}
 #complist dd:last-child{border-bottom:0;padding-bottom:0}
 
-/* ---------- 翻页（贴在书页底部） ---------- */
-.nav{position:sticky;bottom:0;margin:auto -26px 0;padding:12px 26px max(14px,env(safe-area-inset-bottom,0px));
-  display:grid;grid-template-columns:1fr 1fr;grid-template-rows:auto auto;grid-auto-flow:column;gap:4px 10px;
-  background:linear-gradient(rgba(247,243,234,0),var(--paper) 14px);border-top:1px solid var(--line);background-color:var(--paper)}
-.nav button{padding:10px 12px;border-radius:8px;border:1px solid var(--line-2);background:var(--card);color:var(--ink);
-  font:600 14px/1.2 var(--sans);cursor:pointer;transition:background .15s,border-color .15s}
+/* ---------- 卡片按钮行：粘在卡片底部，内容再长也看得见 ---------- */
+.nav{position:sticky;bottom:0;z-index:1;display:grid;grid-template-columns:auto auto minmax(0,1fr);gap:6px;
+  margin:auto -18px 0;padding:10px 18px 14px;background:var(--paper);border-top:1px solid var(--line)}
+.nav button{height:36px;padding:0 12px;border-radius:8px;border:1px solid var(--line-2);background:var(--card);color:var(--ink);
+  font:600 13px/1 var(--sans);cursor:pointer;white-space:nowrap;transition:border-color .15s,background .15s}
 .nav button:hover:not(:disabled){border-color:var(--ink-dim)}
-#prev::before{content:"← "}
-#next{background:var(--ink);border-color:var(--ink);color:var(--paper)}
-#next::after{content:" →"}
-#next:hover:not(:disabled){background:#000}
+#detailbtn[aria-expanded=true]{background:var(--accent-soft);border-color:var(--accent);color:var(--accent-ink)}
+#prev{width:36px;padding:0;font-size:15px}
+#next{background:var(--ink);border-color:var(--ink);color:var(--paper);overflow:hidden;text-overflow:ellipsis;text-align:left}
+#next:hover:not(:disabled){background:var(--accent-ink);border-color:var(--accent-ink)}
 .nav button:disabled{opacity:.4;cursor:default}
-#prevt,#nextt{font-size:11.5px;line-height:1.4;color:var(--ink-dim);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
-#nextt{text-align:right}
 
 /* ---------- 舞台 ---------- */
-#view{position:relative;overflow:hidden;min-width:0;min-height:0;background:var(--stage);color:var(--stage-ink);
-  padding-right:env(safe-area-inset-right,0px)}
+#view{position:fixed;inset:0;overflow:hidden;background:var(--stage);color:var(--stage-ink)}
 #view canvas{display:block}
-#hint{position:absolute;right:max(14px,env(safe-area-inset-right,0px));bottom:12px;max-width:calc(100% - 28px);
-  font-size:12px;line-height:1.5;color:var(--stage-dim);background:rgba(13,20,32,.6);padding:4px 10px;border-radius:8px;pointer-events:none}
-
 /* 标注气泡：深底浅字小卡片 */
 .lb{position:absolute;left:0;top:0;font:500 12px/1.35 var(--sans);color:var(--stage-ink);background:rgba(16,24,38,.86);
   border:1px solid rgba(154,166,187,.28);padding:3px 8px;border-radius:6px;white-space:nowrap;pointer-events:none;will-change:transform;
@@ -364,33 +398,108 @@ body.tl-open #tlaxis,body.tl-open .tl-lane{grid-template-columns:var(--tl-cols) 
 #lead k[data-hl]:hover,#lead k[data-hl]:focus-visible{background:var(--accent-soft);outline:none}
 
 /* 元器件说明卡：一张纸片浮在舞台上 */
-#card{position:absolute;z-index:5;max-width:300px;background:var(--paper);color:var(--ink);border-top:3px solid var(--accent);
+#compcard{position:absolute;z-index:5;max-width:300px;background:var(--paper);color:var(--ink);border-top:3px solid var(--accent);
   border-radius:4px 10px 10px 10px;padding:12px 14px;font-size:13.5px;line-height:1.7;box-shadow:0 10px 30px rgba(0,0,0,.5)}
-#card b{display:block;font:700 15px/1.4 var(--serif);color:var(--accent-ink)}
-#card p{margin:4px 0 0}
+#compcard b{display:block;font:700 15px/1.4 var(--serif);color:var(--accent-ink)}
+#compcard p{margin:4px 0 0}
 
-/* ---------- 手机：舞台在上，书页在下 ---------- */
+/* ---------- 操作提示（三张小卡，第一次进入自动弹出） ---------- */
+#onboard{position:fixed;z-index:25;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:min(300px,calc(100vw - var(--gap) * 4));
+  background:var(--paper);border-radius:var(--radius);box-shadow:var(--shadow-lg);
+  padding:22px 22px 18px;display:flex;flex-direction:column;gap:18px;
+  animation:zoom-in .2s ease-out}
+#onboard-t{margin:0;font:500 16px/1.75 var(--sans);color:var(--ink)}
+.onboard-foot{display:flex;align-items:center;justify-content:space-between}
+.onboard-dots{display:flex;gap:6px}
+.onboard-dot{width:7px;height:7px;border-radius:50%;background:var(--line-2);transition:background .15s}
+.onboard-dot.active{background:var(--accent)}
+#onboard-btn{padding:8px 18px;border:0;border-radius:8px;background:var(--ink);color:var(--paper);
+  font:600 14px/1 var(--sans);cursor:pointer;transition:background .15s}
+#onboard-btn:hover{background:var(--accent-ink)}
 @media (max-width:768px){
-  body{display:flex;flex-direction:column}
-  #view{order:-1;flex:0 0 45vh;flex-basis:45svh;padding-right:0}
-  #panel{flex:1 1 auto;border-right:0;box-shadow:0 -10px 20px -12px rgba(0,0,0,.5);border-radius:14px 14px 0 0;margin-top:-14px;z-index:1;
-    gap:14px;padding:16px max(16px,env(safe-area-inset-right,0px)) 0 max(16px,env(safe-area-inset-left,0px))}
-  #panel::before{display:none}
-  /* 章节药丸和小节一行横向滚动，不换行；左右贴边 */
-  #chnav,#sub{flex-wrap:nowrap;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:none;
-    margin-inline:-16px;padding-inline:16px;scroll-padding-inline:16px}
-  #chnav::-webkit-scrollbar,#sub::-webkit-scrollbar{display:none}
-  #chnav{padding-block:2px}
-  #sub{gap:18px}
+  #onboard{top:auto;bottom:calc(50vh + var(--gap));transform:translateX(-50%)}
+}
+
+/* ---------- 目录弹层 ---------- */
+#toc{position:fixed;z-index:38;inset:0;display:flex;align-items:flex-start;justify-content:center;
+  padding:calc(var(--bar-h) + var(--gap)*2) var(--gap) var(--gap);
+  background:var(--scrim);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
+.toc-box{width:min(480px,calc(100vw - var(--gap)*2));max-height:calc(100dvh - var(--bar-h) - var(--gap)*4);overflow:hidden;
+  display:flex;flex-direction:column;background:var(--paper);border-radius:var(--radius);box-shadow:var(--shadow-lg);
+  animation:zoom-in .18s ease-out}
+.toc-head{flex:none;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:14px 16px 10px 22px;border-bottom:1px solid var(--line)}
+.toc-head h2{font-size:17px;margin:0}
+#tocclose{width:32px;height:32px;border-radius:50%;border:1px solid var(--line);background:var(--card);
+  color:var(--ink-dim);font:400 19px/1 var(--sans);cursor:pointer;transition:border-color .15s,color .15s}
+#tocclose:hover{color:var(--ink);border-color:var(--line-2)}
+.toc-body{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:8px 0 12px;
+  scrollbar-width:thin;scrollbar-color:var(--line-2) transparent}
+.toc-ch{padding-bottom:4px}
+.toc-chname{font:700 11px/1 var(--sans);letter-spacing:.18em;color:var(--ink-dim);padding:10px 22px 6px;margin:0}
+.toc-step{display:block;width:100%;text-align:left;padding:7px 22px;border:0;background:none;color:var(--ink);
+  font:500 14px/1.4 var(--sans);cursor:pointer;transition:background .12s,color .12s}
+.toc-step:hover{background:var(--paper-2);color:var(--accent-ink)}
+.toc-step[aria-current=true]{background:var(--accent-soft);color:var(--accent-ink);font-weight:600}
+.toc-step:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+
+/* ---------- 时间轴顶栏（同款药丸式，不固定定位） ---------- */
+#tlbar{display:flex;align-items:center;gap:6px;padding-bottom:10px;border-bottom:1px solid var(--line)}
+#tltocbtn,#tllabel{display:inline-flex;align-items:center;height:var(--bar-h);padding:0 13px;border-radius:999px;
+  font:500 13px/1 var(--sans);color:var(--ink);white-space:nowrap;
+  background:var(--glass);border:1px solid var(--glass-line);box-shadow:var(--shadow)}
+#tltocbtn{cursor:pointer;transition:background .15s,border-color .15s}
+#tltocbtn:hover{background:var(--card);border-color:var(--line-2)}
+#tllabel{font-weight:600;pointer-events:none}
+#tlbar #tlback{margin-left:auto}
+
+/* ---------- 手机：底部抽屉 ---------- */
+@media (max-width:768px){
+  /* 顶栏：☰、短位置、🕰、?（「标注」开关搬进目录弹层底部，见 sheet.js） */
+  #topbar{z-index:12}
+  body:has(#drawer:not([hidden])) #topbar{right:var(--gap)}
+  #topbar .bt{display:none}
+  #tocbtn,#tlbtn{width:var(--bar-h);justify-content:center;padding:0;font-size:15px}
+  #loc{flex:0 1 auto}
+  .toc-foot:not(:empty){display:flex;flex:none;padding:10px 16px 12px 22px;border-top:1px solid var(--line)}
+  .toc-foot #lblbtn{height:36px;padding:0 14px;border-radius:999px;border:1px solid var(--line-2);background:var(--card);color:var(--ink);font:500 13.5px/1 var(--sans);cursor:pointer}
+  .toc-foot #lblbtn[aria-pressed=true]{background:var(--accent-soft);border-color:var(--accent);color:var(--accent-ink);font-weight:600}
+
+  /* 底部抽屉：贴底、全宽、上圆角；三档高度由 body[data-sheet] 决定（sheet.js 里 sheetH 同值） */
+  #card{left:0;right:0;bottom:0;width:auto;max-width:none;max-height:none;height:45vh;height:45dvh;padding-top:0;gap:12px;
+    border-radius:16px 16px 0 0;box-shadow:0 -2px 6px rgba(60,40,20,.08),0 -12px 36px rgba(0,0,0,.35)}
+  #card.sheet-anim{transition:height .3s cubic-bezier(.2,.8,.2,1)}
+  body[data-sheet=min] #card{height:64px;overflow:hidden}
+  body[data-sheet=max] #card{height:92vh;height:92dvh}
+  #cardfold{display:none}
+  #card #title{padding-right:0}
+  /* 把手：整条可拖，粘在抽屉顶上；中间一根短横线 */
+  #grip{display:block;position:sticky;top:0;z-index:2;flex:none;height:24px;margin:0 -18px -4px;padding:0;border:0;
+    background:var(--paper);cursor:grab;touch-action:none;border-radius:16px 16px 0 0}
+  #grip::before{content:"";display:block;width:40px;height:5px;margin:0 auto;border-radius:3px;background:var(--line-2);transition:background .15s}
+  #grip:hover::before,#grip:focus-visible::before{background:var(--ink-dim)}
+  #grip:focus-visible{outline-offset:-4px}
+  #grip:active{cursor:grabbing}
+  /* min：只露标题一行，点标题回到默认 */
+  body[data-sheet=min] #card>:not(#grip):not(#title){display:none}
+  body[data-sheet=min] #title{font:600 16px/1.35 var(--sans);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:pointer}
+  /* 默认 / 展开时 3D 舞台缩到抽屉上方，主体落在看得见的那一块中间 */
+  body:is([data-sheet=mid],[data-sheet=max]) #view{bottom:45vh;bottom:45dvh}
+  .nav{padding-bottom:max(12px,env(safe-area-inset-bottom,0px))}
+
+  /* 详细抽屉在手机上搬进卡片（按钮行上方），只在 max 档出现；标签粘在把手下面 */
+  #card #drawer{position:static;width:auto;flex:none;display:block;overflow:visible;margin:0 -18px;background:none;border-radius:0;box-shadow:none;animation:none;border-top:1px solid var(--line)}
+  #card .drawer-head{padding:12px 16px 0 18px}
+  #card #drawert{font-size:17px}
+  #card .drawer-tabs{position:sticky;top:24px;z-index:1;margin:6px 0 0;padding:0 18px;background:var(--paper)}
+  #card :is(#tabdeep,#tabevo,#tabcomp){overflow:visible;padding:14px 18px 18px}
   #title,h2{font-size:21px}
-  #lead{font-size:16px;line-height:1.8}
-  .nav{margin-inline:-16px;padding-inline:16px}
-  #hint{font-size:10.5px;bottom:20px;left:12px;right:12px;text-align:center;padding:3px 8px;background:rgba(13,20,32,.45)}
   .lb{font-size:11px;padding:2px 6px;border-radius:5px}
 
   /* 时间轴：整页纵向滚；泳道上下叠放，每条泳道里的卡片横向滑 */
   #timeline{display:block;overflow-y:auto;overscroll-behavior:contain;--tl-pad:16px}
   #tlhead{padding:12px 16px 12px}
+  #tllabel{display:none}
   #tltitle{font-size:22px}
   .tl-lede{font-size:13.5px}
   .tl-brand{display:none}

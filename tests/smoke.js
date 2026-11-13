@@ -8,6 +8,10 @@ async function smoke() {
   function wait(ms) { return new Promise(r => setTimeout(r, ms)); }
   function expect(cond, msg) { if (!cond) fails.push(msg); }
 
+  // suppress onboard auto-show for all sections except [onboard]
+  try { localStorage.setItem(ONBOARD_KEY, '1'); } catch {}
+  hideOnboard();
+
   // ---- [route] ----
   location.hash = '#/step/14'; await wait(300);
   expect(step === 14, '[route] hash → step 14');
@@ -29,18 +33,34 @@ async function smoke() {
   const inp = $('zo'); inp.focus();
   inp.dispatchEvent(new KeyboardEvent('keydown', {key:'ArrowRight', bubbles:true})); await wait(100);
   expect(step === 6, '[keys] ignored in input');
+  inp.blur();
+  openToc(); await wait(40);
+  $('toc').querySelector('button').dispatchEvent(new KeyboardEvent('keydown', {key:'ArrowRight', bubbles:true})); await wait(100);
+  expect(step === 6, '[keys] ignored while TOC open');
+  closeToc();
+  showOnboard(); await wait(40);
+  dispatchEvent(new KeyboardEvent('keydown', {key:'ArrowRight'})); await wait(100);
+  expect(step === 6, '[keys] ignored while tips open');
+  hideOnboard();
+  {
+    const orig = syncTabs; let n = 0;
+    syncTabs = function () { n++; return orig.apply(this, arguments); };
+    try { navigate({view:'step', n:7}); } finally { syncTabs = orig; }
+    expect(n === 1, `[keys] syncTabs once per step (${n})`);
+  }
 
   // ---- [layout] ----
+  const locWant = i => (innerWidth <= 768 ? locShort : locText)(i, STEPS, CHAPTERS);   // 手机顶栏用短写
   for (let i = 0; i < STEPS.length; i++) {
     navigate({view:'step', n:i}); await wait(30);
-    expect(!!$('chnav').querySelector('[aria-current="true"]'), `[layout] chapter marked ${i}`);
-    expect($('hardwrap').hidden === !STEPS[i].hard, `[layout] hard visibility ${i}`);
+    expect($('loc').textContent === locWant(i), `[layout] location shown ${i}`);
+    expect($('hardh').hidden === !STEPS[i].hard && $('tabdeep').contains($('hardh')), `[layout] hard heading visibility ${i}`);
   }
 
   // ---- [visual] ----
   const css = getComputedStyle(document.documentElement);
   expect(css.getPropertyValue('--accent').trim().toLowerCase() === '#c8502d', '[visual] accent token');
-  expect(getComputedStyle($('panel')).backgroundColor !== getComputedStyle($('view')).backgroundColor, '[visual] paper vs stage');
+  expect(getComputedStyle($('card')).backgroundColor !== getComputedStyle($('view')).backgroundColor, '[visual] paper vs stage');
   expect(document.documentElement.scrollWidth <= innerWidth, '[visual] no horizontal scroll');
 
   // ---- [palette] ----
@@ -91,18 +111,17 @@ async function smoke() {
   hl('微透镜'); navigate({view:'step', n:16}); await wait(60);
   expect(!hlRing.visible, '[hl-cam] ring cleared on step change');
 
-  // ---- [focus] ----  键盘焦点不因重绘或按钮失效而掉到 <body>
+  // ---- [focus] ----  键盘焦点不因重绘、面板搬家或按钮失效而掉到 <body>
+  const okFocus = () => [$('prev'), $('next'), $('title')].includes(document.activeElement) && !document.activeElement.disabled;
   navigate({view:'step', n:15}); await wait(60);
-  let pill = $('sub').querySelector('[data-i="16"]'); pill.focus(); pill.click(); await wait(60);
-  expect(step === 16 && document.activeElement.closest && document.activeElement.closest('#sub') && document.activeElement.dataset.i === '16', '[focus] #sub pill keeps focus');
-  pill = $('chnav').querySelector('[data-ch="4"]'); pill.focus(); pill.click(); await wait(60);
-  expect(document.activeElement.closest && document.activeElement.closest('#chnav') && document.activeElement.dataset.ch === '4', '[focus] #chnav pill keeps focus');
+  $('next').focus(); $('next').click(); await wait(60);
+  expect(step === 16 && document.activeElement === $('next'), '[focus] next keeps focus');
   navigate({view:'step', n:STEPS.length - 2}); await wait(60);
   $('next').focus(); $('next').click(); await wait(60);
-  expect(step === STEPS.length - 1 && document.activeElement !== document.body && !document.activeElement.disabled, '[focus] next disabled → focus moves');
+  expect(step === STEPS.length - 1 && okFocus() && document.activeElement !== $('next'), '[focus] next disabled → focus moves to prev or title');
   navigate({view:'step', n:1}); await wait(60);
   $('prev').focus(); $('prev').click(); await wait(60);
-  expect(step === 0 && document.activeElement !== document.body && !document.activeElement.disabled, '[focus] prev disabled → focus moves');
+  expect(step === 0 && okFocus() && document.activeElement !== $('prev'), '[focus] prev disabled → focus moves to next or title');
   navigate({view:'step', n:5}); await wait(60);
   dispatchEvent(new KeyboardEvent('keydown', {key:'ArrowLeft', altKey:true})); await wait(60);
   expect(step === 5, '[keys] Alt+← ignored');
@@ -133,7 +152,10 @@ async function smoke() {
   tourT = 7.5; await wait(150);
   expect(s0 !== '' && curStage() !== s0, `[tour] highlighted stage changes (${s0} → ${curStage()})`);
   expect(visLabel('FE 50-150mm F2 GM').el.classList.contains('hl'), '[tour] lens label highlighted in lens stage');
-  expect($('advwrap').open === false, '[tour] 进阶 stays collapsed');
+  expect(!drawerOpen && $('drawer').hidden, '[tour] 详细抽屉 stays closed');
+  // 每段的标注整段都在（不只是开头 1.6 秒）；太阳不在第 0 步入门句里，只靠导览显示
+  showAllLabels = false; $('tourbtn').click(); await wait(1900);
+  expect(tourOn && flowK === 'light' && !visLabel('太阳').el.hidden, `[tour] stage label pinned for whole stage (t=${tourT.toFixed(1)})`);
 
   // ---- [lensparts] ----  第 7 步：前组 / 补偿组 / 后组 只在本步出现，位置跟着镜片组走
   const PARTS = ['前组', '补偿组', '后组'];
@@ -187,7 +209,16 @@ async function smoke() {
   expect(route.view === 'timeline', '[timeline] arrows ignored');
   $('tldrawer').querySelector('[data-step]').click(); await wait(300);
   expect(route.view === 'step' && paused === false, '[timeline] 去看原理 → step');
-  expect(document.activeElement !== document.body && $('panel').contains(document.activeElement) && !$('timeline').contains(document.activeElement), '[timeline] focus lands in #panel');
+  expect(document.activeElement !== document.body && $('card').contains(document.activeElement) && !$('timeline').contains(document.activeElement), '[timeline] focus lands in #card');
+  // 时间轴里：第一下 Esc 关时间轴抽屉，看不见的详细抽屉保持开着
+  navigate({view:'step', n:19}); await wait(100);
+  openDrawer(); await wait(40);
+  $('evo').querySelector('.evo-card').click(); await wait(300);
+  dispatchEvent(new KeyboardEvent('keydown', {key:'Escape'})); await wait(100);
+  expect(route.view === 'timeline' && $('tldrawer').hidden && drawerOpen, `[timeline] one Esc closes timeline drawer, 详细 stays (tl ${$('tldrawer').hidden}, drawer ${drawerOpen})`);
+  navigate({view:'step', n:19}); await wait(200);
+  expect(route.view === 'step' && drawerOpen && !$('drawer').hidden, '[timeline] 详细 restored after Esc in timeline');
+  closeDrawer(false);
   location.hash = '#/timeline/not-a-node'; await wait(300);
   expect(route.view === 'timeline' && $('tldrawer').hidden, '[timeline] unknown id → no drawer');
   for (const e of EVO) {
@@ -203,6 +234,147 @@ async function smoke() {
     location.hash = '#/timeline/' + lc.dataset.id; await wait(400);
     const a = lc.getBoundingClientRect(), d = $('tldrawer').getBoundingClientRect();
     expect(a.right <= d.left + 1, `[timeline] drawer clear of last-column card (card right ${a.right|0}, drawer left ${d.left|0})`);
+  }
+
+  // ---- [card] ----  控件都在卡片里；有 fig 的步骤关键图在卡片里；详细抽屉开关
+  for (let i = 0; i < STEPS.length; i++) {
+    navigate({view:'step', n:i}); await wait(40);
+    for (const id of CARD_CTL) { const el = $(id); if (el && !el.hidden)
+      expect($('cardctl').contains(el), `[card] step ${i} control ${id} in card`); }
+    if (STEPS[i].fig) expect($('cardfig').contains($(STEPS[i].fig)), `[card] step ${i} fig ${STEPS[i].fig} in card`);
+    else expect($('cardfig').children.length === 0, `[card] step ${i} no fig`);
+    expect($('loc').textContent === locWant(i), `[card] step ${i} loc`);
+  }
+  // 取景器步骤：关键小图先于控件，打开卡片就能看到至少一半；读数 #hud 在详细抽屉里
+  navigate({view:'step', n:1}); await wait(100);
+  if (innerWidth > 768) {
+    const c = $('card').getBoundingClientRect(), f = $('cardfig').getBoundingClientRect(), nv = $('card').querySelector('.nav').getBoundingClientRect();
+    const seen = Math.max(0, Math.min(f.bottom, nv.top) - Math.max(f.top, c.top));
+    expect(f.height > 0 && seen >= f.height * .5, `[card] step 1 viewfinder ≥50% visible (${seen|0}/${f.height|0})`);
+    expect($('drawer').contains($('hud')) && !$('card').contains($('hud')), '[card] #hud in drawer, not card');
+  } else expect($('drawer').contains($('hud')) && $('cardfig').compareDocumentPosition($('cardctl')) & Node.DOCUMENT_POSITION_FOLLOWING, '[card] phone: fig before controls, #hud in drawer');
+  navigate({view:'step', n:4}); await wait(60);
+  expect($('cardctl').compareDocumentPosition($('cardfig')) & Node.DOCUMENT_POSITION_FOLLOWING, '[card] step 4 controls before fig');
+  navigate({view:'step', n:16}); await wait(60);
+  $('detailbtn').click(); await wait(60);
+  expect(drawerOpen && !$('drawer').hidden, '[card] detail opens drawer');
+  expect($('tabdeep').contains($('tm')), '[card] non-key figure in drawer');
+  document.querySelector('[data-tab="evo"]').click(); expect(!$('tabevo').hidden && $('tabdeep').hidden, '[card] tab switch');
+  dispatchEvent(new KeyboardEvent('keydown', {key:'Escape'})); await wait(60);
+  expect(!drawerOpen && document.activeElement === $('detailbtn'), '[card] Esc closes, focus back');
+
+  // ---- [esc] ----  统一 Esc 分层：zoom → toc → drawer；一次只关最上层
+  {
+    const esc = () => dispatchEvent(new KeyboardEvent('keydown', {key:'Escape'}));
+    navigate({view:'step', n:1}); await wait(60);
+    openDrawer(); openToc(); openZoom($('cardfig').firstElementChild); await wait(40);
+    esc(); expect($('zoom').hidden && !$('toc').hidden && drawerOpen, '[esc] closes zoom first');
+    esc(); expect($('toc').hidden && drawerOpen, '[esc] then toc');
+    esc(); expect(!drawerOpen, '[esc] then drawer');
+    closeDrawer(false);
+    // 标签方向键不触发步骤切换
+    navigate({view:'step', n:5}); await wait(60);
+    openDrawer(); await wait(40);
+    tabBtn('deep').focus();
+    const stepBefore = step;
+    tabBtn('deep').dispatchEvent(new KeyboardEvent('keydown', {key:'ArrowRight', bubbles:true}));
+    expect(drawerTab === 'evo' && step === stepBefore, '[esc] tab ArrowRight switches tab, step unchanged');
+    closeDrawer(false);
+  }
+
+  // ---- [cardui] ----  卡片不出视口、按钮行可见；收起切步保持；关键小图点开放大，Esc 关
+  navigate({view:'step', n:1}); await wait(60);
+  const cr = $('card').getBoundingClientRect();
+  expect(cr.bottom <= innerHeight && cr.top >= 0, '[cardui] card inside viewport');
+  expect($('next').getBoundingClientRect().bottom <= innerHeight, '[cardui] next button visible');
+  toggleCard(true); navigate({view:'step', n:2}); await wait(60);
+  expect(cardFolded && $('lead').offsetParent === null, '[cardui] fold persists across steps');
+  toggleCard(false);
+  $('cardfig').firstElementChild.click(); await wait(40);
+  expect(!$('zoom').hidden, '[cardui] figure zoom opens');
+  dispatchEvent(new KeyboardEvent('keydown', {key:'Escape'})); await wait(40);
+  expect($('zoom').hidden, '[cardui] Esc closes zoom');
+  expect(document.documentElement.scrollWidth <= innerWidth, '[cardui] no h-scroll');
+
+  // ---- [toc] ----  目录弹层：跳步、焦点、时间轴进出
+  // (3) Esc 返回开启按钮
+  navigate({view:'step', n:3}); await wait(40);
+  $('tocbtn').click(); await wait(40);
+  expect(!$('toc').hidden, '[toc] opens');
+  dispatchEvent(new KeyboardEvent('keydown', {key:'Escape'})); await wait(40);
+  expect($('toc').hidden && document.activeElement === $('tocbtn'), '[toc] Esc returns focus to opener');
+  // 位置小药丸也是目录按钮
+  expect($('loc').tagName === 'BUTTON' && ($('loc').getAttribute('aria-label') || '').includes($('loc').textContent), '[toc] #loc is a button named 目录：位置');
+  $('loc').click(); await wait(40);
+  expect(!$('toc').hidden, '[toc] #loc opens toc');
+  dispatchEvent(new KeyboardEvent('keydown', {key:'Escape'})); await wait(40);
+  expect($('toc').hidden && document.activeElement === $('loc'), '[toc] Esc returns focus to #loc');
+  // (1) 顶栏目录跳步后焦点在 #title
+  $('tocbtn').click(); await wait(40);
+  $('toc').querySelector('[data-i="20"]').click(); await wait(80);
+  expect(step === 20 && $('toc').hidden, '[toc] jump closes');
+  expect(document.activeElement === $('title'), '[toc] jump focuses #title');
+  // 时间轴隐藏卡片和抽屉
+  openDrawer(); navigate({view:'timeline', id:null}); await wait(80);
+  expect($('card').getClientRects().length === 0 && $('drawer').getClientRects().length === 0, '[toc] timeline hides card+drawer');
+  // (2) 从时间轴目录跳步后焦点在 #title，时间轴已隐藏
+  $('tltocbtn').click(); await wait(40);
+  $('toc').querySelector('[data-i="5"]').click(); await wait(80);
+  expect(step === 5 && $('toc').hidden && $('timeline').hidden, '[toc] timeline TOC jump hides timeline');
+  expect(document.activeElement === $('title'), '[toc] jump from timeline focuses #title');
+  // 进出时间轴保留抽屉状态
+  navigate({view:'step', n:20}); await wait(60);
+  openDrawer(); navigate({view:'timeline', id:null}); await wait(80);
+  history.back(); await wait(200);
+  expect(step === 20 && drawerOpen && !$('drawer').hidden, '[toc] drawer restored after timeline');
+  closeDrawer();
+
+  // ---- [labels] ----  标注按需显示：默认只显示入门句提到的；切换全部；hl 临时显示隐藏的标注
+  showAllLabels = false; navigate({view:'step', n:16}); await wait(150);
+  const vis = () => labels.filter(l => !l.el.hidden).map(l => l.el.textContent).sort();
+  const want = [...new Set(mentioned(STEPS[16].lead))].sort();
+  expect(vis().length > 0 && vis().every(t => want.includes(t)), '[labels] only mentioned visible');
+  $('lblbtn').click(); await wait(150);
+  expect(showAllLabels && vis().length > want.length, '[labels] all shows more');
+  navigate({view:'step', n:15}); await wait(150);
+  expect(showAllLabels, '[labels] toggle persists');
+  $('lblbtn').click(); await wait(150);
+  const hidden = labels.find(l => l.el.hidden && l.g.visible && !curMentioned.has(l.el.textContent));
+  if (hidden) { hl(hidden.el.textContent); await wait(150); expect(!hidden.el.hidden, '[labels] hl temporarily shows hidden label'); }
+
+  // ---- [onboard] ----
+  try { localStorage.removeItem(ONBOARD_KEY); } catch {}
+  hideOnboard(); if (!onboardSeen()) showOnboard();
+  expect(!$('onboard').hidden && $('onboard').textContent.includes('拖动画面可以转动'), '[onboard] shows when unseen');
+  for (let k = 0; k < 3; k++) $('onboard').querySelector('button').click();
+  expect($('onboard').hidden && onboardSeen(), '[onboard] done marks seen');
+  expect(document.activeElement === $('title'), '[onboard] auto-shown tips → focus #title after done');
+  try { localStorage.removeItem(ONBOARD_KEY); } catch {}
+  showOnboard(); dispatchEvent(new KeyboardEvent('keydown', {key:'Escape'}));
+  expect($('onboard').hidden && onboardSeen(), '[onboard] Esc also marks seen');
+  $('helpbtn').click(); expect(!$('onboard').hidden, '[onboard] ? reopens'); hideOnboard();
+  const orig = Storage.prototype.getItem; Storage.prototype.getItem = () => { throw new Error('blocked'); };
+  let threw = false; try { expect(onboardSeen() === false, '[onboard] storage error → unseen'); } catch { threw = true; }
+  Storage.prototype.getItem = orig; expect(!threw, '[onboard] storage error does not throw');
+
+  // ---- [sheet] ----  手机：小卡是底部抽屉，三档，拖把手吸附
+  if (innerWidth <= 768) {
+    navigate({view:'step', n:1}); await wait(80);
+    expect(sheetState === 'mid' && $('card').getBoundingClientRect().height <= innerHeight * 0.52, '[sheet] mid ≤ ~50vh');
+    expect($('loc').textContent === locShort(1, STEPS, CHAPTERS), '[sheet] short loc');
+    $('detailbtn').click(); await wait(80);
+    expect(sheetState === 'max', '[sheet] detail expands');
+    setSheet('min'); await wait(80);
+    expect($('card').getBoundingClientRect().height < 90, '[sheet] min is a strip');
+    const g = $('grip').getBoundingClientRect(), x = g.left + g.width/2, y0 = g.top + 4;
+    $('grip').dispatchEvent(new PointerEvent('pointerdown', {clientX:x, clientY:y0, pointerId:1, bubbles:true}));
+    expect(ctr.enabled === false, '[sheet] drag disables orbit');
+    $('grip').dispatchEvent(new PointerEvent('pointermove', {clientX:x, clientY:y0 - 300, pointerId:1, bubbles:true}));
+    $('grip').dispatchEvent(new PointerEvent('pointerup', {clientX:x, clientY:y0 - 300, pointerId:1, bubbles:true}));
+    await wait(80);
+    expect(ctr.enabled === true && sheetState !== 'min', '[sheet] drag up snaps, orbit restored');
+    setSheet('mid');
+    expect(document.documentElement.scrollWidth <= innerWidth, '[sheet] no h-scroll');
   }
 
   // collect any JS errors that fired during the test

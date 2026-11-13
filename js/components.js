@@ -61,13 +61,14 @@ const COMP=[
  [['LOFIC'],'LOFIC 像素','在普通像素上加一个开关和一个大电容，PD 装满后溢出的电子存进电容，一次曝光得到高动态范围。'],
 ];
 const compOf=t=>{for(const c of COMP)if(c[0].some(k=>t.includes(k)))return c;return null;};
-const card=document.createElement('div');card.id='card';card.hidden=true;view.appendChild(card);
+const card=document.createElement('div');card.id='compcard';card.hidden=true;view.appendChild(card);
 const showCard=(c,x,y)=>{card.innerHTML=`<b>${c[1]}</b><p>${c[2]}</p>`;card.hidden=false;const vw=view.clientWidth,vh=view.clientHeight;
   card.style.left=Math.min(Math.max(8,x+12),vw-card.offsetWidth-8)+'px';card.style.top=Math.min(Math.max(8,y+12),vh-card.offsetHeight-8)+'px';};
 labels.forEach(l=>{const c=compOf(l.el.textContent);if(!c)return;l.el.classList.add('lbc');l.el.tabIndex=0;l.el.title='点击看说明';
   const open=e=>{e.stopPropagation();const r=l.el.getBoundingClientRect(),v=view.getBoundingClientRect();showCard(c,r.left-v.left,r.bottom-v.top);};
   l.el.addEventListener('click',open);l.el.addEventListener('keydown',e=>{if(e.key==='Enter')open(e);});});
-view.addEventListener('pointerdown',e=>{if(!card.contains(e.target))card.hidden=true;});addEventListener('keydown',e=>{if(e.key==='Escape')card.hidden=true;});
+view.addEventListener('pointerdown',e=>{if(!card.contains(e.target))card.hidden=true;});
+/* Esc 由 card.js 的统一处理器关闭（#compcard 按 id 查找） */
 function listComps(){const on=o=>{for(;o;o=o.parent)if(!o.visible)return false;return true;}, seen=new Set(), rows=[];
   labels.forEach(l=>{if(!on(l.g))return;const c=compOf(l.el.textContent);if(c&&!seen.has(c[1])){seen.add(c[1]);rows.push(c);}});
   $('compn').textContent=rows.length;$('complist').innerHTML=rows.map(c=>`<dt>${c[1]}</dt><dd>${c[2]}</dd>`).join('');$('compwrap').hidden=!rows.length;card.hidden=true;}
