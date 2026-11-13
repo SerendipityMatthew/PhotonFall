@@ -135,6 +135,25 @@ async function smoke() {
   expect(visLabel('FE 50-150mm F2 GM').el.classList.contains('hl'), '[tour] lens label highlighted in lens stage');
   expect($('advwrap').open === false, '[tour] 进阶 stays collapsed');
 
+  // ---- [lensparts] ----  第 7 步：前组 / 补偿组 / 后组 只在本步出现，位置跟着镜片组走
+  const PARTS = ['前组', '补偿组', '后组'];
+  const shown = t => !!visLabel(t);
+  navigate({view:'step', n:7}); await wait(200);
+  for (const t of PARTS) expect(shown(t), `[lensparts] ${t} visible on step 7`);
+  expect(shown('变焦组') && shown('对焦组'), '[lensparts] zoom / focus labels still there');
+  const zo0 = $('zo').value;
+  for (const f of [50, 150]) {
+    $('zo').value = f; $('zo').dispatchEvent(new Event('input'));
+    expect(Math.abs(visLabel('补偿组').v.x - G.comp.position.x) < 1e-6, `[lensparts] 补偿组 label follows the group at ${f} mm`);
+    expect(Math.abs(visLabel('前组').v.x - G.front.position.x) < 1e-6 && Math.abs(visLabel('后组').v.x - G.rear.position.x) < 1e-6, `[lensparts] 前组 / 后组 labels on their groups at ${f} mm`);
+  }
+  $('zo').value = zo0; $('zo').dispatchEvent(new Event('input'));
+  for (let i = 0; i < STEPS.length; i++) {
+    if (i === 7 || STEPS[i].g !== 'macro') continue;
+    navigate({view:'step', n:i}); await wait(30);
+    for (const t of PARTS) expect(!shown(t), `[lensparts] ${t} hidden on step ${i}`);
+  }
+
   // ---- [timeline] ----
   navigate({view:'step', n:19}); await wait(200);
   expect($('evo').querySelectorAll('.evo-card').length === evoForStep(19).length, '[timeline] cards on step');

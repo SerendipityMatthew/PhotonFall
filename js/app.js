@@ -71,6 +71,7 @@ function go(i) {
   lof.visible = !!s.lofic;
   document.querySelectorAll('[data-pn]').forEach(el => el.hidden = !(s.pn || []).includes(el.id));
   glassL.visible = s.lg === 'glass';
+  partsL.visible = s.lg === 'parts';
   st.ab = !!s.ab && $('abon').checked;
   if ((s.pn || []).includes('pdafwrap')) drawPdaf();
   if ((s.pn || []).includes('snrwrap')) drawSnr();

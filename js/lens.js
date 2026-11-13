@@ -42,6 +42,9 @@ const frustum=new THREE.LineSegments(new THREE.BufferGeometry(),new THREE.LineBa
 label(macro,'太阳',SUN.clone().add(V(0,1.1,0)));OBJ.forEach(o=>label(macro,`${o.n}（${o.d} m）`,V(sx(o.d),o.d===8?1.9:1.1,o.d===1.2?-.3:0)));
 label(macro,'FE 50-150mm F2 GM',V(-4.7,2.45,0));label(macro,'全画幅 CMOS',V(0,-.85,0));label(macro,'快门',V(-.16,2.1,0));
 const LV={vari:label(macro,'变焦组',V()),foc:label(macro,'对焦组',V()),pl:label(macro,'等效主平面 + 光圈',V()),fp:label(macro,'对焦平面',V())};
+/* 第 7 步「镜头里的每片镜片」才显示的镜组标注（示意分工，不是真实光学设计）；可见性由 STEPS 的 lg:'parts' 控制 */
+const partsL=new THREE.Group();partsL.visible=false;macro.add(partsL);
+const LPT={front:label(partsL,'前组',V()),comp:label(partsL,'补偿组',V()),rear:label(partsL,'后组',V())};
 
 const NR=7, PH=3, NRAY=OBJ.length*NR;
 const rayGeo=new THREE.BufferGeometry();rayGeo.setAttribute('position',new THREE.BufferAttribute(new Float32Array(NRAY*18),3));
@@ -59,6 +62,7 @@ function rebuild(){
   G.vari.position.x=-7.3+2.3*z;G.comp.position.x=-4.7+.5*Math.sin(Math.PI*z);G.focA.position.x=-3.3-.5*fo;G.focB.position.x=-2.2+.35*fo;
   iris.geometry.dispose();iris.geometry=new THREE.RingGeometry(R,1.95,11);iris.position.x=plane.position.x=xL;
   LV.vari.set(G.vari.position.x,-1.6,0);LV.foc.set(-2.75,-1.3,0);LV.pl.set(xL,2.2,.9);
+  LPT.front.set(G.front.position.x,-2.25,0);LPT.comp.set(G.comp.position.x,-2.05,0);LPT.rear.set(G.rear.position.x,1.3,0);
   fplane.position.x=sx(s);LV.fp.set(sx(s),-1.4,1.6);
   paths=[];const pos=rayGeo.attributes.position.array;let o=0;
   OBJ.forEach((ob,k)=>{const vd=img(f,ob.d), P=V(sx(ob.d),ob.Y*K,0), I=V(xL+vd/U,-ob.Y*vd/ob.d/U,0);st.coc[k]=f/N*Math.abs(vs-vd)/vd;
