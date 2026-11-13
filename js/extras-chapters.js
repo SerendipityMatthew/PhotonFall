@@ -1,6 +1,6 @@
-/* 第 25-31 步的 3D 场景：镀膜 / 机械快门 / HDR / 色彩 / 视频 / 存储 / 计算摄影 */
+/* 第 8 步（镀膜）和第 27–32 步的 3D 场景：镀膜 / 机械快门 / HDR / 色彩 / 视频 / 存储 / 计算摄影 */
 
-/* ---------- 25. 镜头镀膜、眩光与鬼影 ---------- */
+/* ---------- 8. 镜片镀膜（镀膜、眩光与鬼影） ---------- */
 const coat=new THREE.Group();coat.visible=false;scene.add(coat);
 {const l=new THREE.DirectionalLight(0xffffff,.9);l.position.set(3,6,4);coat.add(l);coat.add(new THREE.AmbientLight(0x667799,.4));}
 const COAT_X=[-2.4,-1.4,-.4,.6,1.6,2.6];
@@ -21,7 +21,7 @@ function animCoat(t,dt){const amp=coatOn?.04:1;
   for(let n=0;n<24;n++){const u=((t*.4+n/24)%1),x=-3.8+u*7.4;M.position.set(x,0,0);M.scale.setScalar(1);M.updateMatrix();coatPh.setMatrixAt(n,M.matrix);}
   coatPh.instanceMatrix.needsUpdate=true;}
 
-/* ---------- 26. 机械快门与同步速度 ---------- */
+/* ---------- 27. 机械快门与同步速度 ---------- */
 const shut=new THREE.Group();shut.visible=false;scene.add(shut);
 {const l=new THREE.DirectionalLight(0xffffff,.95);l.position.set(2,6,5);shut.add(l);shut.add(new THREE.AmbientLight(0x8899aa,.4));}
 const SHUT_W=4,SHUT_H=3;
@@ -36,7 +36,7 @@ function animShut(t,dt){const [,open,gap]=SHUT_MODES[shutMode],cycle=open+1.2,p=
   else{const total=.5;if(p<total){frontY=SHUT_H*(1-p/total);backY=SHUT_H*(1-Math.max(0,p-gap)/total);}else{frontY=0;backY=0;}}
   shutFront.position.y=frontY;shutBack.position.y=backY;}
 
-/* ---------- 27. HDR 与多帧合成 ---------- */
+/* ---------- 28. HDR 与多帧合成 ---------- */
 const hdr=new THREE.Group();hdr.visible=false;scene.add(hdr);
 {const l=new THREE.DirectionalLight(0xffffff,.95);l.position.set(3,6,4);hdr.add(l);hdr.add(new THREE.AmbientLight(0x667799,.5));}
 const HDR_EXP=[-2,-1,0,1,2],hdrFrames=[];
@@ -54,7 +54,7 @@ function animHdr(t,dt){const cycle=6,p=(t%cycle)/cycle,out=hdr.userData.out;
   out.material.opacity=p<.55?0:Math.min(1,(p-.55)/.25);
   if(p>.9){const k=(p-.9)/.1;out.material.opacity=1-k;}}
 
-/* ---------- 28. 颜色空间：CIE 色度三角形 ---------- */
+/* ---------- 29. 颜色空间：CIE 色度三角形 ---------- */
 const cs=new THREE.Group();cs.visible=false;scene.add(cs);
 cs.add(new THREE.AmbientLight(0xffffff,.9));
 /* CIE xy 坐标：R G B 三个原色 */
@@ -71,7 +71,7 @@ CSS_DEF.forEach(([name,r,gC,b,hex,zOff])=>{const pts=[r,gC,b,r];const geo=new TH
   const cx=(r[0]+gC[0]+b[0])/3,cy=(r[1]+gC[1]+b[1])/3;label(cs,name,V(cx*6-3,zOff+.1,cy*6-3));});
 function animCs(t,dt){cs.rotation.y=Math.sin(t*.15)*.3;}
 
-/* ---------- 29. 视频编码：I/P/B 帧和 GOP ---------- */
+/* ---------- 30. 视频编码：I/P/B 帧和 GOP ---------- */
 const vid=new THREE.Group();vid.visible=false;scene.add(vid);
 vid.add(new THREE.AmbientLight(0xffffff,.9));
 const VID_SEQ='IBBPBBPBBIBBPBBPBBI'.split('');const vidCubes=[];
@@ -98,7 +98,7 @@ const vidHead=add(vid,new THREE.BoxGeometry(.56,.84,.05),basic(0xffffff,{transpa
 function animVid(t,dt){const idx=Math.floor((t*2)%VID_SEQ.length);vidHead.position.x=idx*.7-6;
   vidCubes.forEach((m,i)=>{m.scale.setScalar(i===idx?1.2:1);});}
 
-/* ---------- 30. 存储卡、总线与传输 ---------- */
+/* ---------- 31. 存储卡、总线与传输 ---------- */
 const stor=new THREE.Group();stor.visible=false;scene.add(stor);
 stor.add(new THREE.AmbientLight(0xffffff,.9));
 {const l=new THREE.DirectionalLight(0xffffff,.6);l.position.set(2,5,3);stor.add(l);}
@@ -125,7 +125,7 @@ function animStor(t,dt){const cardRate=[.2,.5,1.2,2.5,4][storCard],sensorRate=3;
   storBuffer.scale.y+=(Math.max(.1,fill)-storBuffer.scale.y)*Math.min(1,dt*2);storBuffer.position.y=-.8+storBuffer.scale.y*.6;
   storBuffer.material.color.setHex(fill>.7?0xd94a3b:fill>.3?0xffc45c:0x48c26a);}
 
-/* ---------- 31. 计算摄影：多帧对齐 + 叠加 ---------- */
+/* ---------- 32. 计算摄影：多帧对齐 + 叠加 ---------- */
 const compu=new THREE.Group();compu.visible=false;scene.add(compu);
 compu.add(new THREE.AmbientLight(0xffffff,.9));
 /* 5 张带噪声的帧 */
