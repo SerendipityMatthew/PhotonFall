@@ -76,6 +76,19 @@ async function smoke() {
       expect(hl(k.dataset.hl), `[hl-content] step ${i} "${k.dataset.hl}"`);
   }
 
+  // ---- [tour] ----
+  navigate({view:'step', n:0}); await wait(200);
+  expect(tourOn === true, '[tour] auto starts on step 0');
+  expect($('ctl').hidden && $('vfwrap').hidden, '[tour] camera controls hidden');
+  navigate({view:'step', n:5}); await wait(1500);
+  expect(tourOn === false, '[tour] stops when leaving');
+  expect(cam.position.distanceTo(new THREE.Vector3(...STEPS[5].cam)) < 0.5, '[tour] camera settles on step 5');
+  navigate({view:'step', n:0}); await wait(200);
+  ctr.dispatchEvent({type:'start'});
+  expect(tourOn === false, '[tour] user drag stops it');
+  $('tourbtn').click();
+  expect(tourOn === true, '[tour] replay');
+
   // collect any JS errors that fired during the test
   window.removeEventListener('error', onerr);
   errors.forEach(e => fails.push('[error] ' + e));

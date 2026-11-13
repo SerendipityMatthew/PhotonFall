@@ -65,7 +65,7 @@ function go(i) {
   for (const k in GR) GR[k].visible = k === s.g;
 
   /* 控件面板显示 */
-  $('ctl').hidden = $('vfwrap').hidden = s.g !== 'macro';
+  $('ctl').hidden = $('vfwrap').hidden = s.g !== 'macro' || !!s.noCam;
   $('txwrap').hidden  = s.g !== 'tx';
   $('chipctl').hidden = s.g !== 'chip';
   $('dnwrap').hidden  = !s.dn;
@@ -82,6 +82,10 @@ function go(i) {
   goal.l.set(...s.look);
   tween = true;
 
+  /* 导览 */
+  if (s.noCam) startTour();
+  else stopTour();
+
   /* 讲解栏 */
   renderPanel(i);
   listComps();
@@ -92,6 +96,7 @@ const M = new THREE.Object3D(), col = new THREE.Color(), clock = new THREE.Clock
 function frame() {
   requestAnimationFrame(frame);
   const dt = Math.min(clock.getDelta(), .05), t = clock.elapsedTime;
+  animTour(dt);
   if (tween) {
     cam.position.lerp(goal.p, .07);
     ctr.target.lerp(goal.l, .07);
