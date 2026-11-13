@@ -1,4 +1,4 @@
-/* 镜头、景物、传感器与取景器（第 1–7 步的宏观场景） */
+/* 镜头、景物、传感器与取景器（macro 宏观场景：全景导览、镜头章里 g:'macro' 的各步和传感器前的玻璃那一步） */
 /* ---------- 宏观：场景三层 + FE 50-150mm F2 GM + 机身 ---------- */
 /* 像方（镜头到传感器）按真实比例：1 单位 = 25 mm，传感器在 x=0。物方距离压缩绘制。 */
 const U=25, K=3, SUN=V(-20,13,9);
@@ -62,7 +62,7 @@ function rebuild(){
   G.vari.position.x=-7.3+2.3*z;G.comp.position.x=-4.7+.5*Math.sin(Math.PI*z);G.focA.position.x=-3.3-.5*fo;G.focB.position.x=-2.2+.35*fo;
   iris.geometry.dispose();iris.geometry=new THREE.RingGeometry(R,1.95,11);iris.position.x=plane.position.x=xL;
   LV.vari.set(G.vari.position.x,-1.6,0);LV.foc.set(-2.75,-1.3,0);LV.pl.set(xL,2.2,.9);
-  LPT.front.set(G.front.position.x,-2.25,0);LPT.comp.set(G.comp.position.x,-2.05,0);LPT.rear.set(G.rear.position.x,1.3,0);
+  LPT.front.set(G.front.position.x,-2.25,0);LPT.comp.set(G.comp.position.x,-2.6,0);LPT.rear.set(G.rear.position.x,1.3,0);
   fplane.position.x=sx(s);LV.fp.set(sx(s),-1.4,1.6);
   paths=[];const pos=rayGeo.attributes.position.array;let o=0;
   OBJ.forEach((ob,k)=>{const vd=img(f,ob.d), P=V(sx(ob.d),ob.Y*K,0), I=V(xL+vd/U,-ob.Y*vd/ob.d/U,0);st.coc[k]=f/N*Math.abs(vs-vd)/vd;
