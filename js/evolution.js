@@ -99,8 +99,8 @@ const EVO=[
  solved:'读出电路和像素做在同一块芯片上，更省电、更快、更便宜。',
  newProblem:'早期 CMOS 噪声大，每列电路不一致会出竖条纹。',
  driver:'数码相机要变便宜、要连拍，后来手机也要摄像头。',
- industry:'传感器跟着普通芯片工艺进步，CCD 最终停产。',
- story:'2000 年佳能发布 EOS D30：这是佳能第一台完全自研的数码单反，用的是自家 CMOS 传感器，也是最早量产的数百万像素 CMOS 相机之一。2007 年索尼推出给每一列配一个模数转换器的 Exmor 传感器，读得又快又安静。2015 年 2 月，索尼宣布停止生产 CCD。来源：Canon Camera Museum、Imaging Resource、PetaPixel（2015）。',
+ industry:'传感器跟着普通芯片工艺进步，CCD 逐步退出市场。',
+ story:'2000 年佳能发布 EOS D30：这是佳能第一台完全自研的数码单反，用的是自家 CMOS 传感器，也是最早量产的数百万像素 CMOS 相机之一。2007 年索尼推出给每一列配一个模数转换器的 Exmor 传感器，读得又快又安静。2015 年初，索尼宣布逐步停产 CCD（2017 年停掉晶圆产线）。来源：Canon Camera Museum、Imaging Resource、PetaPixel（2015）。',
  steps:[19,21,22],
  draw(c,w,h){const u=evoBg(c,w,h);c.strokeRect(w*.08,h*.3,u*.4,u*.32);evoText(c,'CCD',w*.08+u*.2,h*.3+u*.16);
   evoArrow(c,w*.42,h/2,w*.58,h/2,EVO_ACC);c.strokeStyle=EVO_ACC;c.strokeRect(w*.92-u*.4,h*.3,u*.4,u*.32);evoText(c,'CMOS',w*.92-u*.2,h*.3+u*.16,EVO_ACC);}},
@@ -126,7 +126,7 @@ const EVO=[
 
 {id:'ibis',year:2003,era:'cmos',lane:'lens',title:'机身防抖',
  solved:'让传感器跟着手抖反向移动，换什么镜头都能防抖。',
- newProblem:'传感器要悬浮在磁铁里，机身更复杂、更耗电，大幅移动时边角画质会掉。',
+ newProblem:'传感器要装在可移动的平台上，机身更复杂、更耗电，移动幅度大时边角画质会下降。',
  driver:'数码相机越做越小、像素越来越高，手抖更容易糊。',
  industry:'防抖从“买镜头送功能”变成机身标配，后来无反几乎都带。',
  story:'1995 年佳能推出 EF 75-300mm IS，是第一支带光学防抖的单反镜头（尼康 1994 年先在一台胶片小相机上用了防抖）。2003 年美能达 DiMAGE A1 改为移动 CCD 来抵消抖动，2004 年的 Maxxum 7D 把它带进了数码单反。来源：Canon Camera Museum、DPReview、Konica Minolta 新闻稿（2004）。',
@@ -241,7 +241,7 @@ const EVO=[
  newProblem:'画面里有东西在动就会出鬼影，等待时间也变长，“算出来”的画面有时不够真实。',
  driver:'手机传感器小、镜头小，单张照片在暗处噪声太大。',
  industry:'手机拍照的竞争从硬件转向算法，图像处理芯片和 AI 加速器成了卖点。',
- story:'谷歌在 Pixel 手机上先用 HDR+ 连拍合成提升宽容度，2018 年 11 月推出 Night Sight（夜视）：按下快门后连拍多张偏暗但不糊的照片，对齐合并后再用学习算法校正白平衡。各家手机随后都有了夜景模式。来源：Google AI Blog（2018）、Engadget、The Next Web。',
+ story:'谷歌 2013 年起在 Nexus 手机上用 HDR+ 连拍合成提升宽容度，2018 年 11 月在 Pixel 上推出 Night Sight（夜视）：按下快门后连拍多张偏暗但不糊的照片，对齐合并后再用学习算法校正白平衡。各家手机随后都有了夜景模式。来源：Google AI Blog（2014、2018）、Engadget、The Next Web。',
  steps:[24,27,31],
  draw(c,w,h){const u=evoBg(c,w,h);for(let i=0;i<3;i++){c.fillStyle=i===2?'#fff':'#e6dccb';c.fillRect(w*.08+i*u*.06,h*.2+i*u*.06,u*.35,u*.35);c.strokeRect(w*.08+i*u*.06,h*.2+i*u*.06,u*.35,u*.35);}
   evoArrow(c,w*.52,h/2,w*.64,h/2,EVO_ACC);c.fillStyle=EVO_ACC;c.fillRect(w*.92-u*.3,h/2-u*.15,u*.3,u*.3);}},
