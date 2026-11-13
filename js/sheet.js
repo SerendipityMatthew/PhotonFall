@@ -44,6 +44,8 @@ function setSheet(s, animate = false) {
 const drawerHome = $('drawer').nextElementSibling;   // 电脑上 #drawer 原来的位置
 function sheetLayout() {
   const phone = isPhone();
+  /* 手机上 #drawer 嵌在卡片里，dialog 语义不对；改用 role="region" */
+  $('drawer').setAttribute('role', phone ? 'region' : 'dialog');
   if (phone) {
     $('card').insertBefore($('drawer'), $('card').querySelector('.nav'));
     $('tocfoot').appendChild($('lblbtn'));

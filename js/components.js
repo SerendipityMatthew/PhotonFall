@@ -67,7 +67,8 @@ const showCard=(c,x,y)=>{card.innerHTML=`<b>${c[1]}</b><p>${c[2]}</p>`;card.hidd
 labels.forEach(l=>{const c=compOf(l.el.textContent);if(!c)return;l.el.classList.add('lbc');l.el.tabIndex=0;l.el.title='点击看说明';
   const open=e=>{e.stopPropagation();const r=l.el.getBoundingClientRect(),v=view.getBoundingClientRect();showCard(c,r.left-v.left,r.bottom-v.top);};
   l.el.addEventListener('click',open);l.el.addEventListener('keydown',e=>{if(e.key==='Enter')open(e);});});
-view.addEventListener('pointerdown',e=>{if(!card.contains(e.target))card.hidden=true;});addEventListener('keydown',e=>{if(e.key==='Escape')card.hidden=true;});
+view.addEventListener('pointerdown',e=>{if(!card.contains(e.target))card.hidden=true;});
+/* Esc 由 card.js 的统一处理器关闭（#compcard 按 id 查找） */
 function listComps(){const on=o=>{for(;o;o=o.parent)if(!o.visible)return false;return true;}, seen=new Set(), rows=[];
   labels.forEach(l=>{if(!on(l.g))return;const c=compOf(l.el.textContent);if(c&&!seen.has(c[1])){seen.add(c[1]);rows.push(c);}});
   $('compn').textContent=rows.length;$('complist').innerHTML=rows.map(c=>`<dt>${c[1]}</dt><dd>${c[2]}</dd>`).join('');$('compwrap').hidden=!rows.length;card.hidden=true;}

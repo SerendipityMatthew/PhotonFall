@@ -33,19 +33,19 @@
 <aside id="drawer" role="dialog" aria-modal="false" aria-labelledby="drawert" hidden>
   <div class="drawer-head"><h2 id="drawert" tabindex="-1">详细</h2><button type="button" id="drawerclose" aria-label="关闭">×</button></div>
   <div class="drawer-tabs" role="tablist">
-    <button type="button" role="tab" data-tab="deep" aria-controls="tabdeep">深入</button>
-    <button type="button" role="tab" data-tab="evo" aria-controls="tabevo">来龙去脉</button>
-    <button type="button" role="tab" data-tab="comp" aria-controls="tabcomp">元器件</button>
+    <button type="button" id="tabbtdeep" role="tab" data-tab="deep" aria-controls="tabdeep">深入</button>
+    <button type="button" id="tabbtevo" role="tab" data-tab="evo" aria-controls="tabevo">来龙去脉</button>
+    <button type="button" id="tabbtcomp" role="tab" data-tab="comp" aria-controls="tabcomp">元器件</button>
   </div>
-  <div id="tabdeep" role="tabpanel">
+  <div id="tabdeep" role="tabpanel" aria-labelledby="tabbtdeep">
     <div id="drawerfigs"></div>
     <h3 id="advh" hidden>进阶</h3>
     <div id="adv"></div>
     <h3 id="hardh">硬核</h3>
     <div id="hard"></div>
   </div>
-  <div id="tabevo" role="tabpanel" hidden><div id="evo"></div></div>
-  <div id="tabcomp" role="tabpanel" hidden><div id="compwrap" hidden><h3>本步元器件（<span id="compn"></span>）</h3><dl id="complist"></dl></div></div>
+  <div id="tabevo" role="tabpanel" aria-labelledby="tabbtevo" hidden><div id="evo"></div></div>
+  <div id="tabcomp" role="tabpanel" aria-labelledby="tabbtcomp" hidden><div id="compwrap" hidden><h3>本步元器件（<span id="compn"></span>）</h3><dl id="complist"></dl></div></div>
 </aside>
 <div id="zoom" role="dialog" aria-modal="true" aria-label="放大的小图" hidden>
   <div class="zoom-box"><button type="button" id="zoomclose" aria-label="关闭">×</button><div id="zoombody"></div><p id="zoomcap"></p></div>

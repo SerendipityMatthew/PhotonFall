@@ -226,6 +226,17 @@ async function smoke() {
   dispatchEvent(new KeyboardEvent('keydown', {key:'Escape'})); await wait(60);
   expect(!drawerOpen && document.activeElement === $('detailbtn'), '[card] Esc closes, focus back');
 
+  // ---- [esc] ----  统一 Esc 分层：zoom → toc → drawer；一次只关最上层
+  {
+    const esc = () => dispatchEvent(new KeyboardEvent('keydown', {key:'Escape'}));
+    navigate({view:'step', n:1}); await wait(60);
+    openDrawer(); openToc(); openZoom($('cardfig').firstElementChild); await wait(40);
+    esc(); expect($('zoom').hidden && !$('toc').hidden && drawerOpen, '[esc] closes zoom first');
+    esc(); expect($('toc').hidden && drawerOpen, '[esc] then toc');
+    esc(); expect(!drawerOpen, '[esc] then drawer');
+    closeDrawer(false);
+  }
+
   // ---- [cardui] ----  卡片不出视口、按钮行可见；收起切步保持；关键小图点开放大，Esc 关
   navigate({view:'step', n:1}); await wait(60);
   const cr = $('card').getBoundingClientRect();

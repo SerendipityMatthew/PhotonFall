@@ -147,13 +147,5 @@ function hideTimeline() {
   if (lost) $('title').focus({preventScroll: true});
 }
 
-addEventListener('keydown', ev => {
-  if (ev.key === 'Escape' && route && route.view === 'timeline' && !$('tldrawer').hidden) {
-    if (!$('toc').hidden) return;   // 目录弹层开着时让 card.js 的 Esc 处理
-    ev.preventDefault();
-    navigate({view: 'timeline', id: null});
-  }
-});
-
 /* 时间轴顶栏目录按钮：进入时间轴后也能打开同一个目录弹层 */
 $('tltocbtn').onclick = () => typeof openToc === 'function' && openToc($('tltocbtn'));

@@ -66,11 +66,13 @@ function showTab(k) {
   drawerTab = k;
   for (const t in TABS) {
     $(TABS[t]).hidden = t !== k;
-    tabBtn(t).setAttribute('aria-selected', String(t === k));
+    const btn = tabBtn(t);
+    btn.setAttribute('aria-selected', String(t === k));
+    btn.tabIndex = t === k ? 0 : -1;   // roving tabindex: only active tab in tab order
   }
 }
 
-/* 没内容的标签藏起来；当前标签被藏了就换到第一个还在的 */
+/* 没内容的标签藏起来；当前标签被藏了就换到第一个还在的；全都没内容时禁用入口按钮 */
 function syncTabs() {
   for (const t in TABS) tabBtn(t).hidden = !tabHasContent(t);
   if (tabBtn(drawerTab).hidden) {
@@ -78,6 +80,9 @@ function syncTabs() {
     if (first) drawerTab = first;
   }
   showTab(drawerTab);
+  /* 全部标签都无内容：禁用详细按钮（defensive edge case） */
+  const hasAny = Object.keys(TABS).some(t => !tabBtn(t).hidden);
+  $('detailbtn').disabled = !hasAny;
 }
 
 function openDrawer(tab) {
@@ -181,14 +186,33 @@ $('cardfig').addEventListener('keydown', e => {
 $('zoom').addEventListener('click', e => { if (e.target === $('zoom')) closeZoom(); });
 $('zoomclose').onclick = () => closeZoom();
 
-/* Esc：先关目录弹层，再关放大的小图，再关抽屉（Task 8 换成分层的 Esc 处理）。时间轴里的 Esc 归 timeline.js */
+/* 统一 Esc 分层处理：每次只关最上层，依次为：
+   放大小图 → 目录弹层 → 操作提示 → 元器件说明卡片 → 详细抽屉 → 时间轴抽屉。
+   Tab 在放大层里循环，不离开。Range 输入框不使用 Esc，无需特殊处理。 */
 addEventListener('keydown', e => {
-  if (zoomed && e.key === 'Tab') { e.preventDefault(); $('zoomclose').focus(); return; }   // 焦点留在放大层里
+  if (zoomed && e.key === 'Tab') { e.preventDefault(); $('zoomclose').focus(); return; }
   if (e.key !== 'Escape') return;
-  if (!$('toc').hidden) { e.preventDefault(); closeToc(); return; }   // 目录弹层优先
-  if (route && route.view === 'timeline') return;
-  if (zoomed) { e.preventDefault(); closeZoom(); }
-  else if (drawerOpen) { e.preventDefault(); closeDrawer(); }
+  // 1. 放大小图
+  if (zoomed) { e.preventDefault(); closeZoom(); return; }
+  // 2. 目录弹层
+  if (!$('toc').hidden) { e.preventDefault(); closeToc(); return; }
+  // 3. 操作提示
+  if (!$('onboard').hidden) { e.preventDefault(); if (typeof hideOnboard === 'function') hideOnboard(); return; }
+  // 4. 元器件说明卡片（由 components.js 创建，id=compcard）
+  const cc = document.getElementById('compcard'); if (cc && !cc.hidden) { e.preventDefault(); cc.hidden = true; return; }
+  // 5. 详细抽屉（手机 max 档回到 mid；其他情况关闭）
+  if (drawerOpen) {
+    e.preventDefault();
+    if (typeof isPhone === 'function' && isPhone() && typeof sheetState !== 'undefined' && sheetState === 'max')
+      { if (typeof setSheet === 'function') setSheet('mid', true); }
+    else closeDrawer();
+    return;
+  }
+  // 6. 时间轴抽屉
+  if (typeof route !== 'undefined' && route && route.view === 'timeline' && !$('tldrawer').hidden) {
+    e.preventDefault();
+    navigate({view: 'timeline', id: null});
+  }
 });
 
 /* ---------- 目录弹层 ---------- */
@@ -218,6 +242,20 @@ function closeToc() {
   $('toc').hidden = true;
   if (tocOpener) tocOpener.focus({preventScroll: true});
 }
+
+/* ---------- 标签键盘导航：左右方向键在可见标签之间循环 ---------- */
+document.querySelector('.drawer-tabs').addEventListener('keydown', e => {
+  if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+  const keys = Object.keys(TABS).filter(t => !tabBtn(t).hidden);
+  if (keys.length < 2) return;
+  const cur = keys.indexOf(drawerTab);
+  if (cur === -1) return;
+  e.preventDefault();
+  const dir = e.key === 'ArrowRight' ? 1 : -1;
+  const next = (cur + dir + keys.length) % keys.length;
+  showTab(keys[next]);
+  tabBtn(keys[next]).focus();
+});
 
 $('tocbtn').onclick = () => openToc($('tocbtn'));
 $('tocclose').onclick = closeToc;
