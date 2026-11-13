@@ -9,16 +9,16 @@ async function smoke() {
   function expect(cond, msg) { if (!cond) fails.push(msg); }
 
   // ---- [route] ----
-  location.hash = '#/step/12'; await wait(300);
-  expect(step === 12, '[route] hash → step 12');
-  expect($('title').textContent.includes(STEPS[12].t), '[route] title');
+  location.hash = '#/step/14'; await wait(300);
+  expect(step === 14, '[route] hash → step 14');
+  expect($('title').textContent.includes(STEPS[14].t), '[route] title');
   const h0 = history.length;
-  navigate({view:'step', n:13}); await wait(100);       // 12 属第 2 章，13 属第 3 章 → push
+  navigate({view:'step', n:15}); await wait(100);       // 14 属第 2 章，15 属第 3 章 → push
   expect(history.length === h0 + 1, '[route] cross-chapter push');
-  navigate({view:'step', n:14}); await wait(100);       // 13、14 同在第 3 章 → replace
+  navigate({view:'step', n:16}); await wait(100);       // 15、16 同在第 3 章 → replace
   expect(history.length === h0 + 1, '[route] same-chapter replace');
   history.back(); await wait(300);
-  expect(step === 12, '[route] back');
+  expect(step === 14, '[route] back');
   location.hash = '#/step/abc'; await wait(300);
   expect(step === 0, '[route] bad hash → 0');
 
@@ -31,7 +31,7 @@ async function smoke() {
   expect(step === 6, '[keys] ignored in input');
 
   // ---- [layout] ----
-  for (let i = 0; i < 32; i++) {
+  for (let i = 0; i < STEPS.length; i++) {
     navigate({view:'step', n:i}); await wait(30);
     expect(!!$('chnav').querySelector('[aria-current="true"]'), `[layout] chapter marked ${i}`);
     expect($('hardwrap').hidden === !STEPS[i].hard, `[layout] hard visibility ${i}`);
@@ -44,7 +44,7 @@ async function smoke() {
   expect(document.documentElement.scrollWidth <= innerWidth, '[visual] no horizontal scroll');
 
   // ---- [palette] ----
-  const cvs = {airy:5, pdc:4, ibc:8, spec:10, snr:20, adcc:22, shc:23, tm:14, pot:14};
+  const cvs = {airy:5, pdc:4, ibc:10, spec:12, snr:22, adcc:24, shc:25, tm:16, pot:16};
   for (const [id, st] of Object.entries(cvs)) {
     navigate({view:'step', n:st}); await wait(300);
     const d = $(id).getContext('2d').getImageData(1, 1, 2, 2).data;
@@ -53,7 +53,7 @@ async function smoke() {
   }
 
   // ---- [hl] ----
-  navigate({view:'step', n:13}); await wait(200);          // 4×4 像素阵列，有"微透镜"标注
+  navigate({view:'step', n:15}); await wait(200);          // 4×4 像素阵列，有"微透镜"标注
   expect(hl('微透镜') === true, '[hl] finds visible label');
   expect(labels.find(l => l.el.textContent === '微透镜').el.classList.contains('hl'), '[hl] class added');
   expect(hl('不存在的标注') === false, '[hl] missing label → false');
@@ -79,22 +79,22 @@ async function smoke() {
   cam.position.set(0, 0, 500); ctr.update(); tween = false;
   hl('太阳', true); await wait(100); await settle();
   expect(onStage('太阳'), '[hl-cam] off-screen 太阳 brought on stage');
-  navigate({view:'step', n:13}); await wait(100); await settle();
-  const t13 = ctr.target.clone(), want13 = goal.l.clone().lerp(visLabel('微透镜').v, .4);
+  navigate({view:'step', n:15}); await wait(100); await settle();
+  const t15 = ctr.target.clone(), want15 = goal.l.clone().lerp(visLabel('微透镜').v, .4);
   hl('微透镜', true); await wait(100); await settle();
-  expect(ctr.target.distanceTo(want13) < .05, `[hl-cam] step 13 target reached (${ctr.target.distanceTo(t13).toFixed(3)} of ${t13.distanceTo(want13).toFixed(3)})`);
-  expect(onStage('微透镜'), '[hl-cam] step 13 微透镜 on stage');
+  expect(ctr.target.distanceTo(want15) < .05, `[hl-cam] step 15 target reached (${ctr.target.distanceTo(t15).toFixed(3)} of ${t15.distanceTo(want15).toFixed(3)})`);
+  expect(onStage('微透镜'), '[hl-cam] step 15 微透镜 on stage');
   cam.position.add(new THREE.Vector3(2.5, 1, 0)); ctr.update(); tween = false;
   const mine = cam.position.clone();
   hl('微透镜', true); await wait(100); await settle();
   expect(cam.position.distanceTo(mine) < .3, `[hl-cam] orbit kept (moved ${cam.position.distanceTo(mine).toFixed(2)})`);
-  hl('微透镜'); navigate({view:'step', n:14}); await wait(60);
+  hl('微透镜'); navigate({view:'step', n:16}); await wait(60);
   expect(!hlRing.visible, '[hl-cam] ring cleared on step change');
 
   // ---- [focus] ----  键盘焦点不因重绘或按钮失效而掉到 <body>
-  navigate({view:'step', n:13}); await wait(60);
-  let pill = $('sub').querySelector('[data-i="14"]'); pill.focus(); pill.click(); await wait(60);
-  expect(step === 14 && document.activeElement.closest && document.activeElement.closest('#sub') && document.activeElement.dataset.i === '14', '[focus] #sub pill keeps focus');
+  navigate({view:'step', n:15}); await wait(60);
+  let pill = $('sub').querySelector('[data-i="16"]'); pill.focus(); pill.click(); await wait(60);
+  expect(step === 16 && document.activeElement.closest && document.activeElement.closest('#sub') && document.activeElement.dataset.i === '16', '[focus] #sub pill keeps focus');
   pill = $('chnav').querySelector('[data-ch="4"]'); pill.focus(); pill.click(); await wait(60);
   expect(document.activeElement.closest && document.activeElement.closest('#chnav') && document.activeElement.dataset.ch === '4', '[focus] #chnav pill keeps focus');
   navigate({view:'step', n:STEPS.length - 2}); await wait(60);
@@ -108,7 +108,7 @@ async function smoke() {
   expect(step === 5, '[keys] Alt+← ignored');
 
   // ---- [hl-content] ----  每个关键词都能在它那一步找到标注
-  for (let i = 0; i < 32; i++) {
+  for (let i = 0; i < STEPS.length; i++) {
     navigate({view:'step', n:i}); await wait(60);
     for (const k of $('lead').querySelectorAll('[data-hl]'))
       expect(hl(k.dataset.hl), `[hl-content] step ${i} "${k.dataset.hl}"`);
@@ -135,9 +135,52 @@ async function smoke() {
   expect(visLabel('FE 50-150mm F2 GM').el.classList.contains('hl'), '[tour] lens label highlighted in lens stage');
   expect($('advwrap').open === false, '[tour] 进阶 stays collapsed');
 
+  // ---- [lensparts] ----  第 7 步：前组 / 补偿组 / 后组 只在本步出现，位置跟着镜片组走
+  const PARTS = ['前组', '补偿组', '后组'];
+  const shown = t => !!visLabel(t);
+  navigate({view:'step', n:7}); await wait(200);
+  for (const t of PARTS) expect(shown(t), `[lensparts] ${t} visible on step 7`);
+  expect(shown('变焦组') && shown('对焦组'), '[lensparts] zoom / focus labels still there');
+  const zo0 = $('zo').value;
+  for (const f of [50, 150]) {
+    $('zo').value = f; $('zo').dispatchEvent(new Event('input'));
+    expect(Math.abs(visLabel('补偿组').v.x - G.comp.position.x) < 1e-6, `[lensparts] 补偿组 label follows the group at ${f} mm`);
+    expect(Math.abs(visLabel('前组').v.x - G.front.position.x) < 1e-6 && Math.abs(visLabel('后组').v.x - G.rear.position.x) < 1e-6, `[lensparts] 前组 / 后组 labels on their groups at ${f} mm`);
+  }
+  $('zo').value = zo0; $('zo').dispatchEvent(new Event('input'));
+  for (let i = 0; i < STEPS.length; i++) {
+    if (i === 7 || STEPS[i].g !== 'macro') continue;
+    navigate({view:'step', n:i}); await wait(30);
+    for (const t of PARTS) expect(!shown(t), `[lensparts] ${t} hidden on step ${i}`);
+  }
+
+  // ---- [refl] ----  第 8 步：反射率小图纸色底、曲线已画，拖入射角曲线会变
+  navigate({view:'step', n:8}); await wait(200);
+  expect(!$('reflwrap').hidden && !$('coatpn').hidden, '[refl] chart and coating button shown on step 8');
+  const rc = $('reflc').getContext('2d'), rw = $('reflc').width, rh = $('reflc').height;
+  const bg = rc.getImageData(1, 1, 1, 1).data;
+  expect(Math.abs(bg[0] - 0xf7) < 3 && Math.abs(bg[1] - 0xf3) < 3 && Math.abs(bg[2] - 0xea) < 3, `[refl] paper background (${bg[0]},${bg[1]},${bg[2]})`);
+  const snap = () => rc.getImageData(0, 0, rw, rh).data;
+  const px0 = snap();
+  let inked = 0;
+  for (let i = 0; i < px0.length; i += 4) if (Math.abs(px0[i] - 0xf7) + Math.abs(px0[i + 1] - 0xf3) + Math.abs(px0[i + 2] - 0xea) > 60) inked++;
+  expect(inked > 500, `[refl] curves drawn (${inked} inked px)`);
+  const accentDrawn = (() => { for (let i = 0; i < px0.length; i += 4) if (Math.abs(px0[i] - 0xc8) < 12 && Math.abs(px0[i + 1] - 0x50) < 12 && Math.abs(px0[i + 2] - 0x2d) < 12) return true; return false; })();
+  expect(accentDrawn, '[refl] single-layer curve (accent colour) drawn');
+  const a0 = $('refla').value;
+  $('refla').value = 50; $('refla').dispatchEvent(new Event('input'));
+  const px1 = snap();
+  let diff = 0;
+  for (let i = 0; i < px0.length; i += 4) if (px0[i] !== px1[i] || px0[i + 1] !== px1[i + 1] || px0[i + 2] !== px1[i + 2]) diff++;
+  expect(diff > 300, `[refl] curves move with incidence angle (${diff} px changed)`);
+  expect($('reflao').value.includes('50'), '[refl] angle readout');
+  $('refla').value = a0; $('refla').dispatchEvent(new Event('input'));
+  navigate({view:'step', n:9}); await wait(60);
+  expect($('reflwrap').hidden, '[refl] chart hidden on other steps');
+
   // ---- [timeline] ----
-  navigate({view:'step', n:17}); await wait(200);
-  expect($('evo').querySelectorAll('.evo-card').length === evoForStep(17).length, '[timeline] cards on step');
+  navigate({view:'step', n:19}); await wait(200);
+  expect($('evo').querySelectorAll('.evo-card').length === evoForStep(19).length, '[timeline] cards on step');
   $('evo').querySelector('.evo-card').click(); await wait(300);
   expect(route.view === 'timeline' && paused === true && !$('tldrawer').hidden, '[timeline] card → drawer');
   dispatchEvent(new KeyboardEvent('keydown', {key:'ArrowRight'})); await wait(100);

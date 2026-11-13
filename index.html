@@ -66,6 +66,7 @@
       <div class="row"><button id="tourbtn">重播</button></div>
     </div>
     <div class="row" id="coatpn" data-pn hidden><button id="coatbtn">关掉镀膜（看脏画面）</button></div>
+    <div id="reflwrap" data-pn hidden><label class="chkl" for="refla">入射角 <output id="reflao"></output><input id="refla" type="range" min="0" max="60" step="1" value="0"></label><canvas id="reflc" class="pc" width="330" height="230"></canvas><div class="cap">每个镜片表面反射掉多少光（纵轴对数刻度）。裸玻璃、单层、六层按薄膜干涉公式计算；亚波长结构用渐变折射率层近似，是示意</div></div>
     <div class="row" id="shutpn" data-pn hidden><button id="shutbtn">切快门速度</button></div>
     <div class="row" id="storpn" data-pn hidden><button id="storbtn">换存储卡</button></div>
   </div>

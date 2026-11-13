@@ -62,19 +62,19 @@ function check(name, fn) {
 // Route checks
 // ---------------------------------------------------------------------------
 check('route: parse', () => {
-  const p = h => ctx.parseRoute(h, 31);
+  const max = ctx.STEPS.length - 1, p = h => ctx.parseRoute(h, max);
   assert.deepStrictEqual(p('#/step/5'),  {view:'step', n:5});
   assert.deepStrictEqual(p('#/step/0'),  {view:'step', n:0});
-  assert.deepStrictEqual(p('#/step/31'), {view:'step', n:31});
+  assert.deepStrictEqual(p('#/step/' + max), {view:'step', n:max});
   assert.deepStrictEqual(p('#/timeline'), {view:'timeline', id:null});
   assert.deepStrictEqual(p('#/timeline/bsi'), {view:'timeline', id:'bsi'});
-  for (const bad of ['', '#', '#/step/32', '#/step/-1', '#/step/abc', '#/step/2.5', '#/foo'])
+  for (const bad of ['', '#', '#/step/' + (max + 1), '#/step/-1', '#/step/abc', '#/step/2.5', '#/foo'])
     assert.deepStrictEqual(p(bad), {view:'step', n:0}, bad);
 });
 
 check('route: hash round-trip', () => {
   for (const h of ['#/step/0','#/step/17','#/timeline','#/timeline/cmos-vs-ccd'])
-    assert.strictEqual(ctx.routeHash(ctx.parseRoute(h, 31)), h);
+    assert.strictEqual(ctx.routeHash(ctx.parseRoute(h, ctx.STEPS.length - 1)), h);
 });
 
 check('route: historyMode', () => {
@@ -90,8 +90,8 @@ check('route: historyMode', () => {
 check('steps: shape', () => {
   const S = ctx.STEPS, C = ctx.CHAPTERS;
   assert.strictEqual(C.length, 7);
-  assert.strictEqual(S.length, 32);
-  const want = [0, ...Array(8).fill(1), ...Array(4).fill(2), ...Array(3).fill(3), ...Array(4).fill(4), ...Array(5).fill(5), ...Array(7).fill(6)];
+  assert.strictEqual(S.length, 33);
+  const want = [0, ...Array(10).fill(1), ...Array(4).fill(2), ...Array(3).fill(3), ...Array(4).fill(4), ...Array(5).fill(5), ...Array(6).fill(6)];
   assert.deepStrictEqual([...S.map(s => s.ch)], want);
   S.forEach((s, i) => {
     for (const k of ['t', 'g', 'adv']) assert.ok(typeof s[k] === 'string' && s[k].length, `step ${i} ${k}`);
@@ -99,7 +99,12 @@ check('steps: shape', () => {
     assert.ok(!('h' in s), `step ${i} still has h`);
   });
   assert.strictEqual(S[1].t, '光从景物出发');
-  assert.strictEqual(S[31].t, '计算摄影：夜景、人像、超分');
+  assert.strictEqual(S[7].t, '镜头里的每片镜片');
+  assert.strictEqual(S[8].t, '镜片镀膜');
+  assert.strictEqual(S[8].g, 'coat');
+  assert.ok(S[8].pn.includes('coatpn'), 'step 8 keeps the coating button');
+  assert.ok(!S.some(s => s.t === '镜头镀膜、眩光与鬼影'), 'old coating step merged away');
+  assert.strictEqual(S[S.length - 1].t, '计算摄影：夜景、人像、超分');
 });
 
 check('steps: content', () => {
@@ -114,6 +119,7 @@ check('steps: content', () => {
 });
 
 check('evo: data', () => {
+  const last = ctx.STEPS.length - 1;
   const E = ctx.EVO, eras = new Set(ctx.ERAS.map(e => e.id)), lanes = ctx.LANES.map(l => l.id);
   assert.ok(E.length >= 20 && E.length <= 25, `count ${E.length}`);
   assert.strictEqual(new Set(E.map(e => e.id)).size, E.length, 'unique ids');
@@ -123,11 +129,12 @@ check('evo: data', () => {
     assert.ok(lanes.includes(e.lane), `${e.id} lane`);
     for (const k of ['title', 'solved', 'newProblem', 'driver', 'industry', 'story'])
       assert.ok(typeof e[k] === 'string' && e[k].length, `${e.id} ${k}`);
-    assert.ok(e.steps.length && e.steps.every(n => Number.isInteger(n) && n >= 1 && n <= 31), `${e.id} steps`);
+    assert.ok(e.steps.length && e.steps.every(n => Number.isInteger(n) && n >= 1 && n <= last), `${e.id} steps`);
     assert.strictEqual(typeof e.draw, 'function', `${e.id} draw`);
   }
+  assert.ok(ctx.evoForStep(7).length >= 1 && ctx.evoForStep(8).length >= 1, 'new steps 7, 8 have cards');
   for (const l of lanes) assert.ok(E.filter(e => e.lane === l).length >= 3, `lane ${l} ≥ 3`);
-  for (let n = 2; n <= 31; n++) assert.ok(ctx.evoForStep(n).length >= 1, `step ${n} has a card`);
+  for (let n = 2; n <= last; n++) assert.ok(ctx.evoForStep(n).length >= 1, `step ${n} has a card`);
 });
 
 // ---------------------------------------------------------------------------
