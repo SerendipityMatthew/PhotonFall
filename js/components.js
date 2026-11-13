@@ -61,7 +61,7 @@ const COMP=[
  [['LOFIC'],'LOFIC 像素','在普通像素上加一个开关和一个大电容，PD 装满后溢出的电子存进电容，一次曝光得到高动态范围。'],
 ];
 const compOf=t=>{for(const c of COMP)if(c[0].some(k=>t.includes(k)))return c;return null;};
-const card=document.createElement('div');card.id='card';card.hidden=true;view.appendChild(card);
+const card=document.createElement('div');card.id='compcard';card.hidden=true;view.appendChild(card);
 const showCard=(c,x,y)=>{card.innerHTML=`<b>${c[1]}</b><p>${c[2]}</p>`;card.hidden=false;const vw=view.clientWidth,vh=view.clientHeight;
   card.style.left=Math.min(Math.max(8,x+12),vw-card.offsetWidth-8)+'px';card.style.top=Math.min(Math.max(8,y+12),vh-card.offsetHeight-8)+'px';};
 labels.forEach(l=>{const c=compOf(l.el.textContent);if(!c)return;l.el.classList.add('lbc');l.el.tabIndex=0;l.el.title='点击看说明';

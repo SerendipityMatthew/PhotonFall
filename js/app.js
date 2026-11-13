@@ -25,23 +25,6 @@ function applyRoute(r) {
 $('prev').onclick = () => navigate({view: 'step', n: step - 1});
 $('next').onclick = () => navigate({view: 'step', n: step + 1});
 
-$('chnav').addEventListener('click', e => {
-  const btn = e.target.closest('button');
-  if (!btn) return;
-  if (btn.dataset.ch !== undefined) {
-    const first = STEPS.findIndex(s => s.ch === +btn.dataset.ch);
-    if (first >= 0) navigate({view: 'step', n: first});
-  } else if ('timeline' in btn.dataset) {
-    navigate({view: 'timeline', id: null});
-  }
-});
-
-$('sub').addEventListener('click', e => {
-  const btn = e.target.closest('button');
-  if (!btn || btn.dataset.i === undefined) return;
-  navigate({view: 'step', n: +btn.dataset.i});
-});
-
 addEventListener('keydown', e => {
   if (['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName)) return;
   if (route && route.view === 'timeline') return;
@@ -88,9 +71,12 @@ function go(i) {
   if (s.noCam) startTour();
   else stopTour();
 
-  /* 讲解栏 */
+  /* 卡片与抽屉：先填文字，再按可见性把面板搬到位，最后列元器件、更新抽屉标签 */
   renderPanel(i);
+  renderCard(i);
+  placePanels(i);
   listComps();
+  syncTabs();
 }
 
 /* ---------- 动画循环 ---------- */

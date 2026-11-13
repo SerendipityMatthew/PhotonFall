@@ -33,14 +33,14 @@ async function smoke() {
   // ---- [layout] ----
   for (let i = 0; i < STEPS.length; i++) {
     navigate({view:'step', n:i}); await wait(30);
-    expect(!!$('chnav').querySelector('[aria-current="true"]'), `[layout] chapter marked ${i}`);
-    expect($('hardwrap').hidden === !STEPS[i].hard, `[layout] hard visibility ${i}`);
+    expect($('loc').textContent === locText(i, STEPS, CHAPTERS), `[layout] location shown ${i}`);
+    expect($('hardh').hidden === !STEPS[i].hard && $('tabdeep').contains($('hardh')), `[layout] hard heading visibility ${i}`);
   }
 
   // ---- [visual] ----
   const css = getComputedStyle(document.documentElement);
   expect(css.getPropertyValue('--accent').trim().toLowerCase() === '#c8502d', '[visual] accent token');
-  expect(getComputedStyle($('panel')).backgroundColor !== getComputedStyle($('view')).backgroundColor, '[visual] paper vs stage');
+  expect(getComputedStyle($('card')).backgroundColor !== getComputedStyle($('view')).backgroundColor, '[visual] paper vs stage');
   expect(document.documentElement.scrollWidth <= innerWidth, '[visual] no horizontal scroll');
 
   // ---- [palette] ----
@@ -91,18 +91,17 @@ async function smoke() {
   hl('微透镜'); navigate({view:'step', n:16}); await wait(60);
   expect(!hlRing.visible, '[hl-cam] ring cleared on step change');
 
-  // ---- [focus] ----  键盘焦点不因重绘或按钮失效而掉到 <body>
+  // ---- [focus] ----  键盘焦点不因重绘、面板搬家或按钮失效而掉到 <body>
+  const okFocus = () => [$('prev'), $('next'), $('title')].includes(document.activeElement) && !document.activeElement.disabled;
   navigate({view:'step', n:15}); await wait(60);
-  let pill = $('sub').querySelector('[data-i="16"]'); pill.focus(); pill.click(); await wait(60);
-  expect(step === 16 && document.activeElement.closest && document.activeElement.closest('#sub') && document.activeElement.dataset.i === '16', '[focus] #sub pill keeps focus');
-  pill = $('chnav').querySelector('[data-ch="4"]'); pill.focus(); pill.click(); await wait(60);
-  expect(document.activeElement.closest && document.activeElement.closest('#chnav') && document.activeElement.dataset.ch === '4', '[focus] #chnav pill keeps focus');
+  $('next').focus(); $('next').click(); await wait(60);
+  expect(step === 16 && document.activeElement === $('next'), '[focus] next keeps focus');
   navigate({view:'step', n:STEPS.length - 2}); await wait(60);
   $('next').focus(); $('next').click(); await wait(60);
-  expect(step === STEPS.length - 1 && document.activeElement !== document.body && !document.activeElement.disabled, '[focus] next disabled → focus moves');
+  expect(step === STEPS.length - 1 && okFocus() && document.activeElement !== $('next'), '[focus] next disabled → focus moves to prev or title');
   navigate({view:'step', n:1}); await wait(60);
   $('prev').focus(); $('prev').click(); await wait(60);
-  expect(step === 0 && document.activeElement !== document.body && !document.activeElement.disabled, '[focus] prev disabled → focus moves');
+  expect(step === 0 && okFocus() && document.activeElement !== $('prev'), '[focus] prev disabled → focus moves to next or title');
   navigate({view:'step', n:5}); await wait(60);
   dispatchEvent(new KeyboardEvent('keydown', {key:'ArrowLeft', altKey:true})); await wait(60);
   expect(step === 5, '[keys] Alt+← ignored');
@@ -133,7 +132,7 @@ async function smoke() {
   tourT = 7.5; await wait(150);
   expect(s0 !== '' && curStage() !== s0, `[tour] highlighted stage changes (${s0} → ${curStage()})`);
   expect(visLabel('FE 50-150mm F2 GM').el.classList.contains('hl'), '[tour] lens label highlighted in lens stage');
-  expect($('advwrap').open === false, '[tour] 进阶 stays collapsed');
+  expect(!drawerOpen && $('drawer').hidden, '[tour] 详细抽屉 stays closed');
 
   // ---- [lensparts] ----  第 7 步：前组 / 补偿组 / 后组 只在本步出现，位置跟着镜片组走
   const PARTS = ['前组', '补偿组', '后组'];
@@ -187,7 +186,7 @@ async function smoke() {
   expect(route.view === 'timeline', '[timeline] arrows ignored');
   $('tldrawer').querySelector('[data-step]').click(); await wait(300);
   expect(route.view === 'step' && paused === false, '[timeline] 去看原理 → step');
-  expect(document.activeElement !== document.body && $('panel').contains(document.activeElement) && !$('timeline').contains(document.activeElement), '[timeline] focus lands in #panel');
+  expect(document.activeElement !== document.body && $('card').contains(document.activeElement) && !$('timeline').contains(document.activeElement), '[timeline] focus lands in #card');
   location.hash = '#/timeline/not-a-node'; await wait(300);
   expect(route.view === 'timeline' && $('tldrawer').hidden, '[timeline] unknown id → no drawer');
   for (const e of EVO) {
@@ -204,6 +203,23 @@ async function smoke() {
     const a = lc.getBoundingClientRect(), d = $('tldrawer').getBoundingClientRect();
     expect(a.right <= d.left + 1, `[timeline] drawer clear of last-column card (card right ${a.right|0}, drawer left ${d.left|0})`);
   }
+
+  // ---- [card] ----  控件都在卡片里；有 fig 的步骤关键图在卡片里；详细抽屉开关
+  for (let i = 0; i < STEPS.length; i++) {
+    navigate({view:'step', n:i}); await wait(40);
+    for (const id of CARD_CTL) { const el = $(id); if (el && !el.hidden)
+      expect($('cardctl').contains(el), `[card] step ${i} control ${id} in card`); }
+    if (STEPS[i].fig) expect($('cardfig').contains($(STEPS[i].fig)), `[card] step ${i} fig ${STEPS[i].fig} in card`);
+    else expect($('cardfig').children.length === 0, `[card] step ${i} no fig`);
+    expect($('loc').textContent === locText(i, STEPS, CHAPTERS), `[card] step ${i} loc`);
+  }
+  navigate({view:'step', n:16}); await wait(60);
+  $('detailbtn').click(); await wait(60);
+  expect(drawerOpen && !$('drawer').hidden, '[card] detail opens drawer');
+  expect($('tabdeep').contains($('tm')), '[card] non-key figure in drawer');
+  document.querySelector('[data-tab="evo"]').click(); expect(!$('tabevo').hidden && $('tabdeep').hidden, '[card] tab switch');
+  dispatchEvent(new KeyboardEvent('keydown', {key:'Escape'})); await wait(60);
+  expect(!drawerOpen && document.activeElement === $('detailbtn'), '[card] Esc closes, focus back');
 
   // collect any JS errors that fired during the test
   window.removeEventListener('error', onerr);
