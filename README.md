@@ -51,7 +51,7 @@ node tests/check.js
 ## 文件结构
 
 ```
-index.html              页面骨架：左侧讲解栏 + 右侧 3D 场景 + 时间轴区块
+index.html              页面骨架：全屏 3D 舞台 + 顶栏 + 浮动小卡 + 详细抽屉 + 时间轴区块
 css/style.css           样式（浅色讲解栏 + 深色 3D 舞台，含移动端布局）
 js/core.js              基础：工具函数、景物图、three.js 场景与相机
 js/route.js             路由：parseRoute / routeHash / historyMode 纯函数
@@ -78,7 +78,7 @@ js/onboard.js           首次操作提示（三张小卡）与"?"重播
 js/sheet.js             手机底部抽屉：三档高度、拖动把手、宽窄切换布局
 js/panel.js             讲解栏渲染：章节导航、步骤文字、演进卡
 js/app.js               步骤切换、动画循环、路由事件与启动
-tests/check.js          Node 静态检查（6 项，零依赖）
+tests/check.js          Node 静态检查（9 项，零依赖）
 tests/smoke.js          浏览器冒烟测试（在页面上下文中 await smoke()）
 ```
 

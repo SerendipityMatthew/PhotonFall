@@ -235,6 +235,14 @@ async function smoke() {
     esc(); expect($('toc').hidden && drawerOpen, '[esc] then toc');
     esc(); expect(!drawerOpen, '[esc] then drawer');
     closeDrawer(false);
+    // 标签方向键不触发步骤切换
+    navigate({view:'step', n:5}); await wait(60);
+    openDrawer(); await wait(40);
+    tabBtn('deep').focus();
+    const stepBefore = step;
+    tabBtn('deep').dispatchEvent(new KeyboardEvent('keydown', {key:'ArrowRight', bubbles:true}));
+    expect(drawerTab === 'evo' && step === stepBefore, '[esc] tab ArrowRight switches tab, step unchanged');
+    closeDrawer(false);
   }
 
   // ---- [cardui] ----  卡片不出视口、按钮行可见；收起切步保持；关键小图点开放大，Esc 关

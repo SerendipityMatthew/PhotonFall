@@ -251,6 +251,7 @@ document.querySelector('.drawer-tabs').addEventListener('keydown', e => {
   const cur = keys.indexOf(drawerTab);
   if (cur === -1) return;
   e.preventDefault();
+  e.stopPropagation();   // 阻止冒泡到 window，避免 app.js 同时切换步骤
   const dir = e.key === 'ArrowRight' ? 1 : -1;
   const next = (cur + dir + keys.length) % keys.length;
   showTab(keys[next]);
