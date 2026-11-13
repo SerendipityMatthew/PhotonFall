@@ -2,6 +2,8 @@
 
 /* ---------- 状态 ---------- */
 let step = 0, route;
+let showAllLabels = false;
+let curMentioned = new Set();
 const goal = {p: V(), l: V()};
 const GR = {macro, micro, tx, arch, chip, cap5, pdaf, ibis, mls, quad, stk4, coat, shut, hdr, cs, vid, stor, compu};
 
@@ -24,6 +26,12 @@ function applyRoute(r) {
 /* ---------- 事件委托 ---------- */
 $('prev').onclick = () => navigate({view: 'step', n: step - 1});
 $('next').onclick = () => navigate({view: 'step', n: step + 1});
+
+function updateLblBtn() {
+  $('lblbtn').setAttribute('aria-pressed', String(showAllLabels));
+  $('lblbtn').textContent = showAllLabels ? '标注：全部' : '标注：提到的';
+}
+$('lblbtn').onclick = () => { showAllLabels = !showAllLabels; updateLblBtn(); };
 
 addEventListener('keydown', e => {
   if (['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName)) return;
@@ -67,6 +75,7 @@ function go(i) {
   tween = true;
 
   hlClear();
+  curMentioned = new Set(mentioned(STEPS[i].lead));
 
   /* 导览 */
   if (s.noCam) startTour();
@@ -177,9 +186,10 @@ function frame() {
   }
   (STEPS[step].pn || []).forEach(id => PANIM[id] && PANIM[id](t, dt));
   const w = view.clientWidth, h = view.clientHeight;
+  const now = performance.now();
   labels.forEach(l => {
     tmp.copy(l.v).project(cam);
-    const on = l.g.visible && tmp.z < 1;
+    const on = l.g.visible && tmp.z < 1 && (showAllLabels || curMentioned.has(l.el.textContent) || (l.pinUntil || 0) > now);
     l.el.hidden = !on;
     if (on) l.el.style.transform = `translate(${((tmp.x + 1) / 2 * w).toFixed(1)}px,${((1 - tmp.y) / 2 * h).toFixed(1)}px) translate(-50%,-50%)`;
   });
@@ -188,6 +198,7 @@ function frame() {
 }
 
 /* ---------- 启动 ---------- */
+updateLblBtn();
 rebuild();
 route = parseRoute(location.hash, STEPS.length - 1);
 history.replaceState(null, '', routeHash(route));

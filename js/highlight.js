@@ -44,6 +44,9 @@ function hl(text, nudge = false) {
 
   if (!found) return false;
 
+  // 临时点亮标记：让 frame() 在高亮期间显示该标注（即使 showAllLabels=false 且不在 curMentioned）
+  found.pinUntil = performance.now() + 1600;
+
   // 清除上一次的计时器和高亮类（防止 hover→click 叠计时器截断 click 的高亮）
   if (_hlTimer !== null) { clearTimeout(_hlTimer); _hlTimer = null; }
   if (_hlEl !== null) { _hlEl.classList.remove('hl'); _hlEl = null; }
@@ -92,13 +95,14 @@ function _hlOnStage(v) {
   return p.z < 1 && Math.abs(p.x) < 0.9 && Math.abs(p.y) < 0.9;
 }
 
-/* hlClear() — 换步时调用：停掉计时器，收起圆环和 .hl */
+/* hlClear() — 换步时调用：停掉计时器，收起圆环和 .hl，清掉所有临时点亮标记 */
 function hlClear() {
   if (_hlTimer !== null) { clearTimeout(_hlTimer); _hlTimer = null; }
   if (_hlEl !== null) { _hlEl.classList.remove('hl'); _hlEl = null; }
   hlRing.visible = false;
   hlRing.material.opacity = 0;
   _hlT = -1;
+  labels.forEach(l => { l.pinUntil = 0; });
 }
 
 /* animHl(dt) — 在 frame() 里每帧渲染前调用 */

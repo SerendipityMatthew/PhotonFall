@@ -262,6 +262,19 @@ async function smoke() {
   expect(step === 20 && drawerOpen && !$('drawer').hidden, '[toc] drawer restored after timeline');
   closeDrawer();
 
+  // ---- [labels] ----  标注按需显示：默认只显示入门句提到的；切换全部；hl 临时显示隐藏的标注
+  showAllLabels = false; navigate({view:'step', n:16}); await wait(150);
+  const vis = () => labels.filter(l => !l.el.hidden).map(l => l.el.textContent).sort();
+  const want = [...new Set(mentioned(STEPS[16].lead))].sort();
+  expect(vis().length > 0 && vis().every(t => want.includes(t)), '[labels] only mentioned visible');
+  $('lblbtn').click(); await wait(150);
+  expect(showAllLabels && vis().length > want.length, '[labels] all shows more');
+  navigate({view:'step', n:15}); await wait(150);
+  expect(showAllLabels, '[labels] toggle persists');
+  $('lblbtn').click(); await wait(150);
+  const hidden = labels.find(l => l.el.hidden && l.g.visible && !curMentioned.has(l.el.textContent));
+  if (hidden) { hl(hidden.el.textContent); await wait(150); expect(!hidden.el.hidden, '[labels] hl temporarily shows hidden label'); }
+
   // collect any JS errors that fired during the test
   window.removeEventListener('error', onerr);
   errors.forEach(e => fails.push('[error] ' + e));
