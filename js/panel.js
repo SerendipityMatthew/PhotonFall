@@ -41,8 +41,22 @@ function renderPanel(i) {
   $('hardwrap').hidden = !hasHard;
   if (hasHard) $('hard').innerHTML = s.hard;
 
-  /* 演化时间轴占位（Task 9 填充） */
-  $('evo').innerHTML = '';
+  /* 演进卡：这一步背后的技术是哪年、为什么出现的；点卡片去时间轴 */
+  const evs = evoForStep(i);
+  $('evo').innerHTML = !evs.length ? '' : '<h3 class="evo-h">这一步背后的技术演进</h3>' + evs.map(e =>
+    `<article class="evo-card" data-id="${e.id}">
+      <div class="evo-top">
+        <div><p class="evo-meta"><time>${e.year}</time> · ${ERAS.find(x => x.id === e.era).name} · ${LANES.find(x => x.id === e.lane).name}</p>
+        <h4><button type="button" class="evo-open">${e.title}</button></h4></div>
+        <canvas aria-hidden="true"></canvas>
+      </div>
+      ${evoBoxes(e)}
+      <p class="evo-more" aria-hidden="true">在时间轴上看前因后果</p>
+    </article>`).join('');
+  $('evo').querySelectorAll('.evo-card').forEach((card, k) => {
+    evoPaint(card.querySelector('canvas'), evs[k], 72, 54);
+    card.onclick = () => navigate({view: 'timeline', id: card.dataset.id});
+  });
 
   /* 前后步标题 & 按钮可用性 */
   $('prevt').textContent = i > 0 ? STEPS[i - 1].t : '';
@@ -51,4 +65,12 @@ function renderPanel(i) {
   $('next').disabled = i === STEPS.length - 1;
 
   $('panel').scrollTop = 0;
+
+  /* 手机上药丸一行横向滚动：把当前章、当前步滚到中间（只动横向，不碰页面纵向） */
+  for (const nav of [$('chnav'), $('sub')]) {
+    const cur = nav.querySelector('[aria-current="true"]');
+    if (!cur || nav.scrollWidth <= nav.clientWidth) continue;
+    const a = nav.getBoundingClientRect(), b = cur.getBoundingClientRect();
+    nav.scrollLeft += b.left - a.left - (a.width - b.width) / 2;
+  }
 }

@@ -89,6 +89,23 @@ async function smoke() {
   $('tourbtn').click();
   expect(tourOn === true, '[tour] replay');
 
+  // ---- [timeline] ----
+  navigate({view:'step', n:17}); await wait(200);
+  expect($('evo').querySelectorAll('.evo-card').length === evoForStep(17).length, '[timeline] cards on step');
+  $('evo').querySelector('.evo-card').click(); await wait(300);
+  expect(route.view === 'timeline' && paused === true && !$('tldrawer').hidden, '[timeline] card → drawer');
+  dispatchEvent(new KeyboardEvent('keydown', {key:'ArrowRight'})); await wait(100);
+  expect(route.view === 'timeline', '[timeline] arrows ignored');
+  $('tldrawer').querySelector('[data-step]').click(); await wait(300);
+  expect(route.view === 'step' && paused === false, '[timeline] 去看原理 → step');
+  location.hash = '#/timeline/not-a-node'; await wait(300);
+  expect(route.view === 'timeline' && $('tldrawer').hidden, '[timeline] unknown id → no drawer');
+  for (const e of EVO) {
+    location.hash = '#/timeline/' + e.id; await wait(60);
+    expect(!$('tldrawer').hidden && $('tldrawer').textContent.includes(e.title), `[timeline] deep link ${e.id}`);
+  }
+  expect(document.documentElement.scrollWidth <= innerWidth, '[timeline] no page h-scroll');
+
   // collect any JS errors that fired during the test
   window.removeEventListener('error', onerr);
   errors.forEach(e => fails.push('[error] ' + e));

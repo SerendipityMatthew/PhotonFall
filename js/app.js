@@ -6,9 +6,6 @@ const goal = {p: V(), l: V()};
 const GR = {macro, micro, tx, arch, chip, cap5, pdaf, ibis, mls, quad, stk4, coat, shut, hdr, cs, vid, stor, compu};
 
 /* ---------- 路由 ---------- */
-function showTimeline(id) { console.info('timeline', id); }
-function hideTimeline() {}
-
 function navigate(r) {
   if (r.view === 'step' && (r.n < 0 || r.n >= STEPS.length)) return;
   const mode = historyMode(route, r, n => STEPS[n].ch);
@@ -20,7 +17,7 @@ function navigate(r) {
 }
 
 function applyRoute(r) {
-  if (r.view === 'step') go(r.n);
+  if (r.view === 'step') { hideTimeline(); go(r.n); }
   else if (r.view === 'timeline') showTimeline(r.id);
 }
 
@@ -95,6 +92,7 @@ function go(i) {
 const M = new THREE.Object3D(), col = new THREE.Color(), clock = new THREE.Clock(), tmp = V();
 function frame() {
   requestAnimationFrame(frame);
+  if (paused) return;                    // 时间轴盖住了舞台：不算动画也不渲染
   const dt = Math.min(clock.getDelta(), .05), t = clock.elapsedTime;
   animTour(dt);
   if (tween) {

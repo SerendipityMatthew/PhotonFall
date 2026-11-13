@@ -68,12 +68,25 @@
   </div>
 </aside>
 <main id="view"><div id="hint">点标注看元器件说明 · 拖动旋转 · 双指滑动或 Shift+拖动平移 · 双指捏合或鼠标滚轮缩放</div></main>
+<section id="timeline" hidden aria-labelledby="tltitle">
+  <header id="tlhead">
+    <div class="tl-run"><button type="button" id="tlback"><span>回到讲解</span><small id="tlbackt"></small></button><span class="tl-brand">PhotonFall · 光子落点</span></div>
+    <p class="tl-kicker">技术演进</p>
+    <h2 id="tltitle">相机是怎么一步步变成今天这样的</h2>
+    <p class="tl-lede">六个年代，五条线索。每一项技术都解决了一个老问题，又留下一个新问题，推着下一项出现。点卡片看来龙去脉，再一键回到讲解里看原理。</p>
+  </header>
+  <div id="tlaxis"></div>
+  <div id="tllanes"></div>
+  <p id="tlnote">各年代列宽相同，不按真实年份比例；同一格里按年份从上到下排。</p>
+  <aside id="tldrawer" role="dialog" aria-modal="false" aria-labelledby="tldtitle" tabindex="-1" hidden></aside>
+</section>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 <script src="js/core.js"></script>
 <script src="js/route.js"></script>
 <script src="js/steps.js"></script>
+<script src="js/evolution.js"></script>
 <script src="js/lens.js"></script>
 <script src="js/pixel-array.js"></script>
 <script src="js/pixel-4t.js"></script>
@@ -88,6 +101,7 @@
 <script src="js/extras-chapters.js"></script>
 <script src="js/highlight.js"></script>
 <script src="js/tour.js"></script>
+<script src="js/timeline.js"></script>
 <script src="js/panel.js"></script>
 <script src="js/app.js"></script>
 </body>
