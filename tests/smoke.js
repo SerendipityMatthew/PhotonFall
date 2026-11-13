@@ -152,6 +152,15 @@ async function smoke() {
     expect(!$('tldrawer').hidden && $('tldrawer').textContent.includes(e.title), `[timeline] deep link ${e.id}`);
   }
   expect(document.documentElement.scrollWidth <= innerWidth, '[timeline] no page h-scroll');
+  // 电脑：最后一个年代列里的卡打开抽屉后，卡不能被抽屉盖住
+  if (innerWidth > 768) {
+    const lastEra = ERAS[ERAS.length - 1].id;
+    const lastCards = [...$('tllanes').querySelectorAll(`.tl-cell[data-era="${lastEra}"] .tl-card`)];
+    const lc = lastCards[lastCards.length - 1];
+    location.hash = '#/timeline/' + lc.dataset.id; await wait(400);
+    const a = lc.getBoundingClientRect(), d = $('tldrawer').getBoundingClientRect();
+    expect(a.right <= d.left + 1, `[timeline] drawer clear of last-column card (card right ${a.right|0}, drawer left ${d.left|0})`);
+  }
 
   // collect any JS errors that fired during the test
   window.removeEventListener('error', onerr);

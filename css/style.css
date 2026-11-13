@@ -256,6 +256,8 @@ body.tl #panel,body.tl #view{display:none}
 
 #tllanes{flex:1 1 auto;min-height:0;overflow:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:var(--line-2) transparent}
 body.tl-open #tllanes{scroll-padding-right:min(460px,60vw)}
+/* 抽屉开着时，表头和泳道末尾多出一列抽屉宽的空白：最后几列也能滚到抽屉左边（手机上泳道不是网格，不受影响） */
+body.tl-open #tlaxis,body.tl-open .tl-lane{grid-template-columns:var(--tl-cols) min(440px,100vw)}
 .tl-lane{display:grid;grid-template-columns:var(--tl-cols);width:max-content;min-width:100%;border-bottom:1px solid var(--line)}
 .tl-track{display:contents}
 .tl-lname{position:sticky;left:0;z-index:2;margin:0;padding:14px 12px 14px var(--tl-pad);background:var(--paper);border-right:1px solid var(--line);
