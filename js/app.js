@@ -79,6 +79,8 @@ function go(i) {
   goal.l.set(...s.look);
   tween = true;
 
+  hlClear();
+
   /* 导览 */
   if (s.noCam) startTour();
   else stopTour();
@@ -98,7 +100,7 @@ function frame() {
   if (tween) {
     cam.position.lerp(goal.p, .07);
     ctr.target.lerp(goal.l, .07);
-    if (cam.position.distanceTo(goal.p) < .01) tween = false;
+    if (cam.position.distanceTo(goal.p) < .01 && ctr.target.distanceTo(goal.l) < .01) tween = false;
   }
   ctr.update();
   if (macro.visible) {
