@@ -4,6 +4,7 @@
 
 let paused = false;            // 时间轴打开时 3D 停止渲染（frame() 里看这个）
 let tlBuilt = false, tlOpenId = null;
+let drawerWasOpen = false;     // 进时间轴前保存抽屉状态，退出时恢复
 
 const TL_MOBILE = matchMedia('(max-width:768px)');
 const eraOf  = id => ERAS.find(x => x.id === id);
@@ -121,6 +122,7 @@ function tlClose(leaving) {
 /* ---------- 进出时间轴 ---------- */
 function showTimeline(id) {
   stopTour();
+  drawerWasOpen = typeof drawerOpen !== 'undefined' && drawerOpen;
   document.body.classList.add('tl');
   $('timeline').hidden = false;
   paused = true;
@@ -138,13 +140,20 @@ function hideTimeline() {
   document.body.classList.remove('tl');
   $('timeline').hidden = true;
   paused = false;
+  /* 抽屉：进时间轴前若开着，退出时恢复 */
+  if (drawerWasOpen && typeof openDrawer === 'function') openDrawer();
+  drawerWasOpen = false;
   /* 焦点原来在时间轴里：交给讲解页的标题，免得掉到 <body> */
   if (lost) $('title').focus({preventScroll: true});
 }
 
 addEventListener('keydown', ev => {
   if (ev.key === 'Escape' && route && route.view === 'timeline' && !$('tldrawer').hidden) {
+    if (!$('toc').hidden) return;   // 目录弹层开着时让 card.js 的 Esc 处理
     ev.preventDefault();
     navigate({view: 'timeline', id: null});
   }
 });
+
+/* 时间轴顶栏目录按钮：进入时间轴后也能打开同一个目录弹层 */
+$('tltocbtn').onclick = () => typeof openToc === 'function' && openToc($('tltocbtn'));

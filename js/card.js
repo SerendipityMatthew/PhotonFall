@@ -171,10 +171,48 @@ $('cardfig').addEventListener('keydown', e => {
 $('zoom').addEventListener('click', e => { if (e.target === $('zoom')) closeZoom(); });
 $('zoomclose').onclick = () => closeZoom();
 
-/* Esc 先关放大的小图，再关抽屉（最小版；Task 8 换成分层的 Esc 处理）。时间轴里的 Esc 归 timeline.js */
+/* Esc：先关目录弹层，再关放大的小图，再关抽屉（Task 8 换成分层的 Esc 处理）。时间轴里的 Esc 归 timeline.js */
 addEventListener('keydown', e => {
   if (zoomed && e.key === 'Tab') { e.preventDefault(); $('zoomclose').focus(); return; }   // 焦点留在放大层里
-  if (e.key !== 'Escape' || (route && route.view === 'timeline')) return;
+  if (e.key !== 'Escape') return;
+  if (!$('toc').hidden) { e.preventDefault(); closeToc(); return; }   // 目录弹层优先
+  if (route && route.view === 'timeline') return;
   if (zoomed) { e.preventDefault(); closeZoom(); }
   else if (drawerOpen) { e.preventDefault(); closeDrawer(); }
+});
+
+/* ---------- 目录弹层 ---------- */
+let tocOpener = null;
+
+function buildToc() {
+  $('tocbody').innerHTML = CHAPTERS.map(ch => {
+    const steps = [];
+    for (let i = 0; i < STEPS.length; i++) if (STEPS[i].ch === ch.id) steps.push(i);
+    return '<section class="toc-ch"><h3 class="toc-chname">' + ch.name + '</h3>' +
+      steps.map(i => '<button type="button" class="toc-step" data-i="' + i + '"' +
+        (i === step ? ' aria-current="true"' : '') + '>' + STEPS[i].t + '</button>').join('') +
+      '</section>';
+  }).join('');
+}
+
+function openToc(opener) {
+  tocOpener = opener || $('tocbtn');
+  buildToc();
+  $('toc').hidden = false;
+  const cur = $('toc').querySelector('[aria-current="true"]');
+  if (cur) { cur.scrollIntoView({block: 'nearest'}); cur.focus({preventScroll: true}); }
+}
+
+function closeToc() {
+  if ($('toc').hidden) return;
+  $('toc').hidden = true;
+  if (tocOpener) tocOpener.focus({preventScroll: true});
+}
+
+$('tocbtn').onclick = () => openToc($('tocbtn'));
+$('tocclose').onclick = closeToc;
+$('toc').addEventListener('click', e => {
+  const b = e.target.closest('[data-i]');
+  if (b) { navigate({view: 'step', n: +b.dataset.i}); closeToc(); }
+  else if (e.target === $('toc')) closeToc();
 });

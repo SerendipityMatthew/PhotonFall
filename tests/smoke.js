@@ -235,6 +235,18 @@ async function smoke() {
   expect($('zoom').hidden, '[cardui] Esc closes zoom');
   expect(document.documentElement.scrollWidth <= innerWidth, '[cardui] no h-scroll');
 
+  // ---- [toc] ----  目录弹层跳步；时间轴隐藏卡片和抽屉；返回时抽屉状态恢复
+  navigate({view:'step', n:3}); await wait(40);
+  $('tocbtn').click(); await wait(40);
+  expect(!$('toc').hidden, '[toc] opens');
+  $('toc').querySelector('[data-i="20"]').click(); await wait(80);
+  expect(step === 20 && $('toc').hidden, '[toc] jump closes');
+  openDrawer(); navigate({view:'timeline', id:null}); await wait(80);
+  expect($('card').getClientRects().length === 0 && $('drawer').getClientRects().length === 0, '[toc] timeline hides card+drawer');
+  history.back(); await wait(200);
+  expect(step === 20 && drawerOpen && !$('drawer').hidden, '[toc] drawer restored after timeline');
+  closeDrawer();
+
   // collect any JS errors that fired during the test
   window.removeEventListener('error', onerr);
   errors.forEach(e => fails.push('[error] ' + e));
