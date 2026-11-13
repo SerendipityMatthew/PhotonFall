@@ -98,6 +98,7 @@ async function smoke() {
   expect(route.view === 'timeline', '[timeline] arrows ignored');
   $('tldrawer').querySelector('[data-step]').click(); await wait(300);
   expect(route.view === 'step' && paused === false, '[timeline] 去看原理 → step');
+  expect(document.activeElement !== document.body && $('panel').contains(document.activeElement) && !$('timeline').contains(document.activeElement), '[timeline] focus lands in #panel');
   location.hash = '#/timeline/not-a-node'; await wait(300);
   expect(route.view === 'timeline' && $('tldrawer').hidden, '[timeline] unknown id → no drawer');
   for (const e of EVO) {

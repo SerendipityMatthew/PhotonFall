@@ -89,6 +89,7 @@ button{font-family:inherit}
 #sub button[aria-current=true]{color:var(--accent-ink);border-bottom-color:var(--accent);font-weight:600}
 
 /* 标题 */
+#title:focus{outline:none}
 #title,h2{font:700 25px/1.32 var(--serif);margin:4px 0 0;color:var(--ink);text-wrap:pretty;letter-spacing:.01em}
 
 /* 导读：讲解栏里最显眼的一块 */

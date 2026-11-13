@@ -107,14 +107,14 @@ function tlOpen(e) {
   tlOpenId = e.id;
 }
 
-function tlClose() {
+function tlClose(leaving) {
   const d = $('tldrawer'), had = d.contains(document.activeElement);
   d.hidden = true;
   document.body.classList.remove('tl-open');
   $('tllanes').querySelectorAll('.tl-card[aria-current]').forEach(b => b.removeAttribute('aria-current'));
   /* 焦点还给刚才那张卡，键盘用户不会掉到页面开头 */
   const card = tlOpenId && $('tllanes').querySelector(`.tl-card[data-id="${tlOpenId}"]`);
-  if (had && card && !$('timeline').hidden) card.focus({preventScroll: true});
+  if (had && card && !leaving) card.focus({preventScroll: true});
   tlOpenId = null;
 }
 
@@ -132,11 +132,14 @@ function showTimeline(id) {
 }
 
 function hideTimeline() {
-  if (!tlBuilt) return;
-  tlClose();
+  if (!tlBuilt || $('timeline').hidden) return;
+  const a = document.activeElement, lost = !a || a === document.body || $('timeline').contains(a);
+  tlClose(true);
   document.body.classList.remove('tl');
   $('timeline').hidden = true;
   paused = false;
+  /* 焦点原来在时间轴里：交给讲解页的标题，免得掉到 <body> */
+  if (lost) $('title').focus({preventScroll: true});
 }
 
 addEventListener('keydown', ev => {
