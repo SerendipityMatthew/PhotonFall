@@ -8,6 +8,10 @@ async function smoke() {
   function wait(ms) { return new Promise(r => setTimeout(r, ms)); }
   function expect(cond, msg) { if (!cond) fails.push(msg); }
 
+  // suppress onboard auto-show for all sections except [onboard]
+  try { localStorage.setItem(ONBOARD_KEY, '1'); } catch {}
+  hideOnboard();
+
   // ---- [route] ----
   location.hash = '#/step/14'; await wait(300);
   expect(step === 14, '[route] hash → step 14');
@@ -274,6 +278,17 @@ async function smoke() {
   $('lblbtn').click(); await wait(150);
   const hidden = labels.find(l => l.el.hidden && l.g.visible && !curMentioned.has(l.el.textContent));
   if (hidden) { hl(hidden.el.textContent); await wait(150); expect(!hidden.el.hidden, '[labels] hl temporarily shows hidden label'); }
+
+  // ---- [onboard] ----
+  try { localStorage.removeItem(ONBOARD_KEY); } catch {}
+  hideOnboard(); if (!onboardSeen()) showOnboard();
+  expect(!$('onboard').hidden && $('onboard').textContent.includes('拖动画面可以转动'), '[onboard] shows when unseen');
+  for (let k = 0; k < 3; k++) $('onboard').querySelector('button').click();
+  expect($('onboard').hidden && onboardSeen(), '[onboard] done marks seen');
+  $('helpbtn').click(); expect(!$('onboard').hidden, '[onboard] ? reopens'); hideOnboard();
+  const orig = Storage.prototype.getItem; Storage.prototype.getItem = () => { throw new Error('blocked'); };
+  let threw = false; try { expect(onboardSeen() === false, '[onboard] storage error → unseen'); } catch { threw = true; }
+  Storage.prototype.getItem = orig; expect(!threw, '[onboard] storage error does not throw');
 
   // collect any JS errors that fired during the test
   window.removeEventListener('error', onerr);

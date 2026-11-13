@@ -49,6 +49,17 @@
 <div id="zoom" role="dialog" aria-modal="true" aria-label="放大的小图" hidden>
   <div class="zoom-box"><button type="button" id="zoomclose" aria-label="关闭">×</button><div id="zoombody"></div><p id="zoomcap"></p></div>
 </div>
+<div id="onboard" role="dialog" aria-modal="true" aria-labelledby="onboard-t" hidden>
+  <p id="onboard-t"></p>
+  <div class="onboard-foot">
+    <span class="onboard-dots" aria-hidden="true">
+      <span class="onboard-dot"></span>
+      <span class="onboard-dot"></span>
+      <span class="onboard-dot"></span>
+    </span>
+    <button type="button" id="onboard-btn">下一张</button>
+  </div>
+</div>
 <div id="toc" role="dialog" aria-modal="true" aria-labelledby="toctitle" hidden>
   <div class="toc-box">
     <div class="toc-head"><h2 id="toctitle">目录</h2><button type="button" id="tocclose" aria-label="关闭">×</button></div>
@@ -152,6 +163,7 @@
 <script src="js/tour.js"></script>
 <script src="js/timeline.js"></script>
 <script src="js/card.js"></script>
+<script src="js/onboard.js"></script>
 <script src="js/panel.js"></script>
 <script src="js/app.js"></script>
 </body>

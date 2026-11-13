@@ -403,6 +403,24 @@ body.tl-open #tlaxis,body.tl-open .tl-lane{grid-template-columns:var(--tl-cols) 
 #compcard b{display:block;font:700 15px/1.4 var(--serif);color:var(--accent-ink)}
 #compcard p{margin:4px 0 0}
 
+/* ---------- 操作提示（三张小卡，第一次进入自动弹出） ---------- */
+#onboard{position:fixed;z-index:25;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:min(300px,calc(100vw - var(--gap) * 4));
+  background:var(--paper);border-radius:var(--radius);box-shadow:var(--shadow-lg);
+  padding:22px 22px 18px;display:flex;flex-direction:column;gap:18px;
+  animation:zoom-in .2s ease-out}
+#onboard-t{margin:0;font:500 16px/1.75 var(--sans);color:var(--ink)}
+.onboard-foot{display:flex;align-items:center;justify-content:space-between}
+.onboard-dots{display:flex;gap:6px}
+.onboard-dot{width:7px;height:7px;border-radius:50%;background:var(--line-2);transition:background .15s}
+.onboard-dot.active{background:var(--accent)}
+#onboard-btn{padding:8px 18px;border:0;border-radius:8px;background:var(--ink);color:var(--paper);
+  font:600 14px/1 var(--sans);cursor:pointer;transition:background .15s}
+#onboard-btn:hover{background:var(--accent-ink)}
+@media (max-width:768px){
+  #onboard{top:auto;bottom:calc(50vh + var(--gap));transform:translateX(-50%)}
+}
+
 /* ---------- 目录弹层 ---------- */
 #toc{position:fixed;z-index:38;inset:0;display:flex;align-items:flex-start;justify-content:center;
   padding:calc(var(--bar-h) + var(--gap)*2) var(--gap) var(--gap);
