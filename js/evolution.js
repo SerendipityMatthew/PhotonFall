@@ -100,7 +100,7 @@ const EVO=[
  newProblem:'早期 CMOS 噪声大，每列电路不一致会出竖条纹。',
  driver:'数码相机要变便宜、要连拍，后来手机也要摄像头。',
  industry:'传感器跟着普通芯片工艺进步，CCD 最终停产。',
- story:'2000 年佳能发布 EOS D30，第一台用自家 CMOS 传感器的数码单反。2007 年索尼推出给每一列配一个模数转换器的 Exmor 传感器，读得又快又安静。2015 年 2 月，索尼宣布停止生产 CCD。来源：Canon Camera Museum、Imaging Resource、PetaPixel（2015）。',
+ story:'2000 年佳能发布 EOS D30：这是佳能第一台完全自研的数码单反，用的是自家 CMOS 传感器，也是最早量产的数百万像素 CMOS 相机之一。2007 年索尼推出给每一列配一个模数转换器的 Exmor 传感器，读得又快又安静。2015 年 2 月，索尼宣布停止生产 CCD。来源：Canon Camera Museum、Imaging Resource、PetaPixel（2015）。',
  steps:[19,21,22],
  draw(c,w,h){const u=evoBg(c,w,h);c.strokeRect(w*.08,h*.3,u*.4,u*.32);evoText(c,'CCD',w*.08+u*.2,h*.3+u*.16);
   evoArrow(c,w*.42,h/2,w*.58,h/2,EVO_ACC);c.strokeStyle=EVO_ACC;c.strokeRect(w*.92-u*.4,h*.3,u*.4,u*.32);evoText(c,'CMOS',w*.92-u*.2,h*.3+u*.16,EVO_ACC);}},
