@@ -21,15 +21,15 @@ function renderPanel(i) {
   $('title').textContent = s.t;
   $('lead').innerHTML = s.lead || '';
 
-  /* 给 #lead [data-hl] 绑定点击和悬停（Task 6） */
+  /* 给 #lead [data-hl] 绑定点击和悬停（Task 6）
+     hover 只高亮标注（nudge=false）；click 和键盘还推镜头（nudge=true） */
   $('lead').querySelectorAll('[data-hl]').forEach(kEl => {
     kEl.setAttribute('tabindex', '0');
     kEl.setAttribute('role', 'button');
-    const trigger = () => hl(kEl.dataset.hl);
-    kEl.onclick = trigger;
-    kEl.onmouseenter = trigger;
+    kEl.onmouseenter = () => hl(kEl.dataset.hl);
+    kEl.onclick      = () => hl(kEl.dataset.hl, true);
     kEl.onkeydown = e => {
-      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); trigger(); }
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); hl(kEl.dataset.hl, true); }
     };
   });
 

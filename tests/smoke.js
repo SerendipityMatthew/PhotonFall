@@ -59,6 +59,12 @@ async function smoke() {
   expect(hl('不存在的标注') === false, '[hl] missing label → false');
   navigate({view:'step', n:1}); await wait(200);
   expect(hl('微透镜') === false, '[hl] hidden group ignored');
+  // nudge=false（默认）不移动 goal.l；nudge=true 才移
+  const glBefore = goal.l.clone();
+  hl('FE 50-150mm F2 GM');              // nudge defaults to false
+  expect(goal.l.equals(glBefore), '[hl] no nudge → goal.l unchanged');
+  hl('FE 50-150mm F2 GM', true);        // nudge=true
+  expect(!goal.l.equals(glBefore), '[hl] nudge=true → goal.l moved');
   // 标注在屏幕外：把镜头拉远到看不见，再高亮
   cam.position.set(0, 0, 500); await wait(50);
   expect(hl('FE 50-150mm F2 GM') === true, '[hl] off-screen label still works');

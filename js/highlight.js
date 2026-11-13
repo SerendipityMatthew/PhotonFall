@@ -17,16 +17,19 @@ const hlRing = (() => {
   return mesh;
 })();
 
-let _hlT = -1;   // 动画计时器，-1 = 空闲
+let _hlT = -1;        // 动画计时器，-1 = 空闲
+let _hlTimer = null;  // setTimeout 句柄（防止多次调用叠计时器）
+let _hlEl = null;     // 当前持有 .hl 类的 DOM 元素
 
-/* hl(text) → boolean
+/* hl(text, nudge = false) → boolean
    在 labels 里找 el.textContent === text 且整条祖先链均 visible 的项。
    找不到返回 false；找到：
+   - 清除上一次的 .hl 类和计时器（防止同标签连续调用截断高亮）
    - 给 el 加 .hl 类 1600 ms
    - 把 hlRing 移到 v 并开始脉动
-   - goal.l 向 v 移动 40%，tween = true
+   - 仅当 nudge === true 时：goal.l 向 v 移动 40%，tween = true
    - 返回 true */
-function hl(text) {
+function hl(text, nudge = false) {
   const found = labels.find(l => {
     if (l.el.textContent !== text) return false;
     // 遍历整条 THREE.Object3D 祖先链
@@ -40,12 +43,18 @@ function hl(text) {
 
   if (!found) return false;
 
-  // 清除旧高亮
-  labels.forEach(l => l.el.classList.remove('hl'));
+  // 清除上一次的计时器和高亮类（防止 hover→click 叠计时器截断 click 的高亮）
+  if (_hlTimer !== null) { clearTimeout(_hlTimer); _hlTimer = null; }
+  if (_hlEl !== null) { _hlEl.classList.remove('hl'); _hlEl = null; }
 
-  // 高亮 1600 ms
+  // 高亮 1600 ms，记住计时器句柄和目标元素
   found.el.classList.add('hl');
-  setTimeout(() => found.el.classList.remove('hl'), 1600);
+  _hlEl = found.el;
+  _hlTimer = setTimeout(() => {
+    found.el.classList.remove('hl');
+    _hlEl = null;
+    _hlTimer = null;
+  }, 1600);
 
   // 圆环移到目标并开始脉动
   hlRing.position.copy(found.v);
@@ -54,9 +63,11 @@ function hl(text) {
   hlRing.material.opacity = 1;
   _hlT = 0;
 
-  // 轻推镜头朝向
-  goal.l.lerp(found.v, 0.4);
-  tween = true;
+  // 仅点击时轻推镜头朝向
+  if (nudge) {
+    goal.l.lerp(found.v, 0.4);
+    tween = true;
+  }
 
   return true;
 }
