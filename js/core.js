@@ -2,7 +2,7 @@
 const $=id=>document.getElementById(id), V=(x,y,z)=>new THREE.Vector3(x,y,z);
 
 /* ---------- 调色板（与 css/style.css :root 变量同值，硬编码避免运行时读 CSS） ---------- */
-const PAL={paper:'#f7f3ea',ink:'#2a2622',dim:'#6b6359',grid:'#ddd3c2',accent:'#c8502d',r:'#ef5a5f',g:'#48c26a',b:'#5a95ff',cyan:'#007295',amber:'#9a6200'};
+const PAL={paper:'#f7f3ea',ink:'#2a2622',dim:'#6b6359',grid:'#ddd3c2',accent:'#c8502d',r:'#ef5a5f',g:'#48c26a',b:'#5a95ff',cyan:'#007295',amber:'#9a6200',well:'#1c2a40',elec:'#4fd8e8'};
 
 /* ---------- 场景图片（景物、传感器上的像、ISP 演示共用） ---------- */
 function drawScene(c,w,h){const g=c.createLinearGradient(0,0,0,h);g.addColorStop(0,'#3d7fd9');g.addColorStop(.65,'#bfe0ff');c.fillStyle=g;c.fillRect(0,0,w,h);

@@ -33,10 +33,10 @@ function drawPot(t){const w=340,h=150, on=k=>SIG[k](t), nE=i=>t>1.9+i*.42, moved
   for(let i=0;i<NE;i++){if(t<1.5){if(t<1.2*(1-i/NE))nFD++;}else if(t<6.5){if(nE(i))nPD++;}else if(moved(i))nFD++;else nPD++;}
   const R=[['PD',16,130,78],['TX',130,166,on('TX')?92:26],['FD',166,214,112],['RST',214,250,on('RST')?124:26],['VDD',250,324,130]];
   pg.fillStyle=PAL.paper;pg.fillRect(0,0,w,h);pg.font='12px ui-monospace,Menlo,monospace';pg.textAlign='center';
-  pg.fillStyle='#1c2a40';pg.beginPath();pg.moveTo(16,h-18);pg.lineTo(16,14);R.forEach(([,a,b,y])=>{pg.lineTo(a,y);pg.lineTo(b,y);});pg.lineTo(324,14);pg.lineTo(324,h-18);pg.fill();
-  pg.strokeStyle=PAL.dim;pg.lineWidth=1.5;pg.beginPath();pg.moveTo(16,14);R.forEach(([,a,b,y])=>{pg.lineTo(a,y);pg.lineTo(b,y);});pg.lineTo(324,14);pg.stroke();
+  pg.fillStyle=PAL.well;pg.beginPath();pg.moveTo(16,h-18);pg.lineTo(16,14);R.forEach(([,a,b,y])=>{pg.lineTo(a,y);pg.lineTo(b,y);});pg.lineTo(324,14);pg.lineTo(324,h-18);pg.fill();
+  pg.strokeStyle=PAL.elec;pg.lineWidth=1.5;pg.beginPath();pg.moveTo(16,14);R.forEach(([,a,b,y])=>{pg.lineTo(a,y);pg.lineTo(b,y);});pg.lineTo(324,14);pg.stroke();
   R.forEach(([n,a,b,y])=>{const g=n==='TX'||n==='RST';pg.fillStyle=g&&on(n)?PAL.amber:PAL.dim;pg.fillText(g?n+(on(n)?' 开':' 关'):n,(a+b)/2,h-4);});
-  pg.fillStyle=PAL.cyan;const dots=(n,a,y,cols)=>{for(let i=0;i<n;i++){pg.beginPath();pg.arc(a+12+(i%cols)*13,y-7-((i/cols)|0)*12,4.5,0,7);pg.fill();}};
+  pg.fillStyle=PAL.elec;const dots=(n,a,y,cols)=>{for(let i=0;i<n;i++){pg.beginPath();pg.arc(a+12+(i%cols)*13,y-7-((i/cols)|0)*12,4.5,0,7);pg.fill();}};
   dots(nPD,16,78,8);dots(nFD,166,112,3);
   pg.fillStyle=PAL.dim;pg.textAlign='left';pg.fillText('↓ 坑越深，电子越愿意待',20,h-22>100?12:12);}
 function animTx(time){const t=time%TXT, cl=x=>Math.min(1,Math.max(0,x));
