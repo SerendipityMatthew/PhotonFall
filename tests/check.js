@@ -102,6 +102,17 @@ check('steps: shape', () => {
   assert.strictEqual(S[31].t, '计算摄影：夜景、人像、超分');
 });
 
+check('steps: content', () => {
+  ctx.STEPS.forEach((s, i) => {
+    assert.ok(typeof s.lead === 'string' && s.lead.length, `step ${i} lead`);
+    assert.ok(/data-hl="[^"]+"/.test(s.lead), `step ${i} lead has a keyword`);
+    const text = s.lead.replace(/<[^>]+>/g, '');
+    assert.ok(text.length <= 90, `step ${i} lead too long (${text.length})`);
+    assert.ok(!/<table|class="f"/.test(s.adv), `step ${i} formula/table left in adv`);
+  });
+  assert.ok(!ctx.STEPS[0].adv.includes('Task 7'), 'step 0 adv written');
+});
+
 // ---------------------------------------------------------------------------
 // Run all checks and report
 // ---------------------------------------------------------------------------

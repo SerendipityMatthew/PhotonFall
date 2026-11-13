@@ -69,6 +69,13 @@ async function smoke() {
   cam.position.set(0, 0, 500); await wait(50);
   expect(hl('FE 50-150mm F2 GM') === true, '[hl] off-screen label still works');
 
+  // ---- [hl-content] ----  每个关键词都能在它那一步找到标注
+  for (let i = 0; i < 32; i++) {
+    navigate({view:'step', n:i}); await wait(60);
+    for (const k of $('lead').querySelectorAll('[data-hl]'))
+      expect(hl(k.dataset.hl), `[hl-content] step ${i} "${k.dataset.hl}"`);
+  }
+
   // collect any JS errors that fired during the test
   window.removeEventListener('error', onerr);
   errors.forEach(e => fails.push('[error] ' + e));
