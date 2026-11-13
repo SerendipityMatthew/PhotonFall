@@ -243,6 +243,11 @@ figcaption,.cap{font-size:12px;line-height:1.5;color:var(--ink-dim);margin-top:6
 .lb.hl{z-index:2;background:var(--accent);border-color:var(--accent-glow);color:#fff;font-weight:600;
   box-shadow:0 0 0 4px rgba(200,80,45,.28),0 4px 14px rgba(0,0,0,.45)}
 
+/* 入门文字里可高亮的关键词（Task 6） */
+#lead k[data-hl]{color:var(--accent-ink);text-decoration:underline;text-decoration-style:dotted;
+  text-underline-offset:2px;cursor:pointer;border-radius:3px}
+#lead k[data-hl]:hover,#lead k[data-hl]:focus-visible{background:var(--accent-soft);outline:none}
+
 /* 元器件说明卡：一张纸片浮在舞台上 */
 #card{position:absolute;z-index:5;max-width:300px;background:var(--paper);color:var(--ink);border-top:3px solid var(--accent);
   border-radius:4px 10px 10px 10px;padding:12px 14px;font-size:13.5px;line-height:1.7;box-shadow:0 10px 30px rgba(0,0,0,.5)}

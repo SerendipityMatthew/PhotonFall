@@ -52,6 +52,17 @@ async function smoke() {
     expect(lum > 200, `[palette] ${id} background light (${lum|0})`);
   }
 
+  // ---- [hl] ----
+  navigate({view:'step', n:13}); await wait(200);          // 4×4 像素阵列，有"微透镜"标注
+  expect(hl('微透镜') === true, '[hl] finds visible label');
+  expect(labels.find(l => l.el.textContent === '微透镜').el.classList.contains('hl'), '[hl] class added');
+  expect(hl('不存在的标注') === false, '[hl] missing label → false');
+  navigate({view:'step', n:1}); await wait(200);
+  expect(hl('微透镜') === false, '[hl] hidden group ignored');
+  // 标注在屏幕外：把镜头拉远到看不见，再高亮
+  cam.position.set(0, 0, 500); await wait(50);
+  expect(hl('FE 50-150mm F2 GM') === true, '[hl] off-screen label still works');
+
   // collect any JS errors that fired during the test
   window.removeEventListener('error', onerr);
   errors.forEach(e => fails.push('[error] ' + e));

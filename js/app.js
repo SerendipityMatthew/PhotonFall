@@ -188,6 +188,7 @@ function frame() {
     l.el.hidden = !on;
     if (on) l.el.style.transform = `translate(${((tmp.x + 1) / 2 * w).toFixed(1)}px,${((1 - tmp.y) / 2 * h).toFixed(1)}px) translate(-50%,-50%)`;
   });
+  animHl(dt);
   renderer.render(scene, cam);
 }
 

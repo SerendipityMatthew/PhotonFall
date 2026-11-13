@@ -21,6 +21,18 @@ function renderPanel(i) {
   $('title').textContent = s.t;
   $('lead').innerHTML = s.lead || '';
 
+  /* 给 #lead [data-hl] 绑定点击和悬停（Task 6） */
+  $('lead').querySelectorAll('[data-hl]').forEach(kEl => {
+    kEl.setAttribute('tabindex', '0');
+    kEl.setAttribute('role', 'button');
+    const trigger = () => hl(kEl.dataset.hl);
+    kEl.onclick = trigger;
+    kEl.onmouseenter = trigger;
+    kEl.onkeydown = e => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); trigger(); }
+    };
+  });
+
   /* 进阶折叠块 — 始终存在，内容填充 */
   $('adv').innerHTML = s.adv || '';
 
