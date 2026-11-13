@@ -24,12 +24,13 @@ function renderPanel(i) {
 
   /* 抽屉「深入」：进阶，后接硬核（没有硬核时连小标题一起藏） */
   $('adv').innerHTML = s.adv || '';
+  $('advh').hidden = !s.adv;
   $('hard').innerHTML = s.hard || '';
   $('hardh').hidden = !s.hard;
 
   /* 抽屉「来龙去脉」：这一步背后的技术是哪年、为什么出现的；点卡片去时间轴 */
   const evs = evoForStep(i);
-  $('evo').innerHTML = !evs.length ? '' : '<h3 class="evo-h">这一步背后的技术演进</h3>' + evs.map(e =>
+  $('evo').innerHTML = !evs.length ? '' : evs.map(e =>
     `<article class="evo-card" data-id="${e.id}">
       <div class="evo-top">
         <div><p class="evo-meta"><time>${e.year}</time> · ${ERAS.find(x => x.id === e.era).name} · ${LANES.find(x => x.id === e.lane).name}</p>

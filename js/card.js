@@ -2,7 +2,7 @@
    依赖 STEPS / CHAPTERS（steps.js）、CARD_CTL / locText（layout.js）、$（core.js）；
    evoForStep（evolution.js）、navigate / route（app.js）只在运行时调用。 */
 
-let drawerOpen = false, drawerTab = 'deep';
+let drawerOpen = false, drawerTab = 'deep', cardFolded = false;
 
 /* 所有面板按 HTML 里的顺序记下来；不用的时候都停在 #parking */
 const PANELS = [...$('parking').children];
@@ -29,6 +29,7 @@ function arrange(dest, list) {
 
 function placePanels(i) {
   const s = STEPS[i], fig = s.fig ? $(s.fig) : null, figIsPanel = PANELS.includes(fig);
+  closeZoom(false);                                        // 放大着的小图先放回原处，再整理
   figBack();
   if (fig && !figIsPanel) {
     const cap = fig.nextElementSibling;
@@ -93,13 +94,45 @@ function closeDrawer() {
   $('detailbtn').focus({preventScroll: true});
 }
 
+/* ---------- 卡片收起 ---------- */
+/* 收起后只剩一条「标题 · 展开」；切步时保持 */
+function toggleCard(force) {
+  cardFolded = force === undefined ? !cardFolded : !!force;
+  $('card').classList.toggle('folded', cardFolded);
+  $('cardfold').textContent = cardFolded ? '展开' : '收起';
+  $('cardfold').setAttribute('aria-expanded', String(!cardFolded));
+}
+
+/* ---------- 小图放大 ---------- */
+/* 把小图本身搬进放大层（画面继续实时更新），原处留注释占位，关闭时放回 */
+let zoomed = null;
+function openZoom(el) {
+  if (!el || zoomed) return;
+  const cap = el.nextElementSibling;
+  $('zoomcap').textContent = cap && cap.classList.contains('cap') ? cap.textContent : '';
+  const ph = document.createComment('zoom');
+  el.replaceWith(ph);
+  $('zoombody').appendChild(el);
+  zoomed = {el, ph};
+  $('zoom').hidden = false;
+  $('zoomclose').focus({preventScroll: true});
+}
+
+function closeZoom(refocus = true) {
+  if (!zoomed) return;
+  zoomed.ph.replaceWith(zoomed.el);
+  zoomed = null;
+  $('zoom').hidden = true;
+  if (refocus) $('cardfig').focus({preventScroll: true});
+}
+
 /* ---------- 卡片 ---------- */
 function renderCard(i) {
   const fa = document.activeElement;
   $('loc').textContent = locText(i, STEPS, CHAPTERS);
 
   $('cardevo').innerHTML = evoForStep(i).map(e =>
-    `<button type="button" class="evo-chip" data-id="${e.id}">🕰 ${e.year} · ${e.title}</button>`).join('');
+    `<button type="button" class="evo-chip" data-id="${e.id}"><span aria-hidden="true">🕰</span> <time>${e.year}</time> · ${e.title}</button>`).join('');
 
   $('nextt').textContent = i < STEPS.length - 1 ? STEPS[i + 1].t : '';
   $('prev').title = i > 0 ? '上一步：' + STEPS[i - 1].t : '';
@@ -110,7 +143,7 @@ function renderCard(i) {
   if (fa === $('prev') && fa.disabled) $('next').focus();
 
   $('card').scrollTop = 0;
-  $('drawer').scrollTop = 0;
+  for (const t in TABS) $(TABS[t]).scrollTop = 0;
 }
 
 /* ---------- 事件 ---------- */
@@ -125,10 +158,23 @@ document.querySelector('.drawer-tabs').addEventListener('click', e => {
   if (b) showTab(b.dataset.tab);
 });
 $('tlbtn').onclick = () => navigate({view: 'timeline', id: null});
+$('cardfold').onclick = () => toggleCard();
+$('title').addEventListener('click', () => { if (cardFolded) toggleCard(false); });
 
-/* Esc 关抽屉（最小版；Task 8 换成分层的 Esc 处理）。时间轴里的 Esc 归 timeline.js */
-addEventListener('keydown', e => {
-  if (e.key !== 'Escape' || !drawerOpen || (route && route.view === 'timeline')) return;
+/* 点关键小图（或聚焦后按回车 / 空格）放大；点放大层的空白处或 × 关闭 */
+$('cardfig').addEventListener('click', () => openZoom($('cardfig').firstElementChild));
+$('cardfig').addEventListener('keydown', e => {
+  if (e.target !== $('cardfig') || (e.key !== 'Enter' && e.key !== ' ')) return;
   e.preventDefault();
-  closeDrawer();
+  openZoom($('cardfig').firstElementChild);
+});
+$('zoom').addEventListener('click', e => { if (e.target === $('zoom')) closeZoom(); });
+$('zoomclose').onclick = () => closeZoom();
+
+/* Esc 先关放大的小图，再关抽屉（最小版；Task 8 换成分层的 Esc 处理）。时间轴里的 Esc 归 timeline.js */
+addEventListener('keydown', e => {
+  if (zoomed && e.key === 'Tab') { e.preventDefault(); $('zoomclose').focus(); return; }   // 焦点留在放大层里
+  if (e.key !== 'Escape' || (route && route.view === 'timeline')) return;
+  if (zoomed) { e.preventDefault(); closeZoom(); }
+  else if (drawerOpen) { e.preventDefault(); closeDrawer(); }
 });

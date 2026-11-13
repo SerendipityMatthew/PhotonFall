@@ -21,7 +21,7 @@
   <h2 id="title" tabindex="-1"></h2>
   <div id="lead"></div>
   <div id="cardctl"></div>
-  <div id="cardfig"></div>
+  <div id="cardfig" role="button" tabindex="0" aria-label="放大这张小图"></div>
   <div id="cardevo"></div>
   <div class="nav">
     <button type="button" id="detailbtn">详细 ↗</button>
@@ -38,6 +38,7 @@
   </div>
   <div id="tabdeep" role="tabpanel">
     <div id="drawerfigs"></div>
+    <h3 id="advh" hidden>进阶</h3>
     <div id="adv"></div>
     <h3 id="hardh">硬核</h3>
     <div id="hard"></div>
@@ -45,6 +46,9 @@
   <div id="tabevo" role="tabpanel" hidden><div id="evo"></div></div>
   <div id="tabcomp" role="tabpanel" hidden><div id="compwrap" hidden><h3>本步元器件（<span id="compn"></span>）</h3><dl id="complist"></dl></div></div>
 </aside>
+<div id="zoom" role="dialog" aria-modal="true" aria-label="放大的小图" hidden>
+  <div class="zoom-box"><button type="button" id="zoomclose" aria-label="关闭">×</button><div id="zoombody"></div><p id="zoomcap"></p></div>
+</div>
 <div id="parking" hidden>
     <div id="vfwrap" hidden>
       <figure id="vffig"><canvas id="vf" width="360" height="240"></canvas><figcaption>取景器（实时，按公式计算）</figcaption></figure>

@@ -28,6 +28,7 @@ $('next').onclick = () => navigate({view: 'step', n: step + 1});
 addEventListener('keydown', e => {
   if (['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName)) return;
   if (route && route.view === 'timeline') return;
+  if (!$('zoom').hidden) return;                        // 放大的小图开着：方向键不翻步
   if (e.altKey || e.metaKey || e.ctrlKey) return;      // Alt+← 是浏览器后退，⌘← 等也留给系统
   if (e.key === 'ArrowRight') navigate({view: 'step', n: step + 1});
   if (e.key === 'ArrowLeft')  navigate({view: 'step', n: step - 1});

@@ -221,6 +221,20 @@ async function smoke() {
   dispatchEvent(new KeyboardEvent('keydown', {key:'Escape'})); await wait(60);
   expect(!drawerOpen && document.activeElement === $('detailbtn'), '[card] Esc closes, focus back');
 
+  // ---- [cardui] ----  卡片不出视口、按钮行可见；收起切步保持；关键小图点开放大，Esc 关
+  navigate({view:'step', n:1}); await wait(60);
+  const cr = $('card').getBoundingClientRect();
+  expect(cr.bottom <= innerHeight && cr.top >= 0, '[cardui] card inside viewport');
+  expect($('next').getBoundingClientRect().bottom <= innerHeight, '[cardui] next button visible');
+  toggleCard(true); navigate({view:'step', n:2}); await wait(60);
+  expect(cardFolded && $('lead').offsetParent === null, '[cardui] fold persists across steps');
+  toggleCard(false);
+  $('cardfig').firstElementChild.click(); await wait(40);
+  expect(!$('zoom').hidden, '[cardui] figure zoom opens');
+  dispatchEvent(new KeyboardEvent('keydown', {key:'Escape'})); await wait(40);
+  expect($('zoom').hidden, '[cardui] Esc closes zoom');
+  expect(document.documentElement.scrollWidth <= innerWidth, '[cardui] no h-scroll');
+
   // collect any JS errors that fired during the test
   window.removeEventListener('error', onerr);
   errors.forEach(e => fails.push('[error] ' + e));
