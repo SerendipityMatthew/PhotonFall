@@ -153,6 +153,9 @@ async function smoke() {
   expect(s0 !== '' && curStage() !== s0, `[tour] highlighted stage changes (${s0} → ${curStage()})`);
   expect(visLabel('FE 50-150mm F2 GM').el.classList.contains('hl'), '[tour] lens label highlighted in lens stage');
   expect(!drawerOpen && $('drawer').hidden, '[tour] 详细抽屉 stays closed');
+  // 每段的标注整段都在（不只是开头 1.6 秒）；太阳不在第 0 步入门句里，只靠导览显示
+  showAllLabels = false; $('tourbtn').click(); await wait(1900);
+  expect(tourOn && flowK === 'light' && !visLabel('太阳').el.hidden, `[tour] stage label pinned for whole stage (t=${tourT.toFixed(1)})`);
 
   // ---- [lensparts] ----  第 7 步：前组 / 补偿组 / 后组 只在本步出现，位置跟着镜片组走
   const PARTS = ['前组', '补偿组', '后组'];
