@@ -96,8 +96,8 @@ check('route: historyMode', () => {
 check('steps: shape', () => {
   const S = ctx.STEPS, C = ctx.CHAPTERS;
   assert.strictEqual(C.length, 7);
-  assert.strictEqual(S.length, 33);
-  const want = [0, ...Array(10).fill(1), ...Array(4).fill(2), ...Array(3).fill(3), ...Array(4).fill(4), ...Array(5).fill(5), ...Array(6).fill(6)];
+  assert.strictEqual(S.length, 34);
+  const want = [0, ...Array(10).fill(1), ...Array(4).fill(2), ...Array(3).fill(3), ...Array(4).fill(4), ...Array(5).fill(5), ...Array(7).fill(6)];
   assert.deepStrictEqual([...S.map(s => s.ch)], want);
   S.forEach((s, i) => {
     for (const k of ['t', 'g', 'adv']) assert.ok(typeof s[k] === 'string' && s[k].length, `step ${i} ${k}`);
@@ -152,7 +152,7 @@ check('layout: locText', () => {
   assert.strictEqual(ctx.locText(0, S, C), '先看全景');
   assert.strictEqual(ctx.locText(1, S, C), '1 镜头 · 第 1/10 步');
   assert.strictEqual(ctx.locText(16, S, C), '3 像素 · 第 2/3 步');
-  assert.strictEqual(ctx.locText(32, S, C), '6 周边 · 第 6/6 步');
+  assert.strictEqual(ctx.locText(33, S, C), '6 周边 · 第 7/7 步');
   assert.strictEqual(ctx.locShort(16, S, C), '3 像素 · 2/3');
 });
 check('layout: fig', () => {
