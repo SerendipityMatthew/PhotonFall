@@ -41,6 +41,16 @@ label(quad,'柱高 = 这一格收到的电子数',V(0,2.4,-3.9));
 const bay=(i,k)=>k%2?(i%2?2:1):(i%2?1:0);let qMode='raw',qT=9;const qVal=new Float32Array(QN*QN),qShow=new Float32Array(QN*QN);
 const qSample=()=>{for(let n=0;n<QN*QN;n++)qVal[n]=Math.max(0,9+3*gauss());};qSample();
 $('quadctl').querySelectorAll('[data-q]').forEach(b=>b.onclick=()=>{qMode=b.dataset.q;qT=9;$('quadctl').querySelectorAll('[data-q]').forEach(x=>x.setAttribute('aria-pressed',x===b));});
+/* ---------- CRA → 微透镜偏移曲线：三种像素对比 ---------- */
+{const c=cx2('cra'),W=330,H=170,L=38,B=26,craMax=32,h=1.5;                              // h = 微透镜到 PD 高度 µm（教学值）
+ const X=a=>L+a/craMax*(W-L-8), Y=v=>H-B-v/1.2*(H-B-32);                                // Y max = 1.2 像素宽
+ c.fillStyle=PAL.paper;c.fillRect(0,0,W,H);c.font=FONT;c.strokeStyle=PAL.grid;c.fillStyle=PAL.dim;c.lineWidth=1;
+ for(let a=0;a<=craMax;a+=8){c.beginPath();c.moveTo(X(a),32);c.lineTo(X(a),H-B);c.stroke();c.fillText(a+'°',X(a)-6,H-B+13);}
+ for(let v=0;v<=1.2;v+=.3){c.beginPath();c.moveTo(L,Y(v));c.lineTo(W-8,Y(v));c.stroke();c.fillText(v.toFixed(1),8,Y(v)+3);}
+ c.fillText('CRA →',W-54,H-4);c.fillText('偏移 / 像素宽',L,13);
+ const plot=(p,col,nm)=>{c.strokeStyle=col;c.lineWidth=2;c.beginPath();for(let i=0;i<=180;i++){const a=i/180*craMax,s=h*Math.tan(a*Math.PI/180)/p;c.lineTo(X(a),Y(Math.min(s,1.2)));}c.stroke();c.fillStyle=col;const s32=h*Math.tan(craMax*Math.PI/180)/p;c.fillText(`${nm}: ${s32.toFixed(2)}`,X(craMax)-50,Y(Math.min(s32,1.2))-4);};
+ plot(1.0,PAL.r,'手机 1 µm');plot(3.5,PAL.g,'APS-C 3.5 µm');plot(5.0,PAL.b,'全画幅 5 µm');}
+
 function animQuad(t,dt){if((qT+=dt)>1.4){qT=0;qSample();}const bin=qMode==='bin';
   for(let k=0;k<QN;k++)for(let i=0;i<QN;i++){const n=k*QN+i,bi=i&~1,bk=k&~1,v=bin?(qVal[bk*QN+bi]+qVal[bk*QN+bi+1]+qVal[(bk+1)*QN+bi]+qVal[(bk+1)*QN+bi+1])/4:qVal[n];
     qShow[n]+=(v-qShow[n])*Math.min(1,dt*6);const h=.1+qShow[n]*.09,g=bin?.9:.76;

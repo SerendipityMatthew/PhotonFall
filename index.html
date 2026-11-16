@@ -133,6 +133,7 @@
     <div id="ibwrap" data-pn hidden><canvas id="ibc" class="pc" width="330" height="150"></canvas><div class="cap">最近 1.5 秒里，点光源的像在传感器上划过的轨迹</div></div>
     <div id="specwrap" data-pn hidden><canvas id="spec" class="pc" width="330" height="190"></canvas><div class="cap">示意形状，各家滤色片的实际曲线不同</div></div>
     <div id="mlsctl" data-pn hidden><div class="row"><button id="mlsbtn"></button></div></div>
+    <div id="crawrap" data-pn hidden><canvas id="cra" class="pc" width="330" height="170"></canvas><div class="cap">微透镜偏移量 vs CRA（主光线角）。假设微透镜到 PD 高度 h=1.5 µm。像素越小，相同 CRA 下相对偏移越大。</div></div>
     <div id="quadctl" data-pn hidden><div class="row"><button data-q="raw" aria-pressed="true">四合一排列</button><button data-q="bin">合并（暗光）</button><button data-q="remo">重排成拜耳（亮光）</button></div><div class="cap">每格平均 9 个电子：单格散粒噪声 3，信噪比 3。四格合并：信号 36，噪声 6，信噪比 6。</div></div>
     <div id="codecctl" data-pn hidden><div class="ctl" style="border:0;padding:0"><label for="cq">JPEG 质量 <output id="cqo"></output><input id="cq" type="range" min="5" max="100" step="5" value="75"></label><label>压缩后大小 <output id="csizeo"></output></label></div></div>
     <div id="codecwrap" data-pn hidden><canvas id="codecSrc" class="pc" width="256" height="170"></canvas><canvas id="codecDst" class="pc" width="256" height="170"></canvas><div class="cap">左原图（未压缩 BMP），右 JPEG 压缩后再解码。拖 "JPEG 质量" 看块效应、振铃、色彩退化。</div></div>
