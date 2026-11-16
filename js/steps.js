@@ -337,7 +337,53 @@ const STEPS=[
 <p><b>HEIC 比 JPEG 更"耐重保存"？不一定</b>：两次压缩都会累积伪影；HEIC 每次保存同样会损失，只是起点比 JPEG 高。真要反复编辑，用 RAW 或 TIFF。</p>
 <p><b>RAW 不能被"显示"</b>：你在相机屏幕上看到的"RAW 预览"，其实是 RAW 文件里额外嵌入的一张 JPEG 缩图，不是 RAW 本身。</p>
 <h3 class="iq">为什么格式这么多</h3>
-<p>三股力量拉扯：<b>压缩率</b>（新格式总比旧的强）、<b>专利授权</b>（HEVC 要钱、AV1 和 JXL 免费，所以推不动 HEIC 作为网页标准）、<b>生态惯性</b>（JPEG 诞生 30 多年，所有工具、浏览器、操作系统都认，取代的边际成本远大于节省的带宽）。结果就是现代格式压缩率翻倍，但 JPEG 仍是互联网图片的事实标准。</p>`},
+<p>三股力量拉扯：<b>压缩率</b>（新格式总比旧的强）、<b>专利授权</b>（HEVC 要钱、AV1 和 JXL 免费，所以推不动 HEIC 作为网页标准）、<b>生态惯性</b>（JPEG 诞生 30 多年，所有工具、浏览器、操作系统都认，取代的边际成本远大于节省的带宽）。结果就是现代格式压缩率翻倍，但 JPEG 仍是互联网图片的事实标准。</p>
+<h3 class="iq">JPEG XL 的三个技术亮点</h3>
+<p><b>① VarDCT + modular 混合编码</b>。JXL 内部两种模式混合：</p>
+<ul>
+<li><b>VarDCT</b>：变长 DCT，块大小 2×2 到 256×256 可自适应，大色块用大块（熵更低），细节用小块（保锐度）。继承 JPEG 的 DCT 思路但做得更细</li>
+<li><b>Modular</b>：全无损字典 + 上下文预测，适合合成图、文字、线条、alpha 通道、位深高的科学图像</li>
+</ul>
+<p>两者在一张图里混用 —— 照片主体走 VarDCT、文字 overlay 走 modular，整体效率比 HEIC / AVIF 更好。</p>
+<p><b>② 无损重封装老 JPEG（jpegli）</b>。JXL 能直接把现有的 JPEG 文件<b>按位无损</b>重新打包成更小的 JXL 文件（通常减 ~20%），反向也能完全恢复原 JPEG 字节。这是 JXL 想解决「全网几百 EB JPEG 文件怎么迁移」的杀手特性 —— 不动原始画质，纯省存储/带宽。Google 自己的 <code>libjxl</code> + <code>jpegli</code> 编码器都支持。</p>
+<p><b>③ 渐进式解码按显著性排序</b>。码流按 saliency（主体重要性）排，解码到约 10% 已经能显示主体轮廓和颜色，30% 清晰，100% 才是全分辨率。慢网络下用户视觉上几乎立即看到图，而不是「从上到下慢慢刷」。</p>
+<p>其他优点：原生支持 HDR（高位深）、宽色域、alpha、动画、12/16/32 bit、CMYK 多通道、超高分辨率（10⁹ 像素级）。</p>
+<h3 class="iq">HEIC vs AVIF vs JXL 正面对比</h3>
+<table class="cmp iqt"><tr><th></th><th>HEIC / HEIF</th><th>AVIF</th><th>JPEG XL</th></tr>
+<tr><td>底层编码</td><td>HEVC 帧内</td><td>AV1 帧内</td><td>原生（VarDCT + modular）</td></tr>
+<tr><td>标准化年份</td><td>2015 (MPEG)</td><td>2019 (AOMedia)</td><td>2021 (ISO/IEC 18181)</td></tr>
+<tr><td>专利费</td><td class="bad">HEVC 专利池收费</td><td class="good">免</td><td class="good">免</td></tr>
+<tr><td>位深</td><td>8-16 bit</td><td>10-12 bit</td><td class="good">最高 32 bit</td></tr>
+<tr><td>Alpha / 动画</td><td class="good">✓</td><td class="good">✓</td><td class="good">✓</td></tr>
+<tr><td>HDR</td><td class="good">✓</td><td class="good">✓</td><td class="good">✓</td></tr>
+<tr><td>无损重封老 JPEG</td><td class="bad">✗</td><td class="bad">✗</td><td class="good">✓（~20% 小）</td></tr>
+<tr><td>同画质压缩</td><td>基准 ~0.5× JPEG</td><td class="good">~0.4× JPEG</td><td class="good">~0.35× JPEG（有损）/ 无损重封 ~0.8× JPEG</td></tr>
+<tr><td>渐进式解码</td><td>一般</td><td>一般</td><td class="good">按显著性排序</td></tr>
+<tr><td>编码速度</td><td>快</td><td class="bad">慢（AV1 复杂）</td><td>中</td></tr>
+<tr><td>解码速度</td><td>快（硬解普及）</td><td>中</td><td>中（纯软件）</td></tr>
+<tr><td>Chrome 原生支持</td><td class="bad">✗（iOS/Mac 外）</td><td class="good">✓（2020）</td><td class="bad">✗（2022-09 移除，见下）</td></tr>
+<tr><td>Safari 支持</td><td class="good">✓</td><td class="good">✓（16+）</td><td class="good">✓（17+, 2023-09）</td></tr>
+<tr><td>Firefox 支持</td><td class="bad">✗</td><td class="good">✓</td><td class="good">✓（Nightly / flag, 全面支持 90+）</td></tr>
+</table>
+<h3 class="iq">Chrome 的 JXL 事件</h3>
+<p>JPEG XL 2022 年初还在 Chromium 实验性支持（flag 开），业界预计几个月内正式出 flag。<b>2022-09 Chromium issue 1178058 被标记 WontFix 并删掉 JXL 代码</b>，理由「insufficient ecosystem benefit」。社区当场反弹：</p>
+<ul>
+<li>JXL 的 libjxl decoder 只有几十 KB，和 Chromium 已经 bundle 的 WebP / AVIF 规模相当，不占空间</li>
+<li>Apple Safari 和 Mozilla Firefox 已经确认实现，JXL 是三大浏览器的两个阵营都在做的格式</li>
+<li>无专利费，和 AVIF 对比没有兼容性劣势</li>
+</ul>
+<p>社区普遍怀疑动机和 Google 推 AVIF（它是 Alliance for Open Media 的核心成员，和 Netflix、Mozilla 联合）、不想给竞品空间有关。2023 年 Adobe、Facebook、Shopify 等联名要求 Chromium 重新考虑，Chromium 团队的态度仍是「会议上讨论」。2024-2025 年 flag 后的支持持续演进，但 <b>Chrome 稳定版仍不默认开 JXL</b>。</p>
+<p>后果：JXL 没能像 WebP / AVIF 那样「一夜之间全网可用」。目前 JXL 的主要用途是 Apple 生态内部（macOS 文件系统、Safari、Final Cut 都支持）、Firefox 用户、以及想拿它做无损压缩归档的用户。全网通用 JPEG 替代者的位置，AVIF 实际占据了。</p>
+<h3 class="iq">现在该用哪个</h3>
+<ul>
+<li><b>发到网上给普通用户看</b>：仍用 <b>JPEG</b>（兼容最广）。如果能 fallback，再加一份 AVIF 给现代浏览器</li>
+<li><b>iPhone 原片</b>：<b>HEIC</b>（默认）。分享前转 JPEG 或 HEIC 直传（iOS/Mac 原生支持）</li>
+<li><b>网页想压缩最小 + 保颜色</b>：<b>AVIF</b>。主流浏览器都支持（Chrome、Firefox、Safari 16+、Edge）</li>
+<li><b>无损压缩旧 JPEG 归档</b>：<b>JPEG XL</b>（libjxl）。减 20% 完全无损，解码任何一端都能还原</li>
+<li><b>Apple 生态内部（照片、Final Cut）</b>：<b>JPEG XL</b> 开始取代 HEIC，HDR / 高位深 / 宽色域原生好</li>
+<li><b>科学档案、高位深、宽色域</b>：<b>JPEG XL 32 bit</b>（或 TIFF 做无压缩归档）</li>
+<li><b>动画 / 短视频</b>：<b>AVIF</b> 或直接 WebM / MP4，不要再用 GIF</li>
+</ul>`},
  {ch:6,t:'视频编码：从 YUV 到 H.265',cal:['general','confirmed'],refs:[{t:'ITU-T H.264（AVC）',u:'https://www.itu.int/rec/T-REC-H.264'},{t:'ITU-T H.265（HEVC）',u:'https://www.itu.int/rec/T-REC-H.265'},{t:'ITU-T H.266（VVC）',u:'https://www.itu.int/rec/T-REC-H.266'},{t:'AV1 Specification（AOMedia）',u:'https://aomediacodec.github.io/av1-spec/'},{t:'Sony S-Log3 技术文档'}],g:'vid',cam:[0,1.5,8],look:[0,0.5,0],lead:`视频每秒几十张图，原样存太大。编码像写日记只记“今天和昨天哪里不一样”：<k data-hl="I">I 帧</k>完整记一张，<k data-hl="P">P 帧</k>只记变化，颜色也存得粗一点。`,adv:`<p>一帧 4K 10 bit RGB 大约 30 MB，30 fps 就是 <b>900 MB/s</b>。原样存不现实，必须压缩。</p><p><b>第一步：RGB → YUV 子采样</b>。把 RGB 拆成亮度 Y 和两个色度 U、V。人眼对亮度敏感、对色度不敏感，所以色度可以降分辨率：</p><p><b>4:4:4</b> — 色度和亮度同分辨率，专业后期。</p><p><b>4:2:2</b> — 色度水平减半，ProRes、广播。</p><p><b>4:2:0</b> — 色度水平垂直都减半（每四个 Y 共享一组 UV），家用、流媒体、几乎所有手机视频。这一步就把数据量砍到 1/2 或 3/8。</p><p><b>第二步：帧内 + 帧间压缩</b>。</p><p><b>帧内（ALL-I）</b>：每帧单独压缩，像连拍 JPEG。剪辑随便跳帧，码率最高。</p><p><b>帧间（IPB）</b>：<b>I 帧</b>完整；<b>P 帧</b>只记和前一帧的差别（大多数块只是移动了一点，记运动向量 + 残差）；<b>B 帧</b>参考前后两个 I/P 帧。一组帧叫 <b>GOP</b>，常见每 15~30 帧一个 I。码率低但剪辑跳帧要先解码前几帧。</p><p><b>编码器</b>（码率一样时压缩率越高画质越好）：H.264 (AVC) 兼容性最好 → H.265 (HEVC) 压缩率翻倍、HDR 视频标配 → H.266 (VVC) / AV1 更高、4K 以上流媒体开始普及。</p><p><b>Log 伽马</b>（Sony S-Log3、Panasonic V-Log、Canon C-Log3）：相机不做常规色调曲线，用一条压缩曲线把 12~14 bit 的动态范围塞进 10 bit 文件。拍出来灰蒙蒙，后期按对应 LUT 展开成正常画面或 HDR。</p><p><b>RAW 视频</b>（ProRes RAW、Blackmagic RAW、CinemaDNG）：传感器原始数据直接存，不做去马赛克、白平衡，后期灵活度最高，码率也最高（4K 常上几百 MB/s）。</p>`},
  {ch:6,t:'存储卡、总线与传输',cal:['confirmed','general'],refs:[{t:'CFexpress Association',u:'https://www.compactflash.org/'},{t:'SD Association',u:'https://www.sdcard.org/'},{t:'USB-IF（USB 规范）',u:'https://www.usb.org/'}],g:'stor',pn:['storpn'],cam:[0,3,9],look:[0,0,0],lead:`数据从<k data-hl="传感器">传感器</k>出来，先存进<k data-hl="DDR 缓冲">缓冲区</k>这个蓄水池，再流进<k data-hl="存储卡 / SSD">存储卡</k>。水管里最细的那一段，决定连拍能拍多久。`,adv:`<p>传感器出来的数字先进<b>机内 DDR 缓冲</b>，处理器一边做 ISP、编码，一边往存储卡写。链路里最慢的一段决定连拍能持续多久、能拍多高码率的视频。</p><p><b>连拍缓冲</b>：机内 DDR 几 GB 够存几秒的 RAW 流。<b>缓冲满了</b>速度就掉到卡的写入速度，RAW 连拍从 30 fps 掉到几 fps。实际连拍深度 ≈ 缓冲大小 ÷ 单张大小。</p><p><b>视频码率</b>：8K RAW 要 2000+ MB/s，只有 CFexpress Type B 或<b>机内 SSD</b>（BMPCC、Z Cam）带得动。</p><p><b>对外接口</b>：</p><p>USB 3.2 Gen 2（10 Gbps）：有线拍摄到电脑、当 webcam。</p><p>以太网：直播、新闻场需要稳定带宽。</p><p>Wi-Fi 6：手机 App 浏览和低分辨率传图。</p><p>5G 模块（部分 Sony / Nikon 顶级机）：现场记者拍完几秒传到编辑部。</p><p><b>相机外接 SSD</b>（USB-C 接硬盘）：代替 CFexpress，容量大得多、单位容量便宜，录高码率视频常用。手机也开始支持外录 SSD。</p>`,hard:`<p><b>常见存储卡速度</b>：</p>
 <table class="cmp iqt"><tr><th>卡</th><th>连续写入</th><th>用在哪</th></tr><tr><td>SD UHS-I</td><td>约 90 MB/s</td><td>普通相机、主流手机</td></tr><tr><td>SD UHS-II</td><td>约 250 MB/s</td><td>中端无反</td></tr><tr><td>CFexpress Type A</td><td>约 700 MB/s</td><td>Sony α 系列</td></tr><tr><td>CFexpress Type B</td><td>约 1700 MB/s</td><td>Canon R5/R3、Nikon Z8/Z9</td></tr><tr><td>CFexpress Type B 4.0</td><td>约 3500 MB/s</td><td>8K RAW 视频</td></tr></table>`},
