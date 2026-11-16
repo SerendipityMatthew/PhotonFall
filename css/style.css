@@ -138,6 +138,11 @@ body:has(#drawer:not([hidden])) #topbar{right:calc(var(--drawer-w) + var(--gap) 
 #tabdeep>*{flex-shrink:0}
 /* 「进阶」「硬核」两枚小标签：进阶淡、硬核浓 */
 #advh,#hardh{font:700 11px/1 var(--sans);letter-spacing:.14em;align-self:flex-start;padding:5px 8px;border-radius:4px;margin:6px 0 -8px}
+#cal{display:flex;gap:6px;flex-wrap:wrap;margin:4px 0 2px}
+.cal{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:10px;font:500 11px/1.4 var(--sans);background:#eee;color:#555;border:1px solid #ddd;cursor:help}
+.cal-confirmed,.cal-general{background:#eaf3ea;color:#3d6b43;border-color:#c9e1cf}
+.cal-simplified,.cal-concept{background:#faf1d3;color:#8a6d00;border-color:#efdfa1}
+.cal-vendor,.cal-estimated,.cal-todo{background:#fbeaea;color:#8a3d3d;border-color:#ecc6c6}
 #advh{background:var(--accent-soft);color:var(--accent-ink)}
 #hardh{background:var(--ink);color:var(--paper)}
 #compwrap h3{font:600 14px/1.4 var(--sans);margin:0}
