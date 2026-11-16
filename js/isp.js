@@ -66,3 +66,11 @@ function drawHdr(){const c=cx2('hdr'),W=320,H=260;
   c.font=FONT;c.fillStyle=PAL.ink;c.fillText('传递曲线',8,14);c.fillStyle=PAL.dim;c.fillText('x = 数字编码 (0-1)　y = 亮度 (nits, log)　阴影 = SDR 范围',8,H-4);}
 document.querySelectorAll('[data-hdr]').forEach(b=>{b.setAttribute('aria-pressed',String(hdrShow[b.dataset.hdr]));b.onclick=()=>{const k=b.dataset.hdr;hdrShow[k]=!hdrShow[k];b.setAttribute('aria-pressed',String(hdrShow[k]));drawHdr();};});
 drawHdr();
+
+/* ---------- 图像编码模拟器：JPEG 质量 → 画质 / 文件大小 ---------- */
+function drawCodec(){const q=+$('cq').value/100, src=$('codecSrc'), dst=$('codecDst'), w=src.width, h=src.height;
+  const sctx=src.getContext('2d');drawScene(sctx,w,h);                                          // 原图：重画 drawScene 的风景
+  const dataUrl=src.toDataURL('image/jpeg',q), bytes=Math.round(dataUrl.length*3/4-22);          // base64 → byte 近似，-22 是 "data:image/jpeg;base64," 头
+  $('cqo').value=Math.round(q*100)+'%';$('csizeo').value=(bytes<1024?bytes+' B':(bytes/1024).toFixed(1)+' KB');
+  const img=new Image();img.onload=()=>{const dctx=dst.getContext('2d');dctx.clearRect(0,0,w,h);dctx.drawImage(img,0,0);};img.src=dataUrl;}
+if($('cq')){$('cq').oninput=drawCodec;drawCodec();}
