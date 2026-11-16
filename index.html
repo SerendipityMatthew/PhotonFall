@@ -176,8 +176,9 @@
         <button type="button" data-hdr="hlg" aria-pressed="true">HLG</button>
         <button type="button" data-hdr="linear" aria-pressed="false">Linear</button>
       </div>
+      <div class="ctl" style="border:0;padding:0"><label for="hdrLw">HLG 显示峰值 Lw <output id="hdrLwo">1000 nits, γ=1.20</output><input id="hdrLw" type="range" min="100" max="4000" step="100" value="1000"></label></div>
       <canvas id="hdr" class="pc" width="320" height="260"></canvas>
-      <div class="cap">传递曲线：数字编码 (0-1) → 屏幕亮度 (nits，对数轴)。SDR 封顶 100 nits，PQ 到 10000 nits。</div>
+      <div class="cap">传递曲线：数字编码 (0-1) → 屏幕亮度 (nits，对数轴)。SDR 封顶 100 nits，PQ 到 10000 nits。HLG 相对亮度，显示亮度随 Lw 和系统 γ 变化。</div>
     </div>
     <div class="row" id="shutpn" data-pn hidden><button id="shutbtn">切快门速度</button></div>
     <div class="row" id="storpn" data-pn hidden><button id="storbtn">换存储卡</button></div>
