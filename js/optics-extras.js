@@ -60,7 +60,7 @@ function drawPdaf(){const d=+$('pdd').value,c=cx2('pdc'),Wc=330,Hc=150,n=48,sh=d
   $('pddo').value=Math.abs(d)<.03?'合焦':(d>0?'后焦 ':'前焦 ')+Math.abs(d).toFixed(2);}
 $('pdd').oninput=drawPdaf;
 
-/* ---------- 机身防抖 ---------- */
+/* ---------- 防抖：机身 vs 镜头 ---------- */
 const ibis=new THREE.Group();ibis.visible=false;scene.add(ibis);
 const rig=new THREE.Group(), mount=new THREE.Group();ibis.add(rig);rig.add(mount);
 {const l=new THREE.DirectionalLight(0xffffff,.9);l.position.set(-3,6,6);ibis.add(l);
@@ -71,14 +71,26 @@ const rig=new THREE.Group(), mount=new THREE.Group();ibis.add(rig);rig.add(mount
  const sp=new THREE.Mesh(new THREE.PlaneGeometry(1.8,1.2),basic(0x3b82f6,{transparent:true,opacity:.55,side:THREE.DoubleSide}));sp.rotation.y=Math.PI/2;sp.position.x=-.035;mount.add(sp);
  [[.85,0],[-.85,0],[0,1.2],[0,-1.2]].forEach(([y,z])=>{const m=new THREE.Mesh(new THREE.BoxGeometry(.2,y?.18:.9,y?1.2:.18),std(0xe0a52e,{metalness:.4,roughness:.4}));m.position.set(.15,y,z);rig.add(m);});
  const gy=new THREE.Mesh(new THREE.BoxGeometry(.3,.3,.3),std(0x19c2a0));gy.position.set(1.2,1.2,1.2);rig.add(gy);}
+/* 镜头防抖组：镜筒里一片横移的小镜片，用琥珀色和机身里的蓝玻璃区分 */
+const lensCorr=new THREE.Mesh(new THREE.SphereGeometry(.7,24,14),new THREE.MeshPhongMaterial({color:0xffcd66,transparent:true,opacity:.6,shininess:120,depthWrite:false}));
+lensCorr.scale.x=.2;lensCorr.position.x=-1;rig.add(lensCorr);
+[[.9,0],[-.9,0]].forEach(([y,z])=>{const m=new THREE.Mesh(new THREE.BoxGeometry(.16,.14,.9),std(0xe0a52e,{metalness:.4,roughness:.4}));m.position.set(-1,y,z);rig.add(m);});   // 镜头里的两个 VCM 线圈（示意）
 const ibDot=new THREE.Mesh(new THREE.SphereGeometry(.08,12,8),basic(0xffe27a));rig.add(ibDot);
-label(ibis,'镜头',V(-2,1.5,0));label(ibis,'传感器',V(0,-.85,1.3));label(ibis,'音圈电机（线圈 + 磁铁）',V(.2,1.2,0));label(ibis,'陀螺仪',V(1.2,1.65,1.2));label(ibis,'点光源在传感器上的像',V(-.3,.5,-1));
-let ibOn=false;const ibHist=[];$('ibon').onclick=()=>{ibOn=!ibOn;$('ibon').textContent=ibOn?'关闭机身防抖':'打开机身防抖';ibHist.length=0;};
+label(ibis,'镜头',V(-2,1.5,0));label(ibis,'传感器',V(0,-.85,1.3));label(ibis,'机身音圈电机',V(.2,1.2,0));label(ibis,'陀螺仪',V(1.2,1.65,1.2));label(ibis,'点光源在传感器上的像',V(-.3,.5,-1));label(ibis,'防抖镜片组',V(-1,-1.0,.7));
+let ibMode=0;const IBM_LBL=['防抖：关','防抖：机身','防抖：镜头'],IBM_DESC=['防抖关：曝光期间像在传感器上划出拖影','机身防抖：传感器追着像跑，像几乎停在原地','镜头防抖：镜片组横移把光偏回来，像稳住'];
+const ibHist=[];$('ibon').onclick=()=>{ibMode=(ibMode+1)%3;$('ibon').textContent=IBM_LBL[ibMode];ibHist.length=0;};$('ibon').textContent=IBM_LBL[0];
 {const c=cx2('ibc'),Wc=330,Hc=150;c.fillStyle=PAL.paper;c.fillRect(0,0,Wc,Hc);} // 初始底色
 function animIbis(t){const a=.035*(Math.sin(5.3*t)+.6*Math.sin(11.7*t+1.3)),b=.035*(Math.sin(4.1*t+2)+.6*Math.sin(9.3*t+.4));rig.rotation.z=a;rig.rotation.y=b;
-  const E=6,dy=-2*Math.tan(a)*E,dz=2*Math.tan(b)*E;ibDot.position.set(-.07,dy,dz);mount.position.set(0,ibOn?dy:0,ibOn?dz:0);
-  ibHist.push([dy-mount.position.y,dz-mount.position.z]);if(ibHist.length>90)ibHist.shift();
+  const E=6,dy=-2*Math.tan(a)*E,dz=2*Math.tan(b)*E;
+  if(ibMode===2){                                    // 镜头防抖：镜片组横移，传感器不动，像稳在中心
+    ibDot.position.set(-.07,0,0);mount.position.set(0,0,0);lensCorr.position.set(0,.16*dy,.16*dz);
+    ibHist.push([.012*Math.sin(t*6.3),.012*Math.cos(t*4.9)]);                                       // 小残差示意，不完全归零
+  }else{                                             // 关 / 机身
+    ibDot.position.set(-.07,dy,dz);mount.position.set(0,ibMode===1?dy:0,ibMode===1?dz:0);lensCorr.position.set(0,0,0);
+    ibHist.push([dy-mount.position.y,dz-mount.position.z]);
+  }
+  if(ibHist.length>90)ibHist.shift();
   const c=cx2('ibc'),Wc=330,Hc=150;c.fillStyle=PAL.paper;c.fillRect(0,0,Wc,Hc);c.strokeStyle=PAL.grid;c.lineWidth=1;
   for(let x=0;x<Wc;x+=15){c.beginPath();c.moveTo(x,0);c.lineTo(x,Hc);c.stroke();}for(let y=0;y<Hc;y+=15){c.beginPath();c.moveTo(0,y);c.lineTo(Wc,y);c.stroke();}
   c.strokeStyle=PAL.amber;c.lineWidth=4;c.lineCap='round';c.beginPath();ibHist.forEach(([y,z])=>c.lineTo(Wc/2+z*90,Hc/2-y*90));if(ibHist.length===1)c.lineTo(Wc/2+.1,Hc/2);c.stroke();c.lineWidth=1;
-  c.font=FONT;c.fillStyle=PAL.ink;c.fillText(ibOn?'防抖开：像几乎停在同一处，没有拖影':'防抖关：曝光期间像在传感器上划出拖影',8,14);c.fillStyle=PAL.dim;c.fillText('网格 = 像素（放大示意）',8,Hc-6);}
+  c.font=FONT;c.fillStyle=PAL.ink;c.fillText(IBM_DESC[ibMode],8,14);c.fillStyle=PAL.dim;c.fillText('网格 = 像素（放大示意）',8,Hc-6);}
