@@ -9,7 +9,7 @@ function drawSnr(){const p=+$('np').value,rn=+$('nr').value,dk=+$('nd').value,FW
   const line=(f,col,dash)=>{c.strokeStyle=col;c.setLineDash(dash||[]);c.lineWidth=2;c.beginPath();for(let i=0;i<=240;i++){const S=10**(i/240*6);if(S>FW)break;const v=f(S);if(v<.1)continue;c.lineTo(X(S),Y(Math.min(1000,v)));}c.stroke();c.setLineDash([]);};
   line(S=>Math.sqrt(S),PAL.dim,[4,4]);line(S=>S/Math.sqrt(S+rn*rn+dk),PAL.amber);
   c.strokeStyle=PAL.r;c.lineWidth=1;c.beginPath();c.moveTo(X(FW),42);c.lineTo(X(FW),Hc-B);c.stroke();c.fillStyle=PAL.r;c.fillText('满阱',X(FW)-28,54);
-  const dr=FW/Math.sqrt(rn*rn+dk);c.fillStyle=PAL.ink;c.fillText(`满阱 ${Math.round(FW).toLocaleString()} e⁻　动态范围 ${(20*Math.log10(dr)).toFixed(0)} dB ≈ ${Math.log2(dr).toFixed(1)} 档`,4,13);
+  const dr=FW/Math.sqrt(rn*rn+dk);c.fillStyle=PAL.ink;c.fillText(`满阱 ${Math.round(FW).toLocaleString()} e⁻（按 3500 e⁻/µm² 估）　动态范围 ${(20*Math.log10(dr)).toFixed(0)} dB ≈ ${Math.log2(dr).toFixed(1)} 档`,4,13);
   c.fillStyle=PAL.amber;c.fillText('实线：实际信噪比',4,28);c.fillStyle=PAL.dim;c.fillText('虚线：只有散粒噪声的理想情况',120,28);
   /* 噪声分量分解图：σ_shot / σ_read / σ_dark / σ_total 四条曲线，交叉点标出 */
   {const nc=cx2('nbreak'),nW=330,nH=160,nL=40,nB=26;
