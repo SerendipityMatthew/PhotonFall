@@ -129,6 +129,17 @@
     <div class="row" id="coatpn" data-pn hidden><button id="coatbtn">关掉镀膜（看脏画面）</button></div>
     <div id="reflctl" data-pn hidden><label class="chkl" for="refla">入射角 <output id="reflao"></output><input id="refla" type="range" min="0" max="60" step="1" value="0"></label></div>
     <div id="reflwrap" data-pn hidden><canvas id="reflc" class="pc" width="330" height="230"></canvas><div class="cap">每个镜片表面反射掉多少光（纵轴对数刻度）。裸玻璃、单层、六层按薄膜干涉公式计算；亚波长结构用渐变折射率层近似，是示意</div></div>
+    <div id="gamutwrap" data-pn hidden>
+      <div class="row">
+        <button type="button" data-gamut="sRGB" aria-pressed="true">sRGB</button>
+        <button type="button" data-gamut="dispP3" aria-pressed="true">Display P3</button>
+        <button type="button" data-gamut="adobe" aria-pressed="false">Adobe RGB</button>
+        <button type="button" data-gamut="rec2020" aria-pressed="true">Rec. 2020</button>
+        <button type="button" data-gamut="prophoto" aria-pressed="false">ProPhoto</button>
+      </div>
+      <canvas id="gamut" class="pc" width="320" height="300"></canvas>
+      <div class="cap">CIE 1931 xy 色度图。马蹄形是人眼能看到的全部颜色；三角形是某色域能覆盖的子集。点标签切换显示。</div>
+    </div>
     <div class="row" id="shutpn" data-pn hidden><button id="shutbtn">切快门速度</button></div>
     <div class="row" id="storpn" data-pn hidden><button id="storbtn">换存储卡</button></div>
 </div>

@@ -18,3 +18,26 @@
  const tint=(a,n)=>{const k=ch(n%Wi,n/Wi|0),v=[0,0,0];v[k]=a[n]*1.3;return v;}, three=a=>n=>[a[n*3],a[n*3+1],a[n*3+2]];
  show('i0',n=>{const v=raw[n]/1023*1.25;return [v,v,v];});show('i1',n=>tint(s1,n));show('i2',n=>tint(s2,n));
  show('i3',three(s3));show('i4',three(s4));show('i5',three(s5));show('i6',three(s6));show('i7',three(s7));show('i8',three(s8));}
+
+
+/* ---------- 色域模拟器：CIE 1931 xy 色度图 + 可切换的色域三角形 ---------- */
+const SPECTRAL=[[380,.1741,.005],[440,.1548,.0279],[460,.1440,.0297],[480,.0913,.1327],[490,.0454,.2950],[500,.0082,.5384],[510,.0139,.7502],[520,.0743,.8338],[530,.1547,.8059],[540,.2296,.7543],[550,.3016,.6923],[560,.3731,.6245],[570,.4441,.5547],[580,.5125,.4866],[590,.5752,.4242],[600,.6270,.3725],[610,.6658,.3340],[620,.6915,.3083],[640,.7190,.2810],[700,.7347,.2653]];
+const GAMUTS={sRGB:{R:[.64,.33],G:[.30,.60],B:[.15,.06],W:[.3127,.329],c:'#5a95ff',n:'sRGB'},dispP3:{R:[.680,.320],G:[.265,.690],B:[.150,.060],W:[.3127,.329],c:'#48c26a',n:'Display P3'},adobe:{R:[.64,.33],G:[.21,.71],B:[.15,.06],W:[.3127,.329],c:'#ef5a5f',n:'Adobe RGB'},rec2020:{R:[.708,.292],G:[.170,.797],B:[.131,.046],W:[.3127,.329],c:'#9a6200',n:'Rec. 2020'},prophoto:{R:[.7347,.2653],G:[.1596,.8404],B:[.0366,.0001],W:[.3457,.3585],c:'#b48cff',n:'ProPhoto'}};
+const gamutShow={sRGB:true,dispP3:true,adobe:false,rec2020:true,prophoto:false};
+function drawGamut(){const c=cx2('gamut'),W=320,H=300,xMax=.78,yMax=.87;
+  const px=x=>24+x/xMax*(W-36), py=y=>H-24-y/yMax*(H-44);
+  c.fillStyle=PAL.paper;c.fillRect(0,0,W,H);
+  c.strokeStyle=PAL.grid;c.lineWidth=1;c.font=FONT;c.fillStyle=PAL.dim;
+  for(let i=0;i<=7;i++){const sx=px(i/10);c.beginPath();c.moveTo(sx,H-24);c.lineTo(sx,H-20);c.stroke();c.fillText((i/10).toFixed(1),sx-7,H-10);}
+  for(let j=0;j<=8;j++){const sy=py(j/10);c.beginPath();c.moveTo(20,sy);c.lineTo(24,sy);c.stroke();c.fillText((j/10).toFixed(1),2,sy+3);}
+  c.strokeStyle=PAL.ink;c.lineWidth=1.3;c.beginPath();
+  SPECTRAL.forEach(([w,x,y],i)=>{if(i===0)c.moveTo(px(x),py(y));else c.lineTo(px(x),py(y));});
+  c.lineTo(px(SPECTRAL[0][1]),py(SPECTRAL[0][2]));c.stroke();
+  c.fillStyle=PAL.dim;[[480,'480'],[500,'500'],[520,'520'],[550,'550'],[580,'580'],[620,'620']].forEach(([w,lbl])=>{const p=SPECTRAL.find(([ww])=>ww===w);if(p)c.fillText(lbl,px(p[1])+5,py(p[2])+3);});
+  Object.entries(GAMUTS).forEach(([k,g])=>{if(!gamutShow[k])return;
+    c.strokeStyle=g.c;c.lineWidth=1.8;c.fillStyle=g.c+'22';c.beginPath();
+    c.moveTo(px(g.R[0]),py(g.R[1]));c.lineTo(px(g.G[0]),py(g.G[1]));c.lineTo(px(g.B[0]),py(g.B[1]));c.closePath();c.fill();c.stroke();
+    c.fillStyle=g.c;c.beginPath();c.arc(px(g.W[0]),py(g.W[1]),2.5,0,7);c.fill();});
+  c.font=FONT;c.fillStyle=PAL.ink;c.fillText('CIE 1931 xy',8,14);c.fillStyle=PAL.dim;c.fillText('x',W-14,H-10);c.fillText('y',8,20);}
+document.querySelectorAll('[data-gamut]').forEach(b=>{b.setAttribute('aria-pressed',String(gamutShow[b.dataset.gamut]));b.onclick=()=>{const k=b.dataset.gamut;gamutShow[k]=!gamutShow[k];b.setAttribute('aria-pressed',String(gamutShow[k]));drawGamut();};});
+drawGamut();
