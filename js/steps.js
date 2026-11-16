@@ -427,7 +427,7 @@ const STEPS=[
 <li><b>Modular</b>：全无损字典 + 上下文预测，适合合成图、文字、线条、alpha 通道、位深高的科学图像</li>
 </ul>
 <p>两者在一张图里混用 —— 照片主体走 VarDCT、文字 overlay 走 modular，整体效率比 HEIC / AVIF 更好。</p>
-<p><b>② 无损重封装老 JPEG（jpegli）</b>。JXL 能直接把现有的 JPEG 文件<b>按位无损</b>重新打包成更小的 JXL 文件（通常减 ~20%），反向也能完全恢复原 JPEG 字节。这是 JXL 想解决「全网几百 EB JPEG 文件怎么迁移」的杀手特性 —— 不动原始画质，纯省存储/带宽。Google 自己的 <code>libjxl</code> + <code>jpegli</code> 编码器都支持。</p>
+<p><b>② 无损重封装老 JPEG</b>。JXL 能直接把现有的 JPEG 文件<b>按位无损</b>重新打包成更小的 JXL 文件（通常减 ~20%），反向也能完全恢复原 JPEG 字节。这是 JXL 想解决「全网几百 EB JPEG 文件怎么迁移」的杀手特性 —— 不动原始画质，纯省存储/带宽。做这件事的工具是 Google 的 <code>libjxl</code>（<code>cjxl --lossless_jpeg=1</code>）。<b>注意别和 <code>jpegli</code> 混</b>：<code>jpegli</code> 是 Google 2024 开源的新 JPEG 编码器，输出仍然是标准 JPEG 字节流（不是 JXL），借用 libjxl 内部的变换让同大小 JPEG 画质更好；两者都用 libjxl 的变换，但目标输出格式不同。</p>
 <p><b>③ 渐进式解码按显著性排序</b>。码流按 saliency（主体重要性）排，解码到约 10% 已经能显示主体轮廓和颜色，30% 清晰，100% 才是全分辨率。慢网络下用户视觉上几乎立即看到图，而不是「从上到下慢慢刷」。</p>
 <p>其他优点：原生支持 HDR（高位深）、宽色域、alpha、动画、12/16/32 bit、CMYK 多通道、超高分辨率（10⁹ 像素级）。</p>
 <h3 class="iq">HEIC vs AVIF vs JXL 正面对比</h3>
