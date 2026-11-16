@@ -101,6 +101,7 @@
       <figure id="i8fig"><canvas id="i8" width="96" height="64"></canvas><figcaption>⑨ 锐化</figcaption></figure>
     </div>
     <div id="airywrap" data-pn hidden><canvas id="airy" class="pc" width="320" height="170"></canvas><div class="cap">衍射：一个点经过当前光圈后，在传感器上实际成的光斑</div></div>
+    <div id="mtfwrap" data-pn hidden><canvas id="mtf" class="pc" width="320" height="170"></canvas><div class="cap">MTF：衍射（蓝）× 像素采样（紫）= 实际能达到的锐度（绿）。拖「光圈」看三条曲线怎么变。</div></div>
     <div id="abwrap" data-pn hidden><label class="chk"><input type="checkbox" id="abon" checked> 显示未校正的像差（夸张）</label></div>
     <div id="moire" data-pn hidden><div class="two"><figure><canvas id="mo1" class="pc px" width="120" height="80"></canvas><figcaption>无低通滤镜：细纹变成假的粗纹和彩色</figcaption></figure><figure><canvas id="mo2" class="pc px" width="120" height="80"></canvas><figcaption>有低通滤镜：太细的纹被抹成灰色</figcaption></figure></div><div class="cap">同一张由内向外越来越细的同心圆纹，经拜耳采样和去马赛克后的结果，按真实算法计算</div></div>
     <div id="pdafctl" data-pn hidden><label class="chkl" for="pdd" style="display:grid;grid-template-columns:1fr auto;font-size:13px;color:var(--dim)">离焦程度 <output id="pddo" style="font-family:var(--mono);color:var(--fg)"></output><input id="pdd" type="range" min="-1" max="1" step="0.01" value="0.5" style="grid-column:1/-1;width:100%;accent-color:var(--light)"></label></div>
