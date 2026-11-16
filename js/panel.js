@@ -1,5 +1,16 @@
 /* 讲解栏渲染 — 依赖 CHAPTERS、STEPS（steps.js）和 $（core.js） */
 
+/* 可信度标签：见 docs/PHOTONFALL_AUDIT.md */
+const CAL = {
+  confirmed:  {label:'有据可查', hint:'有官方、论文或标准文档可查'},
+  general:    {label:'通用原理', hint:'物理、信息论、色彩学等教材里的标准内容'},
+  simplified: {label:'简化模型', hint:'为教学简化的模型，不代表真实器件'},
+  concept:    {label:'示意图',   hint:'布局、比例、参数只作示意'},
+  vendor:     {label:'厂商实现', hint:'某厂商的具体做法，不可推广'},
+  estimated: {label:'估算',      hint:'公开资料不足，按业界常见做法估算'},
+  todo:       {label:'待验证',   hint:'暂未复核'},
+};
+
 function renderPanel(i) {
   const s = STEPS[i];
 
@@ -21,6 +32,11 @@ function renderPanel(i) {
       if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); hl(kEl.dataset.hl, true); }
     };
   });
+
+  /* 可信度标签 */
+  const cal = (s.cal || []).filter(k => CAL[k]);
+  $('cal').innerHTML = cal.map(k => `<span class="cal cal-${k}" title="${CAL[k].hint}">${CAL[k].label}</span>`).join('');
+  $('cal').hidden = !cal.length;
 
   /* 抽屉「深入」：进阶，后接硬核（没有硬核时连小标题一起藏） */
   $('adv').innerHTML = s.adv || '';
