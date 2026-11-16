@@ -41,3 +41,28 @@ function drawGamut(){const c=cx2('gamut'),W=320,H=300,xMax=.78,yMax=.87;
   c.font=FONT;c.fillStyle=PAL.ink;c.fillText('CIE 1931 xy',8,14);c.fillStyle=PAL.dim;c.fillText('x',W-14,H-10);c.fillText('y',8,20);}
 document.querySelectorAll('[data-gamut]').forEach(b=>{b.setAttribute('aria-pressed',String(gamutShow[b.dataset.gamut]));b.onclick=()=>{const k=b.dataset.gamut;gamutShow[k]=!gamutShow[k];b.setAttribute('aria-pressed',String(gamutShow[k]));drawGamut();};});
 drawGamut();
+
+/* ---------- HDR 模拟器：PQ / HLG / sRGB / BT.1886 传递曲线 ---------- */
+const HDR_CURVES={
+  srgb:{n:'sRGB (SDR 100 nits)',c:'#5a95ff',fn:x=>{const v=x<=.04045?x/12.92:Math.pow((x+.055)/1.055,2.4);return v*100;}},
+  bt1886:{n:'BT.1886 (SDR γ=2.4)',c:'#48c26a',fn:x=>Math.pow(x,2.4)*100},
+  pq:{n:'PQ · HDR10 (ST 2084)',c:'#ef5a5f',fn:x=>{const m1=2610/16384,m2=2523/32,c1=107/128,c2=2413/128,c3=2392/128;const Em=Math.pow(Math.max(x,1e-10),1/m2);const num=Math.max(Em-c1,0);const den=c2-c3*Em;return 10000*Math.pow(num/den,1/m1);}},
+  hlg:{n:'HLG (Lw=1000 nits)',c:'#9a6200',fn:x=>{const a=.17883277,b=1-4*a,cc=.5-a*Math.log(4*a);const lin=x<=.5?x*x/3:(Math.exp((x-cc)/a)+b)/12;const Lw=1000,gam=1.2+.42*Math.log10(Lw/1000);return Lw*Math.pow(Math.max(lin,0),gam);}},
+  linear:{n:'Linear (100 nits)',c:'#b48cff',fn:x=>x*100}};
+const hdrShow={srgb:true,bt1886:false,pq:true,hlg:true,linear:false};
+function drawHdr(){const c=cx2('hdr'),W=320,H=260;
+  const yMin=Math.log10(.01),yMax=Math.log10(10000);          // 0.01 nit 到 10000 nits
+  const px=x=>36+x*(W-50), py=y=>H-22-(Math.log10(Math.max(y,.01))-yMin)/(yMax-yMin)*(H-42);
+  c.fillStyle=PAL.paper;c.fillRect(0,0,W,H);
+  c.fillStyle='#faf5ea';c.fillRect(36,py(100),W-50,py(.01)-py(100));                             // SDR range 淡阴影（0-100 nits）
+  c.strokeStyle=PAL.grid;c.lineWidth=1;c.font=FONT;c.fillStyle=PAL.dim;
+  for(let i=0;i<=5;i++){const sx=px(i/5);c.beginPath();c.moveTo(sx,20);c.lineTo(sx,H-22);c.stroke();c.fillText((i/5).toFixed(1),sx-7,H-8);}
+  [.01,.1,1,10,100,1000,10000].forEach(y=>{const sy=py(y);c.beginPath();c.moveTo(36,sy);c.lineTo(W,sy);c.stroke();c.fillText(y>=1?y+'':y.toString(),2,sy+3);});
+  c.strokeStyle=PAL.dim;c.setLineDash([3,3]);c.beginPath();c.moveTo(36,py(100));c.lineTo(W,py(100));c.stroke();c.setLineDash([]);  // 100 nits SDR 封顶线
+  Object.entries(HDR_CURVES).forEach(([k,cu])=>{if(!hdrShow[k])return;
+    c.strokeStyle=cu.c;c.lineWidth=2;c.beginPath();
+    for(let i=0;i<=W-50;i++){const x=i/(W-50),y=cu.fn(x);c.lineTo(px(x),py(y));}c.stroke();});
+  c.fillStyle=PAL.paper;c.fillRect(0,0,W,20);c.fillRect(0,H-18,W,18);
+  c.font=FONT;c.fillStyle=PAL.ink;c.fillText('传递曲线',8,14);c.fillStyle=PAL.dim;c.fillText('x = 数字编码 (0-1)　y = 亮度 (nits, log)　阴影 = SDR 范围',8,H-4);}
+document.querySelectorAll('[data-hdr]').forEach(b=>{b.setAttribute('aria-pressed',String(hdrShow[b.dataset.hdr]));b.onclick=()=>{const k=b.dataset.hdr;hdrShow[k]=!hdrShow[k];b.setAttribute('aria-pressed',String(hdrShow[k]));drawHdr();};});
+drawHdr();

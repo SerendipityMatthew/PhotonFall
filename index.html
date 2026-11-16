@@ -141,6 +141,17 @@
       <canvas id="gamut" class="pc" width="320" height="300"></canvas>
       <div class="cap">CIE 1931 xy 色度图。马蹄形是人眼能看到的全部颜色；三角形是某色域能覆盖的子集。点标签切换显示。</div>
     </div>
+    <div id="hdrwrap" data-pn hidden>
+      <div class="row">
+        <button type="button" data-hdr="srgb" aria-pressed="true">sRGB (SDR)</button>
+        <button type="button" data-hdr="bt1886" aria-pressed="false">BT.1886</button>
+        <button type="button" data-hdr="pq" aria-pressed="true">PQ (HDR10)</button>
+        <button type="button" data-hdr="hlg" aria-pressed="true">HLG</button>
+        <button type="button" data-hdr="linear" aria-pressed="false">Linear</button>
+      </div>
+      <canvas id="hdr" class="pc" width="320" height="260"></canvas>
+      <div class="cap">传递曲线：数字编码 (0-1) → 屏幕亮度 (nits，对数轴)。SDR 封顶 100 nits，PQ 到 10000 nits。</div>
+    </div>
     <div class="row" id="shutpn" data-pn hidden><button id="shutbtn">切快门速度</button></div>
     <div class="row" id="storpn" data-pn hidden><button id="storbtn">换存储卡</button></div>
 </div>
