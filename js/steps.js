@@ -263,7 +263,33 @@ const STEPS=[
 <tr><td>Apple A-chip ISP + Neural Engine</td><td>Deep Fusion 和 Smart HDR 是多帧 + Neural Engine 的融合流程，不是传统线性 ISP；Photonic Engine 把深度处理提前到去马赛克前</td></tr>
 <tr><td>Google Tensor（+ Visual Core）</td><td>HDR+ / Night Sight 是多帧对齐 + 合成，上游是 10-15 帧 RAW 的堆栈；传统 ISP 做基础校正，剩下交给 TPU</td></tr>
 <tr><td>联发科 Imagiq / 展锐</td><td>和 Qualcomm 路线类似，专用 AI-ISP 模块越来越大</td></tr></table>
-<p><b>标签</b>：上面的九步流程图属于 Simplified Model（教学典型顺序）。各家 ISP 的具体步骤和顺序都是厂商机密，公开资料只到营销 brief 和专利散点。</p>`},
+<p><b>标签</b>：上面的九步流程图属于 Simplified Model（教学典型顺序）。各家 ISP 的具体步骤和顺序都是厂商机密，公开资料只到营销 brief 和专利散点。</p>
+<h3 class="iq">去马赛克（demosaic）几种算法</h3>
+<p>Bayer 阵列每像素只记录 R/G/B 之一，要靠邻居插出缺的两个颜色。插得好不好直接决定边缘锐度和伪色。几种典型算法由简到繁：</p>
+<table class="cmp iqt"><tr><th>算法</th><th>原理</th><th>速度</th><th>画质</th></tr>
+<tr><td><b>Nearest Neighbor</b></td><td>直接复制最近的同色像素</td><td class="good">最快</td><td class="bad">边缘锯齿 + 伪色严重</td></tr>
+<tr><td><b>Bilinear</b></td><td>四邻域同色加权平均</td><td class="good">很快</td><td>平滑但边缘变钝、细节伪色</td></tr>
+<tr><td><b>VNG</b>（Variable Number of Gradients）</td><td>沿多方向估计梯度，选梯度小的方向插值</td><td>中</td><td>边缘保持好一些</td></tr>
+<tr><td><b>AHD</b>（Adaptive Homogeneity-Directed）</td><td>先在水平和垂直两个方向都插，选同质性高的那个</td><td>中</td><td>细节好，是 Lightroom 默认</td></tr>
+<tr><td><b>AMaZE</b>（Aliasing Minimization and Zipper Elimination）</td><td>频域分析边缘方向，专门消拉链伪色</td><td class="bad">慢</td><td class="good">高分辨率低伪色，RawTherapee 偏爱</td></tr>
+<tr><td><b>DLMMSE / RCD / 学习式</b></td><td>统计优化或神经网络</td><td class="bad">慢（除非 GPU）</td><td class="good">最好，手机 ISP 近年都用 AI demosaic</td></tr></table>
+<p><b>常见伪色</b>：细彩色条纹（高频超过 Nyquist）出现"拉链" / "波纹" / "伪红绿"。好算法在细节保留和伪色压制之间取舍。OLPF 从源头避开这些问题（见"传感器前的几片玻璃"），所以有 OLPF 的传感器可以用更简单的算法。</p>
+<h3 class="iq">白平衡算法</h3>
+<p>目标：估计光源颜色 (R_wb, G_wb, B_wb)，然后给 R 和 B 乘以 G/R_wb 和 G/B_wb，让白物体回白。几种常见做法：</p>
+<ul>
+<li><b>Gray World</b>：假设整幅画面 R / G / B 均值应相等。简单但错在画面主色调极端时（纯红花海→以为光源偏红）</li>
+<li><b>White Patch（Max-RGB）</b>：假设画面里最亮的部分应该是白。错在没有真正纯白物体时</li>
+<li><b>Gamut Mapping</b>：收集画面所有 R/G/B 色度点，看落在哪个光源下的色域里</li>
+<li><b>Learning-based / AI-AWB</b>：卷积网络从一堆标注过的图学 R_wb/B_wb 映射。Google、Apple、华为都在用</li>
+<li><b>Face / Semantic AWB</b>：检测到人脸 / 天空 / 草地，用这些语义区域（已知颜色）反推光源。现代手机主用</li>
+</ul>
+<p>相机的"自动白平衡"是以上几种混合，加上曝光 metadata（闪光灯、WB 预设）。拍 RAW 的好处就是 WB 增益还没乘上去，后期能完全重做。</p>
+<h3 class="iq">色彩校正矩阵 CCM</h3>
+<p>传感器的 R / G / B（滤色片 + 硅响应组合而成）<b>不等于</b> sRGB 的 R / G / B。要靠一个 3×3 矩阵把两者映射：</p>
+<div class="f">[R_sRGB]   [m₀₀ m₀₁ m₀₂]   [R_sensor]<br>[G_sRGB] = [m₁₀ m₁₁ m₁₂] × [G_sensor]<br>[B_sRGB]   [m₂₀ m₂₁ m₂₂]   [B_sensor]</div>
+<p>矩阵是通过拍 <b>ColorChecker</b> 或类似标准色卡、最小化 ΔE 2000 反算出来的。</p>
+<p>关键：<b>不同光源要不同矩阵</b>。D65（日光）和 Tungsten（钨丝灯 ~2850K）下，同一片红叶在传感器上的 R/G/B 分布不同，CCM 也不同。相机厂家至少标两个光源的矩阵（D65 + Tungsten，或 D65 + CWF），实际用色温时在两个矩阵之间插值。DNG 规范里的 ColorMatrix1 和 ColorMatrix2 就是这两组数据。</p>
+<p>CCM 之外还有<b>ForwardMatrix</b>（CIE XYZ → sensor native）、<b>ReductionMatrix</b> 等辅助矩阵，共同构成完整的色彩路径。</p>`},
  {ch:6,t:'机械快门与同步速度',cal:['general'],refs:[{t:'焦平面快门与 X-sync 速度（摄影技术教材）'},{t:'高速同步（HSS）闪光原理（Canon / Nikon / Profoto 技术文档）'}],g:'shut',pn:['shutpn'],cam:[0,0,7],look:[0,0,0],lead:`机械快门像舞台上的两道幕布：<k data-hl="前帘">前帘</k>先拉开开始曝光，<k data-hl="后帘">后帘</k>再合上结束曝光；速度很快时，两道幕之间只留一条细缝扫过画面。`,adv:`<p>前面「快门 ISO 拍照」里把机械快门抽象成一块板。真实的焦平面快门贴在传感器前面，由<b>两组帘幕</b>组成：前帘先降下来开始曝光，后帘再升起来结束曝光。</p><p><b>慢速</b>（t 比帘幕跑完整个画面的时间长）：前帘到底、整个画面全开、曝光 t、后帘上来。整面同时曝光同样长。</p><p><b>高速</b>（t 比帘幕跑完一遍的时间还短）：后帘不等前帘到底就开始追，两条帘之间形成一道<b>狭缝</b>扫过传感器。每行曝光时长都是 t，但不同行曝光的<b>时刻</b>错开。</p><p><b>同步速度 X-sync</b>：全画面同时全开的最短时间，常见 <b>1/160 ~ 1/250 s</b>。闪光灯只闪几十到几百 µs，必须在画面全开时闪，否则只照到当前狭缝下的那一条。想用更快的快门配闪光，开<b>高速同步 HSS</b>：闪光灯改成高频连续脉冲发光，狭缝扫到哪段就被哪段脉冲照亮，代价是单次能量大幅下降。</p><p><b>电子前帘 EFCS</b>：前帘用传感器逐行复位代替，机械的只剩后帘。启动时没有帘幕弹跳，长焦端更不易震糊；但高速时狭缝的上下边不对称，散焦光斑会被切成 D 形，最短的几档建议关闭。</p><p><b>全电子快门</b>：机械帘幕全省掉，寂静无声、无快门寿命。受读出速度限制，普通 CMOS 会有果冻效应和 LED 频闪；<b>堆栈式传感器</b>读得极快，纯电子快门才真正好用，比如 Sony α1、α9 III。</p><p>机械快门一般标 20 万 ~ 50 万次寿命。近几年旗舰相机开始去掉机械快门。</p>`},
  {ch:6,t:'HDR 与多帧合成',cal:['general','simplified'],refs:[{t:'Google HDR+ 论文（Hasinoff et al., SIGGRAPH Asia 2016）',u:'https://hdrplusdata.org/hdrplus.pdf'},{t:'Debevec & Malik 1997「Recovering High Dynamic Range Radiance Maps from Photographs」SIGGRAPH'},{t:'Apple Smart HDR / Night Mode 产品介绍'}],g:'hdr',cam:[0,1.5,8],look:[0,0,0],lead:`亮处和暗处差得太多，一张照片装不下。那就连拍几张亮度不同的，<k data-hl="对齐 + 叠加 + 色调映射">对齐、叠加</k>，亮处取暗的、暗处取亮的，拼成一张 <k data-hl="HDR 输出">HDR</k> 照片。`,adv:`<p>单次曝光的动态范围受满阱和底噪夹，常见 <b>11 ~ 14 EV</b>。但阳光下的高光加阴影里的细节常超过 20 EV，单帧要么高光死白，要么暗部死黑。</p><p><b>包围曝光 HDR</b>：拍一张欠曝（保高光）、一张正常、一张过曝（保暗部），按亮度把三张混起来。静物好用，动的东西会出重影。</p><p><b>手机的办法</b>（Google HDR+、Apple Smart HDR、Pixel 夜景）：</p><p>① 取景时就在<b>零快门延迟队列</b>（ZSL）里连拍若干张<b>欠曝</b>帧，按快门只是冻结队列，不用现拍。欠曝的好处是高光不会先死掉。</p><p>② 全部帧<b>对齐</b>：金字塔搜索 + 光流，手抖和局部物体动分别估计。</p><p>③ <b>线性域叠加</b>：信号线性累加、散粒噪声按 √N 增长，<b>信噪比 √N</b>——N 张等效一次大底长曝光。</p><p>④ <b>鬼影抑制</b>：某一帧的某块和参考帧差太多就不参与叠加。</p><p>⑤ 全局 + 局部<b>色调映射</b>，把高动态范围压回 8 bit 显示。</p><p><b>相机端的办法</b>：用传感器自身的 <b>DCG-HDR</b> 和 <b>LOFIC</b>（前面讲过）一次曝光拿下高动态范围，没有多帧的重影，代价是电路更复杂、低增益那次噪声偏高。</p><p>视频 HDR 没法多帧合成，靠 <b>Log 伽马 + 10 bit</b> 直接记下高动态范围，播放时在支持 HDR 的屏幕上还原，见下一步。</p>`},
  {ch:6,t:'颜色空间、色深与色彩管理',cal:['general','confirmed'],refs:[{t:'IEC 61966-2-1（sRGB 标准）',u:'https://webstore.iec.ch/publication/6169'},{t:'ITU-R BT.709（HDTV）',u:'https://www.itu.int/rec/R-REC-BT.709'},{t:'ITU-R BT.2020（UHDTV 色域）',u:'https://www.itu.int/rec/R-REC-BT.2020'},{t:'ITU-R BT.2100（HDR TV，PQ / HLG）',u:'https://www.itu.int/rec/R-REC-BT.2100'},{t:'Apple「Display P3」技术文档',u:'https://developer.apple.com/documentation/metal/color_space_management'},{t:'ICC（International Color Consortium）',u:'https://www.color.org/'},{t:'SMPTE ST 2084（PQ EOTF）',u:'https://ieeexplore.ieee.org/document/7291452'},{t:'Dolby Vision 技术白皮书',u:'https://professional.dolby.com/content-creation/dolby-vision/'},{t:'BBC Hybrid Log-Gamma 技术介绍',u:'https://www.bbc.co.uk/rd/projects/high-dynamic-range'}],g:'cs',cam:[0,6,5],look:[0,0,0],lead:`颜色空间像一盒蜡笔，盒子不同，颜色多少就不同：<k data-hl="sRGB">sRGB</k> 是人人都有的小盒，<k data-hl="Rec. 2020">Rec. 2020</k> 是大盒。色深则决定从暗到亮能分出多少级台阶。`,adv:`<p>ISP 做完色彩矩阵后，颜色要落到某个<b>颜色空间</b>里才能传给屏幕或打印机。常用的几种按色域从小到大列在「硬核」的表里。</p><p><b>色深</b>：每通道几位，决定从暗到亮分多少级：</p><p><b>8 bit = 256 级</b>：JPEG、普通显示器。天空、渐变背景容易出<b>色阶断层</b>（banding）。</p><p><b>10 bit = 1024 级</b>：HEIF 照片、HDR 视频。断层基本看不见。</p><p><b>12 / 14 bit</b>：相机 RAW。给后期提亮暗部、拉色温留足空间。</p><p><b>色彩管理</b>：每台显示器、打印机自己有一个色域，描述在 <b>ICC profile</b> 里。照片从一个色域搬到另一个，按几种意图做转换：</p><p><b>感知</b>（Perceptual）：整体压进目标色域，保持颜色间的相对关系，照片通用。</p><p><b>相对比色</b>（Relative Colorimetric）：源色域里的颜色按原样保留，目标盖不住的贴到最近的边界，印刷常用。</p><p><b>打印</b>：显示屏是 RGB 发光，打印是 CMYK 油墨吸光，色域不一样，必须做转换。相纸能表现的色域一般比显示屏小，饱和度最高的红、蓝打不出来。</p><p>JPEG 不嵌 ICC profile 时默认按 sRGB 读。<b>Display P3 的 JPEG 在没色彩管理的浏览器里会变淡</b>，这就是原因。</p>
@@ -408,7 +434,46 @@ const STEPS=[
 <li><b>Apple 生态内部（照片、Final Cut）</b>：<b>JPEG XL</b> 开始取代 HEIC，HDR / 高位深 / 宽色域原生好</li>
 <li><b>科学档案、高位深、宽色域</b>：<b>JPEG XL 32 bit</b>（或 TIFF 做无压缩归档）</li>
 <li><b>动画 / 短视频</b>：<b>AVIF</b> 或直接 WebM / MP4，不要再用 GIF</li>
-</ul>`},
+</ul>
+<h3 class="iq">RAW 文件里到底装了什么</h3>
+<p>一个厂商 RAW（ARW / CR3 / NEF / RAF）本质是一个<b>多段容器</b>，底层多半基于 TIFF 或自家变体。典型一个 RAW 文件里有：</p>
+<ul>
+<li><b>Header + 元数据（EXIF）</b>：相机型号、镜头、ISO、快门、光圈、GPS、拍摄时间等</li>
+<li><b>嵌入的 JPEG 缩图</b>（小、几百 KB）：相机屏幕和图库预览就是显示这张</li>
+<li><b>嵌入的 JPEG 全尺寸预览</b>（有的厂有，几 MB）：Lightroom 没开始导入时的快速预览</li>
+<li><b>Maker Notes</b>：厂商私有标签，存自家 ISP 用的参数（色彩矩阵、镜头校正数据、对焦点、自动白平衡结果、曝光 bracket 信息、某些传感器 metadata）</li>
+<li><b>RAW 像素数据</b>：真正的 Bayer 阵列，占文件大半</li>
+<li><b>可选的 SR（second image）</b>：如 Fujifilm RAF 的 SR 高动态曝光第二帧，DCG 多帧，LOFIC 两段读数据</li>
+</ul>
+<p>所以同一张 50 MP 的 ARW 文件 60-100 MB 里，真正的 RAW 像素可能只占一半，其余是压缩的全尺寸 JPEG 预览 + 元数据。</p>
+<h3 class="iq">RAW 压缩方案</h3>
+<table class="cmp iqt"><tr><th>格式</th><th>压缩方式</th><th>50 MP 大小</th><th>可逆</th></tr>
+<tr><td>Sony ARW 未压缩</td><td>直接 14 bit × 像素数</td><td>~100 MB</td><td class="good">按位无损</td></tr>
+<tr><td>Sony ARW 压缩（有损）</td><td>delta + Huffman + 分段量化</td><td>~50 MB</td><td class="bad">亮部微量损失</td></tr>
+<tr><td>Sony cRAW / lossless（2019 起）</td><td>预测 + 熵编码，无损</td><td>~65 MB</td><td class="good">按位无损</td></tr>
+<tr><td>Canon CR3 CRM (RAW)</td><td>JPEG-LS 为底，无损</td><td>~60 MB</td><td class="good">按位无损</td></tr>
+<tr><td>Canon CR3 CRM-S / CRM-L</td><td>有损预测编码（设置里可选）</td><td>~30 / 20 MB</td><td class="bad">微损</td></tr>
+<tr><td>Nikon NEF 无损压缩</td><td>Huffman</td><td>~50 MB</td><td class="good">按位无损</td></tr>
+<tr><td>Nikon NEF 有损压缩</td><td>12-bit 量化 + Huffman</td><td>~30 MB</td><td class="bad">暗部曲线微调不如无损</td></tr>
+<tr><td>Fuji RAF 压缩</td><td>可逆量化</td><td>~35-50 MB</td><td class="good">按位无损</td></tr></table>
+<p><b>为什么有有损 RAW</b>：手机内存卡再便宜，8K RAW 连拍 30 fps 要几 GB/s 写入，有损 RAW 能把文件砍到一半到三分之一。只要损失藏在人眼不敏感的地方（高光细节的最低几 bit），后期提亮 2 挡以内看不出来。</p>
+<h3 class="iq">为什么 RAW 是各家专有</h3>
+<p>RAW 本来就包括厂商的「调味秘方」：</p>
+<ul>
+<li><b>色彩矩阵</b>：D50 / D65 / Tungsten / Fluorescent 几组 CCM，厂商选一组当"真"；Lightroom 的 "Camera Standard" / "Camera Portrait" 等 preset 就是厂商给的曲线</li>
+<li><b>镜头配置文件</b>：畸变、横向色差、暗角的多项式系数，机身内 bake 在 maker notes</li>
+<li><b>隐藏的伽马曲线</b>：某些厂商的 RAW 在 ADC 后做了<b>非线性压缩</b>（如 Sony 把 14 bit 压到 11 bit + 查表），不是严格线性</li>
+<li><b>传感器 DCG 和 LOFIC 标记</b>：高增益档和低增益档的分段点、增益比，用于合成 HDR RAW</li>
+</ul>
+<p>第三方 RAW 解码器（Lightroom、Capture One、Darktable、RawTherapee）要靠<b>逆向工程</b>猜这些 metadata 的含义。新相机上市到软件支持中间常有几周空窗，就是厂商没公开 metadata、要靠社区（exiv2 / libraw / dcraw）逆向。</p>
+<h3 class="iq">DNG 怎么工作</h3>
+<p>Adobe DNG（Digital Negative，2004）是开放的 RAW 容器规范。它<b>不是重新编码 RAW 像素</b>，而是定义一个标准化的 TIFF 容器 + 元数据 schema：</p>
+<ul>
+<li><b>标准 TIFF 结构</b>：header、IFD、嵌入预览、RAW 像素</li>
+<li><b>标准 metadata 字段</b>：ColorMatrix1/ColorMatrix2（两个光源的色彩矩阵）、ForwardMatrix、CameraCalibration、LensProfile、TIFF 标签全开放</li>
+<li><b>RAW 像素</b>：原厂私有 RAW 要么直接嵌进来（"Embedded Original"），要么<b>按 TIFF 规范重新打包</b>（线性或 Huffman 无损）</li>
+</ul>
+<p>徕卡、Pentax、Ricoh、Sigma 相机原生拍 DNG，其他厂商要靠 Adobe DNG Converter 转。<b>优点</b>：开源解码器都能读、工具链一致、十年后还能解；<b>缺点</b>：转换过程中可能丢失厂商私有 metadata（厂商的 maker notes 变成不透明 blob）。所以归档拍电影或商业摄影常先转 DNG，但 pixel-level 调色师还是守着原厂 RAW。</p>`},
  {ch:6,t:'视频编码：从 YUV 到 H.265',cal:['general','confirmed'],refs:[{t:'ITU-T H.264（AVC）',u:'https://www.itu.int/rec/T-REC-H.264'},{t:'ITU-T H.265（HEVC）',u:'https://www.itu.int/rec/T-REC-H.265'},{t:'ITU-T H.266（VVC）',u:'https://www.itu.int/rec/T-REC-H.266'},{t:'AV1 Specification（AOMedia）',u:'https://aomediacodec.github.io/av1-spec/'},{t:'Sony S-Log3 技术文档'}],g:'vid',cam:[0,1.5,8],look:[0,0.5,0],lead:`视频每秒几十张图，原样存太大。编码像写日记只记“今天和昨天哪里不一样”：<k data-hl="I">I 帧</k>完整记一张，<k data-hl="P">P 帧</k>只记变化，颜色也存得粗一点。`,adv:`<p>一帧 4K 10 bit RGB 大约 30 MB，30 fps 就是 <b>900 MB/s</b>。原样存不现实，必须压缩。</p><p><b>第一步：RGB → YUV 子采样</b>。把 RGB 拆成亮度 Y 和两个色度 U、V。人眼对亮度敏感、对色度不敏感，所以色度可以降分辨率：</p><p><b>4:4:4</b> — 色度和亮度同分辨率，专业后期。</p><p><b>4:2:2</b> — 色度水平减半，ProRes、广播。</p><p><b>4:2:0</b> — 色度水平垂直都减半（每四个 Y 共享一组 UV），家用、流媒体、几乎所有手机视频。这一步就把数据量砍到 1/2 或 3/8。</p><p><b>第二步：帧内 + 帧间压缩</b>。</p><p><b>帧内（ALL-I）</b>：每帧单独压缩，像连拍 JPEG。剪辑随便跳帧，码率最高。</p><p><b>帧间（IPB）</b>：<b>I 帧</b>完整；<b>P 帧</b>只记和前一帧的差别（大多数块只是移动了一点，记运动向量 + 残差）；<b>B 帧</b>参考前后两个 I/P 帧。一组帧叫 <b>GOP</b>，常见每 15~30 帧一个 I。码率低但剪辑跳帧要先解码前几帧。</p><p><b>编码器</b>（码率一样时压缩率越高画质越好）：H.264 (AVC) 兼容性最好 → H.265 (HEVC) 压缩率翻倍、HDR 视频标配 → H.266 (VVC) / AV1 更高、4K 以上流媒体开始普及。</p><p><b>Log 伽马</b>（Sony S-Log3、Panasonic V-Log、Canon C-Log3）：相机不做常规色调曲线，用一条压缩曲线把 12~14 bit 的动态范围塞进 10 bit 文件。拍出来灰蒙蒙，后期按对应 LUT 展开成正常画面或 HDR。</p><p><b>RAW 视频</b>（ProRes RAW、Blackmagic RAW、CinemaDNG）：传感器原始数据直接存，不做去马赛克、白平衡，后期灵活度最高，码率也最高（4K 常上几百 MB/s）。</p>`},
  {ch:6,t:'存储卡、总线与传输',cal:['confirmed','general'],refs:[{t:'CFexpress Association',u:'https://www.compactflash.org/'},{t:'SD Association',u:'https://www.sdcard.org/'},{t:'USB-IF（USB 规范）',u:'https://www.usb.org/'}],g:'stor',pn:['storpn'],cam:[0,3,9],look:[0,0,0],lead:`数据从<k data-hl="传感器">传感器</k>出来，先存进<k data-hl="DDR 缓冲">缓冲区</k>这个蓄水池，再流进<k data-hl="存储卡 / SSD">存储卡</k>。水管里最细的那一段，决定连拍能拍多久。`,adv:`<p>传感器出来的数字先进<b>机内 DDR 缓冲</b>，处理器一边做 ISP、编码，一边往存储卡写。链路里最慢的一段决定连拍能持续多久、能拍多高码率的视频。</p><p><b>连拍缓冲</b>：机内 DDR 几 GB 够存几秒的 RAW 流。<b>缓冲满了</b>速度就掉到卡的写入速度，RAW 连拍从 30 fps 掉到几 fps。实际连拍深度 ≈ 缓冲大小 ÷ 单张大小。</p><p><b>视频码率</b>：8K RAW 要 2000+ MB/s，只有 CFexpress Type B 或<b>机内 SSD</b>（BMPCC、Z Cam）带得动。</p><p><b>对外接口</b>：</p><p>USB 3.2 Gen 2（10 Gbps）：有线拍摄到电脑、当 webcam。</p><p>以太网：直播、新闻场需要稳定带宽。</p><p>Wi-Fi 6：手机 App 浏览和低分辨率传图。</p><p>5G 模块（部分 Sony / Nikon 顶级机）：现场记者拍完几秒传到编辑部。</p><p><b>相机外接 SSD</b>（USB-C 接硬盘）：代替 CFexpress，容量大得多、单位容量便宜，录高码率视频常用。手机也开始支持外录 SSD。</p>`,hard:`<p><b>常见存储卡速度</b>：</p>
 <table class="cmp iqt"><tr><th>卡</th><th>连续写入</th><th>用在哪</th></tr><tr><td>SD UHS-I</td><td>约 90 MB/s</td><td>普通相机、主流手机</td></tr><tr><td>SD UHS-II</td><td>约 250 MB/s</td><td>中端无反</td></tr><tr><td>CFexpress Type A</td><td>约 700 MB/s</td><td>Sony α 系列</td></tr><tr><td>CFexpress Type B</td><td>约 1700 MB/s</td><td>Canon R5/R3、Nikon Z8/Z9</td></tr><tr><td>CFexpress Type B 4.0</td><td>约 3500 MB/s</td><td>8K RAW 视频</td></tr></table>`},
