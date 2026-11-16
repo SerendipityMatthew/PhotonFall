@@ -2,7 +2,7 @@
 
 /* ---------- 状态 ---------- */
 let step = 0, route;
-let showAllLabels = false;
+let showAllLabels = true;
 let curMentioned = new Set();
 const goal = {p: V(), l: V()};
 const GR = {macro, micro, tx, arch, chip, cap5, pdaf, ibis, mls, quad, stk4, coat, shut, hdr, cs, vid, stor, compu};
