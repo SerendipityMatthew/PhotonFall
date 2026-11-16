@@ -17,6 +17,9 @@ const mkCanvas=(w,h)=>Object.assign(document.createElement('canvas'),{width:w,he
 const view=$('view'), renderer=new THREE.WebGLRenderer({antialias:true});
 renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.shadowMap.enabled=true;renderer.setClearColor(0x0d1420);
 view.prepend(renderer.domElement);
+/* iOS Safari / Android Chrome 偶发 context lost；preventDefault 允许 three.js 自动恢复 */
+renderer.domElement.addEventListener('webglcontextlost',e=>{e.preventDefault();console.warn('[PhotonFall] WebGL context lost — browser 将尝试恢复');});
+renderer.domElement.addEventListener('webglcontextrestored',()=>{console.log('[PhotonFall] WebGL context restored');renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.setClearColor(0x0d1420);});
 const scene=new THREE.Scene(), cam=new THREE.PerspectiveCamera(45,1,.1,200), ctr=new THREE.OrbitControls(cam,renderer.domElement);
 ctr.enableDamping=true;let tween=true;ctr.addEventListener('start',()=>tween=false);
 /* 触控板：双指滑动只平移（上下左右都是），捏合才缩放；鼠标滚轮仍是缩放。
