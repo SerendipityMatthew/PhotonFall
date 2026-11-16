@@ -31,7 +31,18 @@ const barrel=new THREE.Mesh(new THREE.CylinderGeometry(2.06,2.06,8,48,1,true,0,M
 const irisMat=std(0x10151d,{side:THREE.DoubleSide,metalness:.6,roughness:.5});
 const iris=new THREE.Mesh(new THREE.BufferGeometry(),irisMat);iris.rotation.y=Math.PI/2;lensG.add(iris);
 const plane=new THREE.Mesh(new THREE.TorusGeometry(1.95,.02,8,64),basic(0xffc45c));plane.rotation.y=Math.PI/2;lensG.add(plane);
-const body=new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(2.3,3.8,5.2)),new THREE.LineBasicMaterial({color:0x56657e}));body.position.set(.43,0,0);macro.add(body);
+/* 机身：主体仍是线框（保留剖视感），再加取景器凸起、手柄、快门按钮、模式转盘和卡口环 */
+const bodyLn=new THREE.LineBasicMaterial({color:0x56657e});
+const body=new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(2.3,3.8,5.2)),bodyLn);body.position.set(.43,0,0);macro.add(body);
+const edgeAt=(geo,x,y,z)=>{const o=new THREE.LineSegments(new THREE.EdgesGeometry(geo),bodyLn);o.position.set(x,y,z);macro.add(o);return o;};
+edgeAt(new THREE.BoxGeometry(1.8,.45,1.2),.43,2.13,-1.1);                                               // 取景器凸起
+edgeAt(new THREE.BoxGeometry(2.3,3.0,.7),.43,-.2,2.95);                                                 // 手柄凸起
+const shutterBtn=add(macro,new THREE.CylinderGeometry(.14,.14,.14,20),std(0xc8c8c8,{metalness:.65,roughness:.35}),.43,2.07,2.6);shutterBtn.castShadow=true;
+const dial=add(macro,new THREE.CylinderGeometry(.42,.42,.22,24),std(0x8a8d93,{metalness:.4,roughness:.45}),.43,2.01,1.45);dial.castShadow=true;
+const lensMount=add(macro,new THREE.TorusGeometry(1.1,.08,10,36),std(0x0e1115,{metalness:.7,roughness:.3}),-.73,0,0);lensMount.rotation.y=Math.PI/2;
+add(macro,new THREE.SphereGeometry(.06,10,8),std(0xd9483b),-.69,-1.15,0);                               // 卡口对齐红点
+label(macro,'取景器凸起',V(.43,2.5,-1.1));label(macro,'手柄',V(.43,.1,3.35));
+label(macro,'快门按钮',V(.43,2.5,2.6));label(macro,'模式转盘',V(.43,2.3,1.45));label(macro,'镜头卡口',V(-.73,1.4,0));
 const vf=$('vf'), senTex=new THREE.CanvasTexture(vf), senMat=basic(0xffffff,{map:senTex,side:THREE.DoubleSide});
 const senG=new THREE.Group();senG.rotation.x=Math.PI;macro.add(senG);                                   // 绕光轴转 180° = 倒立的像
 add(senG,new THREE.BoxGeometry(.06,1.1,1.6),std(0x0a0d12),.04,0,0);

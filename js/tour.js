@@ -55,11 +55,13 @@ function startTour() {
   tourT  = 0;
   tween  = false;
   flowK  = undefined;      // 下一帧一定重新点亮第一段
+  $('tourbtn').textContent = '停止导览';
 }
 
 function stopTour() {
   tourOn = false;
   setFlow(null);
+  $('tourbtn').textContent = '重播';
 }
 
 function animTour(dt) {
@@ -89,11 +91,11 @@ function animTour(dt) {
   ctr.target.set(...last.look);
   const post = Math.floor((tourT - cumT) / FLOW_POST_DUR);
   setFlow(FLOW_POST[Math.min(post, FLOW_POST.length - 1)]);
-  if (post >= FLOW_POST.length) tourOn = false;
+  if (post >= FLOW_POST.length) { tourOn = false; $('tourbtn').textContent = '重播'; }
 }
 
 /* 用户拖动时停止导览 */
 ctr.addEventListener('start', stopTour);
 
-/* 重播按钮 */
-$('tourbtn').addEventListener('click', startTour);
+/* 重播按钮：播放中再点就停止 */
+$('tourbtn').addEventListener('click', () => tourOn ? stopTour() : startTour());
