@@ -140,6 +140,12 @@
     <div id="loficwrap" data-pn hidden><canvas id="lofsig" class="pc" width="330" height="220"></canvas><div class="cap">同一场景亮度下记录到的电子数。无 LOFIC（红）在 PD 满阱处封顶；LOFIC（绿）接住溢出的电子，继续往上记。</div></div>
     <div id="snrctl" data-pn hidden><div class="ctl" style="border:0;padding:0"><label for="np">像素边长 <output id="npo"></output><input id="np" type="range" min="0.8" max="6" step="0.1" value="3.8"></label><label for="nr">读出噪声 <output id="nro"></output><input id="nr" type="range" min="0.5" max="10" step="0.1" value="2"></label><label for="nd">暗电流累积电子数 N（σ²=N） <output id="ndo"></output><input id="nd" type="range" min="0" max="200" step="1" value="5"></label></div></div>
     <div id="snrwrap" data-pn hidden><canvas id="snr" class="pc" width="330" height="200"></canvas><canvas id="nbreak" class="pc" width="330" height="160"></canvas><canvas id="npatch" class="pc" width="330" height="70"></canvas><div class="cap">三张图：SNR 曲线、噪声分量（谁在压制？）、以及暗 · 中 · 亮三块样片。拖三个滑块实时更新。</div></div>
+    <div id="archmatrix" data-pn hidden>
+      <table class="cmp iqt" style="margin:0;font-size:12px"><tr><th></th><th>Monolithic 单层</th><th>Stacked 堆栈</th></tr>
+      <tr><td><b>FSI 正面</b></td><td>早期 CMOS<br>2000s</td><td>少见（部分车载 / 工业）</td></tr>
+      <tr><td><b>BSI 背面</b></td><td>Exmor R 2008<br>→ 2012 主流</td><td class="good">Exmor RS 2012<br>→ 现今旗舰</td></tr></table>
+      <div class="cap">像素结构两条正交维度：受光面 (行) × 晶圆集成 (列)。3D 场景按常见教学序列线性展示，这张表把四种组合一次看全。</div>
+    </div>
     <div id="adcwrap" data-pn hidden><canvas id="adcc" class="pc" width="330" height="210"></canvas></div>
     <div id="shutwrap" data-pn hidden><canvas id="shc" class="pc" width="330" height="180"></canvas></div>
     <div id="tourpn" data-pn hidden>
