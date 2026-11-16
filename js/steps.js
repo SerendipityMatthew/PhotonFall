@@ -249,8 +249,8 @@ const STEPS=[
  {ch:5,t:'单斜率 ADC',cal:['general','simplified'],related:[22,23,29],refs:[{t:'Single-slope column ADC 原理（Nakamura 书 Ch. 6）'},{t:'Sony Exmor column-parallel ADC 新闻稿（2007 年前后）'},{t:'IEEE J-SSC CMOS 图像传感器 ADC 综述论文'},{t:'EMVA 1288: ENOB / SNR 定义',u:'https://www.emva.org/standards-technology/emva-1288/'}],g:'micro',fig:'adcc',pn:['adcwrap'],cam:[4.2,3.4,6.4],look:[0,0.2,1.0],lead:`<k data-hl="列 ADC">ADC</k> 像用尺子量水位：一根刻度线从零匀速往上升，同时开始数数，升到和像素电压一样高就停，数到几，这个像素就记几。`,adv:`<p>像素电压在列尾变成数字，最常见的是<b>单斜率 ADC</b>，每列一个，整行同时转换：</p><p>① 一个公共的<b>斜坡电压</b>从 0 开始匀速上升，所有列共用。</p><p>② 每列有一个<b>比较器</b>，比较斜坡和本列的像素电压；一个<b>计数器</b>跟着时钟从 0 开始数。</p><p>③ 斜坡一超过像素电压，比较器翻转，这一列锁住此刻的计数值，这就是它的数字值。电压越高，斜坡要爬得越久，数越大。</p><p>相关双采样也能在这里用数字做：先对复位电平数一次，再对信号电平数一次，两个数相减。</p><p><b>代价是慢</b>：10 bit 要数到 1024，14 bit 要数到 16384，多 4 bit 时间就长 16 倍。按每秒几亿次的计数时钟算，读一行要几微秒，几千行就是十几毫秒。这决定了帧率，也决定了卷帘快门的歪斜程度（下一步）。高速传感器会用分段斜坡、更快的计数，或者换成逐次逼近（SAR）等更快的 ADC。</p>
 <h3 class="iq">ENOB：ADC 的有效位数</h3>
 <p>标 14 bit 的 ADC 不等于真能分出 16384 档可用灰度。真实 ADC 自己有量化噪声、热噪声、非线性（INL/DNL）、时钟抖动，<b>有效分辨率远低于名义位数</b>。</p>
-<p><b>ENOB</b>（Effective Number of Bits）由 ADC 的实测 SNR 反推：ENOB = (SNR − 1.76) / 6.02（SNR 单位 dB，常数来自理想量化噪声）。</p>
-<p>例：某 14 bit 相机 ADC 实测 SNR = 70 dB → ENOB ≈ 11.3。虽然每个样本是 14 bit 整数，但<b>最低 3 bit 淹在 ADC 自己的噪声里</b>，没有真信息。专业数据手册常同时标 SNDR（含失真）、THD、INL / DNL，比单看位深可信。</p>
+<p><b>ENOB</b>（Effective Number of Bits）由 ADC 的实测 <b>SINAD</b> 反推：ENOB = (SINAD − 1.76) / 6.02（SINAD 单位 dB，常数来自满量程正弦输入的 RMS 与理想量化噪声 Δ/√12 的比值）。<b>SINAD</b>（Signal-to-Noise-and-Distortion Ratio，也写作 SNDR）比纯 SNR 多算了谐波失真和非线性，用 SNR 当分子推出来的 ENOB 会偏高。IEEE Std 1241 和 EMVA 1288 都是这么定义的。</p>
+<p>例：某 14 bit 相机 ADC 实测 SINAD = 70 dB → ENOB ≈ 11.3。虽然每个样本是 14 bit 整数，但<b>最低 3 bit 淹在 ADC 自己的噪声和失真里</b>，没有真信息。专业数据手册常同时标 SNR、SINAD、THD、INL / DNL，比单看位深可信。</p>
 <h3 class="iq">为什么加位深不一定提升画质</h3>
 <p>ADC 的「每 LSB 对应多少 µV」要和前面的<b>读出噪声</b>匹配。如果一个 LSB 代表的信号比读噪还小，加位深没用 —— 把一个随机数再细分成更小的档位，得到的还是随机数。</p>
 <p>举例：某像素读噪 2 e⁻，转换增益 50 µV/e⁻，读噪折算 100 µV；ADC 满量程 1 V：</p>
