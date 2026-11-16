@@ -110,7 +110,7 @@ body:has(#drawer:not([hidden])) #topbar{right:calc(var(--drawer-w) + var(--gap) 
 #cardfig:focus-visible{outline-offset:4px}
 /* 卡片里的控件不再套一层框（镜头读数 #hud 在详细抽屉「深入」最上面） */
 #cardctl .ctl{background:none;border:0;padding:0;gap:10px}
-#cardfig canvas{width:100%;display:block}
+#cardfig canvas{width:100%;height:auto;display:block}
 #cardfig figcaption{font-size:11.5px}
 
 /* 来龙去脉小药丸：比演进卡轻，只是一行索引 */
@@ -234,9 +234,9 @@ figcaption,.cap{font-size:12px;line-height:1.5;color:var(--ink-dim);margin-top:6
 #vfwrap{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 #vfwrap figcaption{font-family:var(--mono);font-size:11.5px;min-height:2.8em}
 #txwrap{display:grid;gap:10px}
-#vfwrap canvas{width:100%;display:block;border-radius:6px;background:#000;box-shadow:0 0 0 1px rgba(40,30,20,.18)}
+#vfwrap canvas{width:100%;height:auto;display:block;border-radius:6px;background:#000;box-shadow:0 0 0 1px rgba(40,30,20,.18)}
 #tm,#pot{width:100%;display:block;border-radius:6px;background:var(--paper);box-shadow:0 0 0 1px rgba(40,30,20,.18)}
-.pc{width:100%;max-width:100%;display:block;border-radius:6px;background:var(--paper);box-shadow:0 0 0 1px rgba(40,30,20,.18)}
+.pc{width:100%;max-width:100%;height:auto;display:block;border-radius:6px;background:var(--paper);box-shadow:0 0 0 1px rgba(40,30,20,.18)}
 .px{image-rendering:pixelated}
 .two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
 #txs{font-size:14px;line-height:1.7;color:var(--ink);min-height:3.2em}
