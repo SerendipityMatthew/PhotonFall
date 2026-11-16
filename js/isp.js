@@ -83,10 +83,25 @@ document.querySelectorAll('[data-hdr]').forEach(b=>{b.setAttribute('aria-pressed
 if($('hdrLw')){$('hdrLw').oninput=()=>{hlgLw=+$('hdrLw').value;const g=1.2+.42*Math.log10(hlgLw/1000);$('hdrLwo').textContent=`${hlgLw} nits, γ=${g.toFixed(2)}`;drawHdr();};}
 drawHdr();
 
-/* ---------- 图像编码模拟器：JPEG 质量 → 画质 / 文件大小 ---------- */
+/* ---------- 图像编码模拟器：JPEG 质量 + 色度亚采样 → 画质 / 文件大小 ---------- */
+let codecChroma='420';                                                                          // 色度亚采样模式（视觉演示，浏览器 toDataURL 不接受此参数）
+/* BT.709 RGB ↔ YCbCr，然后按模式把 Cb/Cr 下采样再平铺 */
+function applyChroma(imgData,mode){if(mode==='444')return imgData;
+  const w=imgData.width,h=imgData.height,d=imgData.data,Y=new Float32Array(w*h),Cb=new Float32Array(w*h),Cr=new Float32Array(w*h);
+  for(let i=0;i<w*h;i++){const r=d[i*4],g=d[i*4+1],b=d[i*4+2];Y[i]=.2126*r+.7152*g+.0722*b;Cb[i]=-.1146*r-.3854*g+.5*b+128;Cr[i]=.5*r-.4542*g-.0458*b+128;}
+  const dx=2,dy=mode==='420'?2:1;                                                               // 4:2:2 只水平 2:1，4:2:0 水平+垂直 2:1
+  for(let y=0;y<h;y+=dy)for(let x=0;x<w;x+=dx){let sCb=0,sCr=0,n=0;
+    for(let yy=0;yy<dy&&y+yy<h;yy++)for(let xx=0;xx<dx&&x+xx<w;xx++){const p=(y+yy)*w+x+xx;sCb+=Cb[p];sCr+=Cr[p];n++;}
+    const aCb=sCb/n,aCr=sCr/n;
+    for(let yy=0;yy<dy&&y+yy<h;yy++)for(let xx=0;xx<dx&&x+xx<w;xx++){const p=(y+yy)*w+x+xx;Cb[p]=aCb;Cr[p]=aCr;}}
+  for(let i=0;i<w*h;i++){const yv=Y[i],cb=Cb[i]-128,cr=Cr[i]-128;d[i*4]=Math.max(0,Math.min(255,yv+1.5748*cr));d[i*4+1]=Math.max(0,Math.min(255,yv-.1873*cb-.4681*cr));d[i*4+2]=Math.max(0,Math.min(255,yv+1.8556*cb));}
+  return imgData;}
 function drawCodec(){const q=+$('cq').value/100, src=$('codecSrc'), dst=$('codecDst'), w=src.width, h=src.height;
   const sctx=src.getContext('2d');drawScene(sctx,w,h);                                          // 原图：重画 drawScene 的风景
   const dataUrl=src.toDataURL('image/jpeg',q), bytes=Math.round(dataUrl.length*3/4-22);          // base64 → byte 近似，-22 是 "data:image/jpeg;base64," 头
   $('cqo').value=Math.round(q*100)+'%';$('csizeo').value=(bytes<1024?bytes+' B':(bytes/1024).toFixed(1)+' KB');
-  const img=new Image();img.onload=()=>{const dctx=dst.getContext('2d');dctx.clearRect(0,0,w,h);dctx.drawImage(img,0,0);};img.src=dataUrl;}
-if($('cq')){$('cq').oninput=drawCodec;drawCodec();}
+  const img=new Image();img.onload=()=>{const dctx=dst.getContext('2d');dctx.clearRect(0,0,w,h);dctx.drawImage(img,0,0);
+    const id=dctx.getImageData(0,0,w,h);applyChroma(id,codecChroma);dctx.putImageData(id,0,0);};img.src=dataUrl;}
+if($('cq')){$('cq').oninput=drawCodec;
+  document.querySelectorAll('[data-chroma]').forEach(b=>{b.onclick=()=>{codecChroma=b.dataset.chroma;document.querySelectorAll('[data-chroma]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));drawCodec();};});
+  drawCodec();}
