@@ -90,8 +90,48 @@ const STEPS=[
  {ch:2,t:'四合一像素',cal:['general'],refs:[{t:'Sony Quad Bayer 技术（IMX586 产品页）',u:'https://www.sony-semicon.com/en/products/is/mobile/imx586.html'},{t:'Samsung Tetracell / Nonacell 技术介绍（Samsung Semiconductor）',u:'https://semiconductor.samsung.com/image-sensor/mobile-image-sensor/'}],g:'quad',pn:['quadctl'],cam:[0,8.5,8.5],look:[0,0,0],lead:`手机把同色的四个小像素编成一组：光暗时四个并成一个大桶，<k data-hl="柱高 = 这一格收到的电子数">接到的电子</k>多、噪点少；光亮时再拆开用，换回高分辨率。`,adv:`<p>手机传感器常见的<b>四合一</b>（Quad Bayer）：滤色片还是红绿绿蓝，但每种颜色铺 <b>2×2 四个像素</b>。</p><p><b>暗光：合并。</b>把同色的四个合成一个大像素。信号变 4 倍，散粒噪声只变 2 倍，信噪比翻倍，代价是输出分辨率降到四分之一。合并可以在像素里做（四个 PD 共用一个 FD，电荷直接相加，读出噪声只算一次），也可以读出后再相加。</p><p><b>亮光：重排。</b>要全分辨率时，ISP 先把四合一排列插值成普通的拜耳排列（Remosaic），再按普通流程去马赛克。重排是推算出来的，细节和颜色不如真正的拜耳传感器准。</p><p>点下面的按钮切换。柱子高度是这一格读到的电子数，暗光下每格只有十来个电子，高低参差就是散粒噪声；合并后明显变平。更进一步还有九合一、十六合一，同一组像素下面还可以做成相位对焦像素。</p>`},
  {ch:3,t:'光子变成电子',cal:['general'],refs:[{t:'S. M. Sze《Physics of Semiconductor Devices》',n:'内光电效应、硅能带、PN 结'},{t:'硅的禁带宽度 1.12 eV 与近红外截止波长 ~1100 nm'}],g:'micro',cam:[2.2,2.2,4.2],look:[0,0.5,0.6],lead:`光子钻进硅里，像雨点落进水桶，每颗最多换出一个电子。<k data-hl="光电二极管（硅）">光电二极管</k>把这些电子攒起来，桶装满了，就是过曝。`,adv:`<p>穿过滤色片的光子进入硅。光子能量大于硅的禁带宽度时被吸收，打出一个<i>电子</i>–空穴对（内光电效应）。</p><p>光电二极管的内建电场把<i>电子</i>收进势阱存起来（青色液面）。一个光子最多换一个电子，换成功的比例叫<b>量子效率</b>（QE）：现代背照式传感器峰值约 70–90%，前照式只有 30–50%。</p><p>蓝光在表层零点几微米内就被吸收，红光要深入几微米，图中可以看到深浅不同。</p><p>势阱有上限，叫<b>满阱容量 FWC</b>：手机像素（约 1 µm）约 3000–8000 e⁻，APS-C 像素（约 3–4 µm）约 20000–40000 e⁻，全画幅像素（约 4–6 µm）约 30000–80000 e⁻。装满就是过曝。演示里设为 12 个。</p>`,hard:`<div class="f">光子能量阈值 E = hc/λ ＞ 1.12 eV　→　λ ＜ 约 1100 nm</div>
 <p><b>典型 QE</b>（峰值，可见光中段）：前照式 30–50%，背照式 70–90%（Sony IMX 系最新型号官方宣称 &gt; 80%）。短波（400 nm 蓝）和长波（650 nm 红）会降低。</p>
-<p><b>典型 FWC</b>（每像素）：1 µm 手机像素 3–8 ke⁻；2–3 µm 中档 10–20 ke⁻；4–6 µm 全画幅 30–80 ke⁻；大于 6 µm 的天文 / 工业 CMOS 可过 100 ke⁻。LOFIC 像素另加几十万 e⁻ 到低增益电容。</p>`},
- {ch:3,t:'单个像素：从光子到电压',cal:['general'],refs:[{t:'Eric Fossum 1995「Active Pixel Sensors」IEEE Workshop on CCD and AIS'},{t:'美国专利 5,904,493（CMOS 4T 像素与 CDS）',u:'https://patents.google.com/patent/US5904493'},{t:'J. Nakamura《Image Sensors and Signal Processing for Digital Still Cameras》'}],g:'tx',fig:'pot',cam:[1.2,5.6,8.2],look:[0,.9,0],lead:`一个像素像带闸门的蓄水池：<k data-hl="光电二极管 PD">光电二极管</k>先攒电子，<k data-hl="TX 传输门">传输门</k>一开，电子全倒进<k data-hl="FD 浮置扩散">浮置扩散区</k>这只小量杯，量出的水位就是电压。`,adv:`<p>单独拿出<b>一个像素</b>（这里是一个绿色像素），看一次完整的工作循环。</p><p><b>光这一路</b>：白光里红、绿、蓝光子都有。微透镜把落在整格上的光收拢到感光区上方；滤色片吸收红和蓝，只放绿光子过去；绿光子进入硅，被光电二极管 PD 吸收，每个打出一个<i>电子</i>。</p><p><b>电这一路</b>靠四个晶体管（4T 结构）：</p><p><b>TX 传输门</b>：PD 和 FD 之间的闸门。关着时电子留在 PD 里累积，打开时全部倒进 FD。</p><p><b>FD 浮置扩散</b>：一个很小的电容，电子倒上去电压就下降，V = Q / C。电容越小，每个电子换来的电压越大（约 50–200 µV）。</p><p><b>RST 复位管</b>：打开时把 FD 接到电源 VDD，清掉上一次的电荷。</p><p><b>SF 源极跟随器</b>：栅极接 FD。它不取走 FD 上的电荷，只是把这个电压「照抄」到输出端，有足够的力气驱动长长的列线。</p><p><b>SEL 行选通</b>：开关。打开时这个像素的输出才接上列线，一列像素共用一根线，一次只开一行。</p><p><b>怎么看下面两张图</b>（和场景同步循环，每个青色小球代表 1000 个电子）：</p><p>第一张是<b>电势图</b>，沿 PD → TX → FD → RST → VDD 切一刀。把电子想成水：坑越深，电子越愿意待在里面。TX、RST 关着时是两道堤坝；打开就是把堤坝降下去，电子自己流向更深的坑。PD 的坑比 FD 浅，所以 TX 一开电子能<b>全部</b>倒干净，这是 4T 像素噪声低的关键。</p><p>第二张是<b>时序图</b>：三个控制信号和 FD 上的电压。</p><p>图里把晶体管和 PD 画在同一面便于看清。背照式传感器里光从另一面（背面）进来，不被这些金属线挡住；堆栈式传感器还把 ADC 和逻辑电路放到第二片晶圆上。</p>`},
+<p><b>典型 FWC</b>（每像素）：1 µm 手机像素 3–8 ke⁻；2–3 µm 中档 10–20 ke⁻；4–6 µm 全画幅 30–80 ke⁻；大于 6 µm 的天文 / 工业 CMOS 可过 100 ke⁻。LOFIC 像素另加几十万 e⁻ 到低增益电容。</p>
+<h3 class="iq">QE 的光谱响应</h3>
+<p>QE 是波长的函数，不是一个数。原因两头：</p>
+<ul>
+<li><b>短波 / 蓝光（400 nm）</b>：光子能量高（3.1 eV），但<b>穿透深度浅</b>（硅里 ~0.1 µm 就被吸收），常落在表面没完全掉的 SiO₂ 或 n+ 区里，电子被复合损失，QE 降</li>
+<li><b>中段绿光（550 nm）</b>：穿透 ~2 µm，正好在 PD 的耗尽区深度，QE 峰值</li>
+<li><b>长波 / 红光（700 nm）</b>：穿透 ~5 µm，PD 做太薄接不住，透过去的变成没用的热。所以背照式硅会做到 3-5 µm 厚兼顾红</li>
+<li><b>近红外（&gt; 900 nm）</b>：吸收系数极小，大多数直接穿过，所以消费相机 QE 掉到百分之几。专为近红外的传感器把硅做厚到 10 µm+（科学 CMOS）</li>
+</ul>
+<p>信号方程：<b>N_e = QE(λ) × 光子数</b>。光子数本身由镜头、曝光时间、像素面积决定。</p>
+<h3 class="iq">FWC 和漫溢（blooming）</h3>
+<p>PD 装满后，继续来的电子会从 PD 的最低势垒<b>溢出到邻居像素</b>（漫溢），在画面里表现成亮光拖出的垂直白线（CCD 时代很明显）。现代 CMOS 像素在 PD 周围加<b>反漫溢晶体管 / 深沟槽隔离</b>，溢出的电子直接倒进 VDD 或邻格的衬底，不影响邻居。</p>
+<p><b>线性度</b>：装到 FWC 的 80%–90% 之前，信号随光子数线性增加。靠近满阱时响应曲线弯曲（电子相互排斥变大，PD 势垒受 charge handling 影响），拍高光细节会损失。</p>
+<p><b>像素面积与 FWC 的尺度关系</b>：粗略 FWC ∝ 像素面积（都按 e⁻/µm²）。但现代 BSI 做到远超这个比例 —— 把晶体管搬到背面（双层像素）、把 PD 加深、用 charge-domain 结构，1 µm 像素能做到 8 ke⁻（简单尺度关系预测只有 3-4 ke⁻）。</p>`},
+ {ch:3,t:'单个像素：从光子到电压',cal:['general'],refs:[{t:'Eric Fossum 1995「Active Pixel Sensors」IEEE Workshop on CCD and AIS'},{t:'美国专利 5,904,493（CMOS 4T 像素与 CDS）',u:'https://patents.google.com/patent/US5904493'},{t:'J. Nakamura《Image Sensors and Signal Processing for Digital Still Cameras》'}],g:'tx',fig:'pot',cam:[1.2,5.6,8.2],look:[0,.9,0],lead:`一个像素像带闸门的蓄水池：<k data-hl="光电二极管 PD">光电二极管</k>先攒电子，<k data-hl="TX 传输门">传输门</k>一开，电子全倒进<k data-hl="FD 浮置扩散">浮置扩散区</k>这只小量杯，量出的水位就是电压。`,adv:`<p>单独拿出<b>一个像素</b>（这里是一个绿色像素），看一次完整的工作循环。</p><p><b>光这一路</b>：白光里红、绿、蓝光子都有。微透镜把落在整格上的光收拢到感光区上方；滤色片吸收红和蓝，只放绿光子过去；绿光子进入硅，被光电二极管 PD 吸收，每个打出一个<i>电子</i>。</p><p><b>电这一路</b>靠四个晶体管（4T 结构）：</p><p><b>TX 传输门</b>：PD 和 FD 之间的闸门。关着时电子留在 PD 里累积，打开时全部倒进 FD。</p><p><b>FD 浮置扩散</b>：一个很小的电容，电子倒上去电压就下降，V = Q / C。电容越小，每个电子换来的电压越大（约 50–200 µV）。</p><p><b>RST 复位管</b>：打开时把 FD 接到电源 VDD，清掉上一次的电荷。</p><p><b>SF 源极跟随器</b>：栅极接 FD。它不取走 FD 上的电荷，只是把这个电压「照抄」到输出端，有足够的力气驱动长长的列线。</p><p><b>SEL 行选通</b>：开关。打开时这个像素的输出才接上列线，一列像素共用一根线，一次只开一行。</p><p><b>怎么看下面两张图</b>（和场景同步循环，每个青色小球代表 1000 个电子）：</p><p>第一张是<b>电势图</b>，沿 PD → TX → FD → RST → VDD 切一刀。把电子想成水：坑越深，电子越愿意待在里面。TX、RST 关着时是两道堤坝；打开就是把堤坝降下去，电子自己流向更深的坑。PD 的坑比 FD 浅，所以 TX 一开电子能<b>全部</b>倒干净，这是 4T 像素噪声低的关键。</p><p>第二张是<b>时序图</b>：三个控制信号和 FD 上的电压。</p><p>图里把晶体管和 PD 画在同一面便于看清。背照式传感器里光从另一面（背面）进来，不被这些金属线挡住；堆栈式传感器还把 ADC 和逻辑电路放到第二片晶圆上。</p>`,hard:`<div class="f">转换增益 CG = q / C_FD<br>q = 1.6 × 10⁻¹⁹ C（电子电荷）<br>C_FD = FD 电容（典型 1-5 fF）</div>
+<p><b>典型 CG</b>：q / 1 fF ≈ 160 µV/e⁻（高增益档极限）；q / 5 fF ≈ 32 µV/e⁻（常规）。相机厂家常把 CG 标在 5-40 µV/e⁻ 这档，DCG 高增益档能到 100-200 µV/e⁻。</p>
+<h3 class="iq">CG 决定了什么</h3>
+<p>CG 把电子数翻成电压，影响整条读出链路：</p>
+<ul>
+<li><b>电压信号 V_signal = N_e × CG</b>。CG 大 → 同样电子数出来的电压大 → 后级 ADC 的噪声折算回电子数就小（读噪 e⁻ 单位 = 读噪 µV 单位 / CG）</li>
+<li><b>FD 承载上限</b>：FD 电压摆幅 ΔV（典型 1-2 V），FD 能装 ΔV × C_FD / q 个电子。CG 大（C_FD 小）→ FD 装的电子少 → 要靠 TX 把溢出的留在 PD 里；高增益档读完小信号再切换到低增益档接住大信号</li>
+<li><b>和 PD 分开</b>：现代 4T 像素 PD 的 FWC 和 FD 的 FWC 是两回事。PD 的 FWC 决定光能收多少，FD 的 ΔV × C_FD 决定一次能读多大</li>
+</ul>
+<h3 class="iq">DCG 的开关怎么切</h3>
+<p>DCG（Dual Conversion Gain）在 FD 旁边并接一个大电容，用一个开关控制接或不接：</p>
+<ul>
+<li><b>开关断开</b>：C_FD 小 → CG 大（<b>HCG 高增益档</b>）→ 每电子电压大、读噪低、但 FD 容量小。适合暗部弱信号</li>
+<li><b>开关接通</b>：C_FD 并上大电容变大 → CG 小（<b>LCG 低增益档</b>）→ 每电子电压小、读噪稍高、但 FD 容量大。适合亮部强信号</li>
+</ul>
+<p>两种常见工作方式：</p>
+<p><b>DCG 模式切换</b>：按场景选一种 CG 读整帧（暗场用 HCG、亮场用 LCG）。这是「双原生 ISO」的实现方式 —— 相机到某个 ISO 以上自动切到 HCG 档，读噪（以 e⁻ 算）阶跃下降一档。</p>
+<p><b>DCG-HDR</b>：每帧读两次，HCG 一次 + LCG 一次，片内合成 HDR。亮部用 LCG、暗部用 HCG、乘增益比对齐。Sony、豪威、三星的车载与手机 CIS 常见这种做法。</p>
+<h3 class="iq">QE × FWC × CG 怎么连成一张图</h3>
+<p>把三个合在一起看一次曝光的完整路径：</p>
+<div class="f">光子 N_ph × QE(λ) = 电子 N_e<br>N_e 存进 PD（上限 FWC_PD）<br>TX 一开，N_e 流入 FD<br>FD 电压 V = N_e × CG（上限 ΔV × C_FD / q）<br>SF 把 V 送上列线，CDS + ADC 变数字</div>
+<p>三个量各自的上限决定不同天花板：</p>
+<ul>
+<li><b>QE</b> 决定光能变多少电子（灵敏度）</li>
+<li><b>FWC（PD 侧）</b> 决定一次曝光能装多少电子（动态范围上限）</li>
+<li><b>CG</b> 决定电子变多大电压（读噪在电子单位下的下限）</li>
+</ul>
+<p>动态范围 DR = FWC / 读噪_e⁻。要么 FWC 大、要么读噪小，CG 影响读噪_e⁻。所以 DCG 两段读出同时拿「HCG 低读噪」和「LCG 大 FWC」的好处，是现代 CIS 扩 DR 的主力路线。</p>`},
  {ch:3,t:'LOFIC：装不下的电子另存一处',cal:['general','vendor','estimated'],refs:[{t:'Sony LYT-910 发布（2026-06）',u:'https://www.sony-semicon.com/en/info/2026/2026061701.html'},{t:'Sony IMX908 4K 1.45 µm LOFIC（2026-03）',u:'https://www.sony-semicon.com/en/news/2026/2026031701.html'},{t:'Sony LOFIC 2.8 µm BSI pixel 论文 J-SSC',u:'https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6960954/'},{t:'OmniVision TheiaCel（Yole 2023）',u:'https://www.yolegroup.com/industry-news/omnivision-announces-new-theiacel-technology-and-automotive-image-sensor-for-led-flicker-free-exterior-cameras/'},{t:'SmartSens LOFIC HDR 3.0 / SC570XS',u:'https://www.smartsenstech.com/en/mpage?id=415'},{t:'Samsung ISOCELL HPA LOFIC 规划（GSMArena 2025）',u:'https://www.gsmarena.com/the_image_sensor_competition_is_on_lofic_sensors_will_see_wider_adoption_starting_in_2026-news-70224.php'},{t:'Sony 三段增益 LOFIC readout 论文',u:'https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12526854/'},{t:'OmniVision OX08D10 产品页',u:'https://www.ovt.com/products/ox08d10/'},{t:'TechInsights OX08D10 拆解报告',u:'https://www.techinsights.com/blog/omnivision-ox08d10-device-essentials-plus'}],g:'tx',fig:'pot',lofic:1,cam:[.6,5.4,-7.6],look:[-.4,.6,-.4],lead:`光太强时，像素的小桶很快就满了，多出的电子本来会白白溢走。LOFIC 在旁边加一口<k data-hl="LOFIC 大电容">大水缸</k>接住溢出的水，高光就不再一片死白。`,adv:`<p><b>问题</b>：PD 的坑只有这么大（满阱容量）。强光下很快装满，多出来的电子溢出丢掉，照片里高光就是一片死白。</p><p><b>LOFIC</b>（Lateral Overflow Integration Capacitor，横向溢出积分电容）的办法：在 FD 旁边经一个开关接一个<b>大电容</b>，容量是 FD 的几十倍。</p><p><b>曝光时</b>：TX 不完全关死，留一道比别处都矮的堤坝，LOFIC 开关开着。PD 满了以后，多出的电子越过 TX 流进 FD 和大电容，被存下来而不是丢掉。</p><p><b>读两次</b>：</p><p>① 关掉开关，只用小电容 FD，按上一步的方式读 PD 里的电子。每个电子换来的电压大（<b>高转换增益</b>，约 100 µV），噪声低，负责暗部。</p><p>② 打开开关，FD 和大电容连通，PD 的电子加上溢出的电子全摊在大电容上再读一次。每个电子只换来约 5 µV（<b>低转换增益</b>），但能装下几十万个电子，负责高光。</p><p><b>合成</b>：暗的像素用 ①，① 已经到顶的像素用 ② 乘上增益比。一次曝光就得到高动态范围，不像多帧 HDR 那样拍运动物体会有重影。</p><p><b>代价</b>：低增益那次读数做不了完整的相关双采样，噪声高一些；电容还要占面积。近年的车载传感器和部分手机主摄在用。</p><p>演示里 PD 满阱是 8 个小球（8000 个电子），这次曝光共产生 20 个，其中 12 个溢出。电势图里复位管没有画。</p><h3 class="iq">另一种做法：双转换增益（DCG）</h3><p>和 LOFIC 很像，FD 上也经开关并一个电容，但它<b>不接收溢出</b>，只在读出时切换：开关断开时 FD 电容小，每个电子换的电压大（高增益），读出噪声低；开关接通时电容变大（低增益），能读的电子更多。</p><p>DCG 和 LOFIC 的对比表见「硬核」。</p><p>很多传感器每帧读两次（高增益一次、低增益一次）再合成，叫 DCG-HDR。相机里说的「双原生 ISO」也是这个原理：到某个 ISO 以上切到高增益那一档，噪声突然变小。此外还有分割像素（一个大 PD 配一个小 PD，小的专拍高光）和多帧合成等方案。</p>`,hard:`<table class="cmp iqt"><tr><th></th><th>DCG</th><th>LOFIC</th></tr><tr><td>多出的电容</td><td>几倍于 FD</td><td>几十倍于 FD</td></tr><tr><td>曝光中溢出的电子</td><td class="bad">丢掉，上限仍是 PD 满阱</td><td class="good">存进电容</td></tr><tr><td>主要改善</td><td>暗部噪声</td><td>高光，动态范围大幅扩展</td></tr><tr><td>代价</td><td>小</td><td>电容占地方，低增益读数噪声偏高</td></tr></table>
 <h3 class="iq">各家 LOFIC 方案</h3>
 <p>LOFIC 最早是学术概念（东北大学菅原康弘等，2000 年代初），近几年才被 CIS 厂商陆续推进产品，先在车载铺开，2025–2026 年才上手机主摄。「一次曝光拿高动态范围」有几条路，LOFIC 只是其中一条，先列出全景，再看每家走的是哪条。</p>
