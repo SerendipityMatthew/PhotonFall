@@ -51,6 +51,12 @@ function renderPanel(i) {
   ).join('');
   $('refsh').hidden = !refs.length;
 
+  /* 相关知识点：related chips 跳到其他步 */
+  const rel = (s.related || []).filter(n => n >= 0 && n < STEPS.length && n !== i);
+  $('rel').innerHTML = rel.map(n => `<button type="button" class="rel-chip" data-step="${n}">${STEPS[n].t}</button>`).join('');
+  $('relh').hidden = !rel.length;
+  $('rel').querySelectorAll('.rel-chip').forEach(b => b.onclick = () => navigate({view:'step', n:+b.dataset.step}));
+
   /* 抽屉「来龙去脉」：这一步背后的技术是哪年、为什么出现的；点卡片去时间轴 */
   const evs = evoForStep(i);
   $('evo').innerHTML = !evs.length ? '' : evs.map(e =>
