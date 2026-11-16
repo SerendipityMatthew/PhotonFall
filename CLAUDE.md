@@ -3,7 +3,8 @@
 ## 分支工作流
 
 - 任何实质性改动（新步、内容扩写、重构、新功能）都要**从 `develop` 切新分支**做，分支名用英文短横线描述工作内容（如 `image-format-step`、`lofic-vendors`）。
-- **不要直接提交到 `develop`**。做完、测试通过后再问用户是 merge 还是开 PR。
+- **不要直接提交到 `develop`**。
+- **合回 `develop` 必须走 PR**（`gh pr create`），不直接本地 merge 推送。做完、测试通过后推分支、开 PR，由用户在 GitHub 上合。
 - 一行的 typo 修复或 README 字词调整不算实质性改动，可以直接在 `develop` 做。
 - 开始前就切分支，不要先在 `develop` 提交再想起来。
 
