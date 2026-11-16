@@ -26,6 +26,7 @@ function applyRoute(r) {
 /* ---------- 事件委托 ---------- */
 $('prev').onclick = () => navigate({view: 'step', n: step - 1});
 $('next').onclick = () => navigate({view: 'step', n: step + 1});
+document.querySelectorAll('[data-path]').forEach(b => b.onclick = () => navigate({view: 'step', n: +b.dataset.path}));
 
 function updateLblBtn() {
   $('lblbtn').setAttribute('aria-pressed', String(showAllLabels));
