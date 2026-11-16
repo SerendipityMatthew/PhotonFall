@@ -43,11 +43,12 @@ document.querySelectorAll('[data-gamut]').forEach(b=>{b.setAttribute('aria-press
 drawGamut();
 
 /* ---------- HDR 模拟器：PQ / HLG / sRGB / BT.1886 传递曲线 ---------- */
+let hlgLw=1000;                                                                  // HLG 显示峰值，滑块控制；HLG EOTF 由此和系统伽马算
 const HDR_CURVES={
   srgb:{n:'sRGB (SDR 100 nits)',c:'#5a95ff',fn:x=>{const v=x<=.04045?x/12.92:Math.pow((x+.055)/1.055,2.4);return v*100;}},
   bt1886:{n:'BT.1886 (SDR γ=2.4)',c:'#48c26a',fn:x=>Math.pow(x,2.4)*100},
   pq:{n:'PQ · HDR10 (ST 2084)',c:'#ef5a5f',fn:x=>{const m1=2610/16384,m2=2523/32,c1=107/128,c2=2413/128,c3=2392/128;const Em=Math.pow(Math.max(x,1e-10),1/m2);const num=Math.max(Em-c1,0);const den=c2-c3*Em;return 10000*Math.pow(num/den,1/m1);}},
-  hlg:{n:'HLG (Lw=1000 nits)',c:'#9a6200',fn:x=>{const a=.17883277,b=1-4*a,cc=.5-a*Math.log(4*a);const lin=x<=.5?x*x/3:(Math.exp((x-cc)/a)+b)/12;const Lw=1000,gam=1.2+.42*Math.log10(Lw/1000);return Lw*Math.pow(Math.max(lin,0),gam);}},
+  hlg:{n:'HLG',c:'#9a6200',fn:x=>{const a=.17883277,b=1-4*a,cc=.5-a*Math.log(4*a);const lin=x<=.5?x*x/3:(Math.exp((x-cc)/a)+b)/12;const gam=1.2+.42*Math.log10(hlgLw/1000);return hlgLw*Math.pow(Math.max(lin,0),gam);}},
   linear:{n:'Linear (100 nits)',c:'#b48cff',fn:x=>x*100}};
 const hdrShow={srgb:true,bt1886:false,pq:true,hlg:true,linear:false};
 function drawHdr(){const c=cx2('hdr'),W=320,H=260;
@@ -65,6 +66,7 @@ function drawHdr(){const c=cx2('hdr'),W=320,H=260;
   c.fillStyle=PAL.paper;c.fillRect(0,0,W,20);c.fillRect(0,H-18,W,18);
   c.font=FONT;c.fillStyle=PAL.ink;c.fillText('传递曲线',8,14);c.fillStyle=PAL.dim;c.fillText('x = 数字编码 (0-1)　y = 亮度 (nits, log)　阴影 = SDR 范围',8,H-4);}
 document.querySelectorAll('[data-hdr]').forEach(b=>{b.setAttribute('aria-pressed',String(hdrShow[b.dataset.hdr]));b.onclick=()=>{const k=b.dataset.hdr;hdrShow[k]=!hdrShow[k];b.setAttribute('aria-pressed',String(hdrShow[k]));drawHdr();};});
+if($('hdrLw')){$('hdrLw').oninput=()=>{hlgLw=+$('hdrLw').value;const g=1.2+.42*Math.log10(hlgLw/1000);$('hdrLwo').textContent=`${hlgLw} nits, γ=${g.toFixed(2)}`;drawHdr();};}
 drawHdr();
 
 /* ---------- 图像编码模拟器：JPEG 质量 → 画质 / 文件大小 ---------- */
