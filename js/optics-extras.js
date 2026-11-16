@@ -19,7 +19,7 @@ function drawAiry(){const c=cx2('airy'),Wc=320,Hc=170,N=st.N,lam=.55,pit=3.76,s=
   drawMtf();}
 
 /* ---------- MTF 模拟器：衍射 × 像素 ---------- */
-function drawMtf(){const c=cx2('mtf'),W=320,H=170,N=st.N,lam=550e-6,p=3.76e-3,nuMax=300;   // mm, mm, cy/mm
+function drawMtf(){const c=cx2('mtf'),W=320,H=170,N=st.N,lam=550e-6,p=3.76e-3,nuMax=300,nuAb=200;   // mm, mm, cy/mm; nuAb = 典型镜头像差滚降频率（示意）
   const nuC=1/(lam*N), nuNy=1/(2*p);
   c.fillStyle=PAL.paper;c.fillRect(0,0,W,H);
   c.strokeStyle=PAL.grid;c.lineWidth=1;                                                      // 栅格：横 5 条、纵 6 条
@@ -28,15 +28,17 @@ function drawMtf(){const c=cx2('mtf'),W=320,H=170,N=st.N,lam=550e-6,p=3.76e-3,nu
   const px=nu=>(nu/nuMax)*W, py=m=>H-18-m*(H-38);
   const diff=nu=>{const r=nu/nuC;if(r>=1)return 0;return (2/Math.PI)*(Math.acos(r)-r*Math.sqrt(1-r*r));};
   const pix=nu=>{if(nu<1e-6)return 1;const x=Math.PI*nu*p;return Math.abs(Math.sin(x)/x);};
+  const lens=nu=>Math.exp(-(nu/nuAb)*(nu/nuAb));                                                 // 高斯近似：镜头像差把中高频压低（示意）
   const plot=(col,fn,w)=>{c.strokeStyle=col;c.lineWidth=w||2;c.beginPath();for(let i=0;i<=W;i++){const nu=(i/W)*nuMax;c.lineTo(px(nu),py(fn(nu)));}c.stroke();};
   c.strokeStyle=PAL.dim;c.setLineDash([3,3]);c.beginPath();c.moveTo(px(nuNy),20);c.lineTo(px(nuNy),H-18);c.stroke();   // Nyquist
   c.beginPath();c.moveTo(0,py(.5));c.lineTo(W,py(.5));c.stroke();c.setLineDash([]);                                     // MTF 0.5
   plot(PAL.b,diff);                                      // 衍射
+  plot(PAL.amber,lens);                                  // 镜头像差
   plot('#b48cff',pix);                                   // 像素
-  plot(PAL.g,nu=>diff(nu)*pix(nu),3);                    // 综合（粗线）
+  plot(PAL.g,nu=>diff(nu)*lens(nu)*pix(nu),3);           // 综合（粗线）：衍射 × 镜头像差 × 像素
   c.fillStyle=PAL.paper;c.fillRect(0,0,W,20);c.fillRect(0,H-16,W,16);
   c.font=FONT;c.fillStyle=PAL.ink;c.fillText(`f/${N}　衍射截止 ${nuC.toFixed(0)} cy/mm　Nyquist ${nuNy.toFixed(0)} cy/mm (3.76 µm)`,8,14);
-  c.fillStyle=PAL.dim;c.fillText('x = 空间频率 cy/mm　y = MTF (0-1)　灰虚线：Nyquist 与 MTF=0.5',8,H-4);}
+  c.fillStyle=PAL.dim;c.fillText(`蓝=衍射　橙=镜头像差(示意 ν_ab=${nuAb})　紫=像素　绿=三项相乘`,8,H-4);}
 
 /* ---------- 像差：畸变、横向色差、暗角（夸张显示） ---------- */
 function applyAb(){const id=vg.getImageData(0,0,W,HH),s=id.data,o=vg.createImageData(W,HH),d=o.data,k=-.14+.24*(st.f-50)/100,ca=.014,R=Math.hypot(W/2,HH/2),vig=Math.min(.75,.7*(2/st.N)**2);
