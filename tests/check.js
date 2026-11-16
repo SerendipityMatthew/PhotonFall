@@ -96,8 +96,8 @@ check('route: historyMode', () => {
 check('steps: shape', () => {
   const S = ctx.STEPS, C = ctx.CHAPTERS;
   assert.strictEqual(C.length, 7);
-  assert.strictEqual(S.length, 34);
-  const want = [0, ...Array(10).fill(1), ...Array(4).fill(2), ...Array(3).fill(3), ...Array(4).fill(4), ...Array(5).fill(5), ...Array(7).fill(6)];
+  assert.strictEqual(S.length, 35);
+  const want = [0, ...Array(10).fill(1), ...Array(4).fill(2), ...Array(3).fill(3), ...Array(4).fill(4), ...Array(5).fill(5), ...Array(8).fill(6)];
   assert.deepStrictEqual([...S.map(s => s.ch)], want);
   S.forEach((s, i) => {
     for (const k of ['t', 'g', 'adv']) assert.ok(typeof s[k] === 'string' && s[k].length, `step ${i} ${k}`);
@@ -127,7 +127,7 @@ check('steps: content', () => {
 check('evo: data', () => {
   const last = ctx.STEPS.length - 1;
   const E = ctx.EVO, eras = new Set(ctx.ERAS.map(e => e.id)), lanes = ctx.LANES.map(l => l.id);
-  assert.ok(E.length >= 20 && E.length <= 25, `count ${E.length}`);
+  assert.ok(E.length >= 20 && E.length <= 30, `count ${E.length}`);
   assert.strictEqual(new Set(E.map(e => e.id)).size, E.length, 'unique ids');
   for (const e of E) {
     assert.ok(/^[a-z0-9-]+$/.test(e.id), `id ${e.id}`);
@@ -152,7 +152,7 @@ check('layout: locText', () => {
   assert.strictEqual(ctx.locText(0, S, C), '先看全景');
   assert.strictEqual(ctx.locText(1, S, C), '1 镜头 · 第 1/10 步');
   assert.strictEqual(ctx.locText(16, S, C), '3 像素 · 第 2/3 步');
-  assert.strictEqual(ctx.locText(33, S, C), '6 周边 · 第 7/7 步');
+  assert.strictEqual(ctx.locText(34, S, C), '6 周边 · 第 8/8 步');
   assert.strictEqual(ctx.locShort(16, S, C), '3 像素 · 2/3');
 });
 check('layout: fig', () => {

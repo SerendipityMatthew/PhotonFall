@@ -76,13 +76,22 @@ const EVO=[
  draw(c,w,h){const u=evoBg(c,w,h);c.strokeRect(w/2-u*.38,h/2-u*.22,u*.76,u*.44);c.beginPath();c.arc(w/2,h/2,u*.15,0,7);c.stroke();
   c.fillStyle=EVO_ACC;c.fillRect(w/2-u*.06,h/2-u*.05,u*.12,u*.1);evoText(c,'CCD',w/2,h/2+u*.32);}},
 
+{id:'vision',year:1931,era:'film',lane:'proc',title:'CIE 1931 与人眼色视觉',
+ solved:'标准化了「人眼看到什么颜色」这件事：L/M/S 三锥模型 + CIE 1931 色度坐标。后面所有相机 RGB、CCM、色域、HDR 曲线都从这里推导。',
+ newProblem:'只是 2° 中心视场的标准观察者，周边视场、年龄、个体差异都可能不同；不同光谱可能 L/M/S 加权成同一颜色（同色异谱）。',
+ driver:'彩色摄影和印刷需要一个「颜色是什么」的客观参考。',
+ industry:'没有这套数学，就没有色彩管理、没有 sRGB、没有屏幕之间的一致性。',
+ story:'1931 年 CIE 发布 2° 观察者色度学标准，把 RGB 三刺激值换算到 XYZ 空间。1964 年补了 10° 观察者，1976 年 CIELAB 把色差量化为视觉均匀距离，之后 BT.709、ICC、PQ 的 Barten 曲线、ΔE 2000 都在这套框架里长出来。',
+ steps:[12,28,30],
+ draw(c,w,h){const u=evoBg(c,w,h);c.fillStyle='#e6dccb';c.beginPath();c.moveTo(w*.5,h*.22);c.quadraticCurveTo(w*.8,h/2,w*.5,h*.78);c.quadraticCurveTo(w*.2,h/2,w*.5,h*.22);c.closePath();c.fill();c.strokeStyle='#8a7858';c.stroke();
+   c.fillStyle=EVO_ACC;c.beginPath();c.arc(w*.5,h/2,u*.12,0,7);c.fill();}},
 {id:'jpeg',year:1992,era:'ccd',lane:'proc',title:'JPEG 压缩',
  solved:'一张照片压到原来的十分之一左右，存得下也传得动。',
  newProblem:'压缩会丢细节，压狠了出现方块和色带。',
  driver:'存储贵、网速慢，数码照片需要一个通用格式。',
  industry:'相机里开始有专门的处理芯片，“直出 JPEG”和“保留 RAW”分成两条路。',
  story:'JPEG 小组 1986 年成立，1992 年 9 月标准通过（ITU-T T.81，后来也成为 ISO/IEC 10918-1）。它把画面切成 8×8 的小块，把人眼不敏感的细节扔掉。三十多年后它仍是最常见的照片格式。来源：ITU-T T.81、W3C 存档的标准文本。',
- steps:[26,29],
+ steps:[26,30],
  draw(c,w,h){const u=evoBg(c,w,h),s=u*.6;evoGrid(c,w/2-s/2,h*.1,s,8,(i,j)=>(i<4&&j<4)?EVO_ACC:((i+j)%2?'#d8ccb8':'#bfb3a0'));evoText(c,'8×8',w/2,h*.1+s+u*.12);}},
 
 {id:'cf-card',year:1994,era:'ccd',lane:'store',title:'CF 存储卡',
@@ -91,7 +100,7 @@ const EVO=[
  driver:'数码相机需要一种代替胶卷的“可换存储”。',
  industry:'闪存卡成了相机的“新胶卷”，专业机长期用 CF。',
  story:'1994 年闪迪（SanDisk）推出 CompactFlash（CF）卡，用闪存，没有机械部件。它很快成了专业数码单反的主流存储，一直用到 2010 年代。来源：TechTarget、Tom\'s Hardware「Flash Storage」。',
- steps:[32],
+ steps:[33],
  draw(c,w,h){evoCard(c,w,h,'CF',false,'1994');}},
 
 /* ===== CMOS ===== */
@@ -121,7 +130,7 @@ const EVO=[
  driver:'卡片机、手机、MP3 都要一种小而便宜的卡。',
  industry:'SD 成了消费电子的通用存储，相机厂不再各搞一种卡。',
  story:'1999 年 8 月，闪迪、松下和东芝联合推出 SD 卡，2000 年 1 月成立 SD 协会管理标准。此后容量从 MB 级一路涨到 TB 级，接口也从几 MB/s 提到 UHS-II 的数百 MB/s。来源：Digital Camera World、Blocks & Files（SD 25 周年）。',
- steps:[32],
+ steps:[33],
  draw(c,w,h){evoCard(c,w,h,'SD',true,'1999');}},
 
 {id:'ibis',year:2003,era:'cmos',lane:'lens',title:'机身防抖',
@@ -172,7 +181,7 @@ const EVO=[
  driver:'社交网络让“随手拍、马上发”比画质更重要。',
  industry:'卡片机市场几乎消失，相机厂转向高端，传感器厂的大客户变成手机厂。',
  story:'据日本相机影像器材工业协会（CIPA）统计，数码相机出货量在 2010 年达到约 1.21 亿台的顶峰，同年 iPhone 4 发布；此后卡片机一路下滑，到 2023 年全行业出货量比顶峰少了九成多。手机厂把钱砸向传感器和算法，补上小镜头的短板。来源：CIPA 统计、Statista、Digital Trends。',
- steps:[33],
+ steps:[34],
  draw(c,w,h){evoBars(c,w,h,[1,.9,.62,.35,.2,.08],['2010','','','','','2023'],0);}},
 
 {id:'stacked',year:2012,era:'bsi',lane:'sensor',title:'堆栈式传感器',
@@ -190,7 +199,7 @@ const EVO=[
  driver:'4K、HDR 和网络视频让数据量暴涨，普通创作者也想要电影感。',
  industry:'相机成了视频工具，调色和高效编码进入普通创作者的工作流。',
  story:'2013 年 4 月，H.265（HEVC）通过成为 ITU-T 标准，目标是在相同画质下比 H.264 再省约一半码率。2014 年索尼 α7S 把专业摄影机上的 S-Log2 曲线带进小型全画幅相机。后来不少相机和手机都用 H.265 录 4K 甚至 8K。来源：ITU、Imaging Resource、Wikipedia「High Efficiency Video Coding」。',
- steps:[29,30,31],
+ steps:[30,31,32],
  draw(c,w,h){const u=evoBg(c,w,h);c.fillStyle=EVO_INK;c.fillRect(w*.15,h*.3,w*.7,h*.15);c.fillStyle=EVO_ACC;c.fillRect(w*.15,h*.6,w*.35,h*.15);
   c.textAlign='left';evoText(c,'H.264',w*.17,h*.22);evoText(c,'H.265',w*.17,h*.52,EVO_ACC);}},
 
@@ -222,7 +231,7 @@ const EVO=[
  driver:'手机太薄放不下变焦镜组，用户又想拍远处和背景虚化。',
  industry:'手机背面变成“镜头矩阵”，光学模组厂和算法团队一起变重要。',
  story:'2016 年 9 月 iPhone 7 Plus 用一颗广角加一颗 2 倍长焦，随后推出靠双摄测距的人像模式。2019 年 3 月华为 P30 Pro 把镜头横着放、用棱镜把光拐 90 度，做出 5 倍潜望式长焦。来源：Apple Newsroom（2016）、Laser Focus World（2019）、GSMArena。',
- steps:[2,5,33],
+ steps:[2,5,34],
  draw(c,w,h){const u=evoBg(c,w,h);c.strokeRect(w/2-u*.25,h/2-u*.42,u*.5,u*.84);
   [['0.5×',-.22],['1×',0],['5×',.22]].forEach(([t,dy],i)=>{c.strokeStyle=i===2?EVO_ACC:EVO_INK;c.beginPath();c.arc(w/2-u*.06,h/2+dy*u*1.4,u*.09,0,7);c.stroke();
    c.save();c.textAlign='left';c.font=Math.round(Math.max(7,u/14))+'px sans-serif';evoText(c,t,w/2+u*.06,h/2+dy*u*1.4,i===2?EVO_ACC:EVO_INK);c.restore();});}},
@@ -242,7 +251,7 @@ const EVO=[
  driver:'手机传感器小、镜头小，单张照片在暗处噪声太大。',
  industry:'手机拍照的竞争从硬件转向算法，图像处理芯片和 AI 加速器成了卖点。',
  story:'谷歌 2013 年起在 Nexus 手机上用 HDR+ 连拍合成提升宽容度，2018 年 11 月在 Pixel 上推出 Night Sight（夜视）：按下快门后连拍多张偏暗但不糊的照片，对齐合并后再用学习算法校正白平衡。各家手机随后都有了夜景模式。来源：Google AI Blog（2014、2018）、Engadget、The Next Web。',
- steps:[26,28,33],
+ steps:[26,29,34],
  draw(c,w,h){const u=evoBg(c,w,h);for(let i=0;i<3;i++){c.fillStyle=i===2?'#fff':'#e6dccb';c.fillRect(w*.08+i*u*.06,h*.2+i*u*.06,u*.35,u*.35);c.strokeRect(w*.08+i*u*.06,h*.2+i*u*.06,u*.35,u*.35);}
   evoArrow(c,w*.52,h/2,w*.64,h/2,EVO_ACC);c.fillStyle=EVO_ACC;c.fillRect(w*.92-u*.3,h/2-u*.15,u*.3,u*.3);}},
 
@@ -253,7 +262,7 @@ const EVO=[
  driver:'8K、RAW 视频和每秒几十张的连拍，SD 卡写不过来。',
  industry:'相机存储向电脑硬盘看齐，高端机普遍改用 CFexpress。',
  story:'CF 卡协会 2016 年 9 月宣布 CFexpress，2017 年 4 月发布 1.0 规范。2020 年 1 月佳能 1D X Mark III 用上 CFexpress B 卡，同年的 EOS R5 能内录 8K RAW，都离不开这种速度。来源：CompactFlash 协会、Canon Asia、PetaPixel。',
- steps:[31,32],
+ steps:[32,33],
  draw(c,w,h){evoCard(c,w,h,'CFe',false,'PCIe');}},
 
 {id:'ai-af',year:2022,era:'ai',lane:'proc',title:'AI 识别对焦',
@@ -262,7 +271,7 @@ const EVO=[
  driver:'体育、野生动物和独立视频创作者需要相机自己判断该对哪里。',
  industry:'相机里开始配专门的 AI 处理单元，对焦能力成了软件和算力的比拼。',
  story:'2022 年 10 月，索尼 α7R V 加入专门的 AI 处理单元，用深度学习识别人的脸、眼和身体姿态，也能识别动物、鸟、昆虫和车辆。佳能、尼康等同期也在用深度学习训练主体识别。来源：Sony 新闻稿（2022）、Imaging Resource、CineD。',
- steps:[3,4,33],
+ steps:[3,4,34],
  draw(c,w,h){const u=evoBg(c,w,h);c.beginPath();c.arc(w/2,h/2,u*.22,0,7);c.stroke();c.beginPath();c.arc(w/2-u*.08,h/2-u*.04,u*.03,0,7);c.arc(w/2+u*.08,h/2-u*.04,u*.03,0,7);c.fill();
   c.strokeStyle=EVO_ACC;c.lineWidth*=2;c.strokeRect(w/2-u*.16,h/2-u*.11,u*.32,u*.14);}},
 
@@ -272,7 +281,7 @@ const EVO=[
  driver:'自动驾驶摄像头要看清隧道口、车灯和闪烁的 LED 交通灯，多帧合成来不及也会出错。',
  industry:'车载需求把单帧 HDR 做成量产技术，再回流到手机和相机。',
  story:'LOFIC（横向溢出积分电容）由日本东北大学须川成利团队在 2005 年 ISSCC 上提出，当时做到约 100 dB 动态范围。2023 年 9 月，豪威（OmniVision）发布结合 LOFIC 和双转换增益的 TheiaCel 技术与 800 万像素车载传感器 OX08D10，主打抑制 LED 闪烁。来源：ISSCC 2005 论文、OmniVision 新闻稿（2023）、New Electronics。',
- steps:[17,19,20,28],
+ steps:[17,19,20,29],
  draw(c,w,h){const u=evoBg(c,w,h);c.strokeRect(w*.18,h*.25,u*.3,u*.5);c.fillStyle=EVO_RGB.b;c.fillRect(w*.18,h*.25,u*.3,u*.5);
   c.strokeStyle=EVO_ACC;c.strokeRect(w*.88-u*.3,h*.25+u*.25,u*.3,u*.25);c.fillStyle=EVO_ACC;c.fillRect(w*.88-u*.3,h*.25+u*.38,u*.3,u*.12);
   evoArrow(c,w*.18+u*.32,h*.27,w*.88-u*.32,h*.25+u*.3,EVO_ACC);}},
