@@ -11,6 +11,21 @@ function drawSnr(){const p=+$('np').value,rn=+$('nr').value,dk=+$('nd').value,FW
   c.strokeStyle=PAL.r;c.lineWidth=1;c.beginPath();c.moveTo(X(FW),42);c.lineTo(X(FW),Hc-B);c.stroke();c.fillStyle=PAL.r;c.fillText('满阱',X(FW)-28,54);
   const dr=FW/Math.sqrt(rn*rn+dk);c.fillStyle=PAL.ink;c.fillText(`满阱 ${Math.round(FW).toLocaleString()} e⁻　动态范围 ${(20*Math.log10(dr)).toFixed(0)} dB ≈ ${Math.log2(dr).toFixed(1)} 档`,4,13);
   c.fillStyle=PAL.amber;c.fillText('实线：实际信噪比',4,28);c.fillStyle=PAL.dim;c.fillText('虚线：只有散粒噪声的理想情况',120,28);
+  /* 噪声分量分解图：σ_shot / σ_read / σ_dark / σ_total 四条曲线，交叉点标出 */
+  {const nc=cx2('nbreak'),nW=330,nH=160,nL=40,nB=26;
+   const nX=v=>nL+Math.log10(Math.max(v,1))/6*(nW-nL-8), nY=v=>nH-nB-(Math.log10(Math.max(v,.1))+1)/3*(nH-nB-24);
+   nc.fillStyle=PAL.paper;nc.fillRect(0,0,nW,nH);nc.font=FONT;nc.strokeStyle=PAL.grid;nc.fillStyle=PAL.dim;nc.lineWidth=1;
+   for(let e=0;e<=6;e++){nc.beginPath();nc.moveTo(nX(10**e),22);nc.lineTo(nX(10**e),nH-nB);nc.stroke();nc.fillText(e?'10'+'⁰¹²³⁴⁵⁶'[e]:'1',nX(10**e)-7,nH-nB+13);}
+   for(let e=-1;e<=2;e++){nc.beginPath();nc.moveTo(nL,nY(10**e));nc.lineTo(nW-8,nY(10**e));nc.stroke();nc.fillText(String(10**e),4,nY(10**e)+4);}
+   nc.fillStyle=PAL.ink;nc.fillText('σ (e⁻)',4,15);nc.fillText('信号电子数 →',nW-100,nH-2);
+   const nline=(f,col,dash)=>{nc.strokeStyle=col;nc.setLineDash(dash||[]);nc.lineWidth=2;nc.beginPath();for(let i=0;i<=240;i++){const S=10**(i/240*6);if(S>FW)break;nc.lineTo(nX(S),nY(f(S)));}nc.stroke();nc.setLineDash([]);};
+   nline(S=>Math.sqrt(S),PAL.b,[4,4]);                                                             // 散粒：虚蓝 √N
+   nline(_=>rn,PAL.r,[4,4]);                                                                       // 读出：虚红 固定
+   nline(_=>Math.sqrt(dk),'#b48cff',[4,4]);                                                        // 暗流：虚紫 固定
+   nline(S=>Math.sqrt(S+rn*rn+dk),PAL.g);                                                          // 总噪声：实绿
+   const cross=rn*rn;nc.strokeStyle=PAL.amber;nc.setLineDash([2,2]);nc.beginPath();nc.moveTo(nX(cross),22);nc.lineTo(nX(cross),nH-nB);nc.stroke();nc.setLineDash([]);
+   nc.fillStyle=PAL.amber;nc.fillText(`读噪 = 散粒 @ ${Math.round(cross)} e⁻`,nX(cross)-10,20);
+   nc.fillStyle=PAL.b;nc.fillText('散粒',nL+(nW-nL)/4,36);nc.fillStyle=PAL.r;nc.fillText('读出',nL+(nW-nL)/4+40,36);nc.fillStyle='#b48cff';nc.fillText('暗流',nL+(nW-nL)/4+80,36);nc.fillStyle=PAL.g;nc.fillText('总噪声',nL+(nW-nL)/4+120,36);}
   const pc=cx2('npatch'),Pw=110,Ph=70;pc.font=FONT;[5,50,500].forEach((ph,k)=>{const S=ph*p*p*.7,n=Math.sqrt(S+rn*rn+dk),id=pc.createImageData(Pw,Ph);
     for(let i=0;i<Pw*Ph;i++){const v=Math.max(0,Math.min(255,128*(S+n*gauss())/S));id.data[i*4]=id.data[i*4+1]=id.data[i*4+2]=v;id.data[i*4+3]=255;}pc.putImageData(id,k*Pw,0);
     pc.fillStyle='rgba(247,243,234,.88)';pc.fillRect(k*Pw,Ph-30,Pw,30);pc.fillStyle=PAL.ink;pc.fillText(`${Math.round(S).toLocaleString()} e⁻`,k*Pw+5,Ph-17);pc.fillText(`信噪比 ${(S/n).toFixed(1)}`,k*Pw+5,Ph-4);});}
