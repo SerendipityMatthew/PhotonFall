@@ -41,10 +41,10 @@ function animLof(time){const t=time%LT, n={PD:0,FD:0,CS:0}, txl=LS.TX(t);
   drawPotL(t,n);drawTimingL(t);const ph=LPH.find(p=>t<p[0])[1];if($('txs').textContent!==ph)$('txs').textContent=ph;}
 
 /* ---------- LOFIC 信号延伸模拟器 ---------- */
-function drawLoficSim(){const pd=+$('lofp').value*1000,k=+$('lofk').value,capFW=pd*k;    // pd in e⁻, cap = pd × k
+function drawLoficSim(){const pd=+$('lofp').value*1000,k=+$('lofk').value,rn=+$('lofn').value,capFW=pd*k;    // pd in e⁻, cap = pd × k
   const gRatio=k;                                                                          // LCG CG ≈ HCG / k
   const c=$('lofsig').getContext('2d'),W=330,H=220,L=42,B=28;                              // 不用 cx2（lofic.js 在 optics-extras.js 之前加载）
-  $('lofpo').value=(pd/1000).toFixed(0)+' ke⁻';$('lofko').value=k+'×';
+  $('lofpo').value=(pd/1000).toFixed(0)+' ke⁻';$('lofko').value=k+'×';$('lofno').value=rn.toFixed(1)+' e⁻';
   const xMax=1e7,yMax=1e7;                                                                 // 7 decades each
   const px=v=>L+Math.log10(Math.max(v,1))/Math.log10(xMax)*(W-L-8), py=v=>H-B-Math.log10(Math.max(v,1))/Math.log10(yMax)*(H-B-26);
   const fnt='11px ui-monospace,Menlo,monospace';                                           // 不依赖 optics-extras.js 的 FONT
@@ -64,9 +64,9 @@ function drawLoficSim(){const pd=+$('lofp').value*1000,k=+$('lofk').value,capFW=
   c.strokeStyle=PAL.dim;c.setLineDash([3,3]);c.beginPath();c.moveTo(L,py(pd));c.lineTo(W-8,py(pd));c.stroke();
   c.beginPath();c.moveTo(L,py(capFW));c.lineTo(W-8,py(capFW));c.stroke();c.setLineDash([]);
   c.fillStyle=PAL.paper;c.fillRect(0,0,W,22);c.fillRect(0,H-20,W,20);
-  c.font=fnt;c.fillStyle=PAL.ink;const drNo=20*Math.log10(pd/2),drLo=20*Math.log10(capFW/2);   // 假定读噪 2 e⁻
+  c.font=fnt;c.fillStyle=PAL.ink;const drNo=20*Math.log10(pd/rn),drLo=20*Math.log10(capFW/rn);   // DR = FWC / 读噪
   c.fillText(`PD ${(pd/1000).toFixed(0)}ke⁻　LOFIC 总 ${(capFW/1000).toFixed(0)}ke⁻`,4,14);
   c.fillStyle=PAL.r;c.fillText(`无 LOFIC: DR ~ ${drNo.toFixed(0)} dB ≈ ${(drNo/6).toFixed(1)}档`,4,H-4);
   c.fillStyle=PAL.g;c.fillText(`有 LOFIC: DR ~ ${drLo.toFixed(0)} dB ≈ ${(drLo/6).toFixed(1)}档`,170,H-4);}
-['lofp','lofk'].forEach(id=>$(id).oninput=drawLoficSim);
+['lofp','lofk','lofn'].forEach(id=>$(id).oninput=drawLoficSim);
 drawLoficSim();
