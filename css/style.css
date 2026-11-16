@@ -147,6 +147,10 @@ body:has(#drawer:not([hidden])) #topbar{right:calc(var(--drawer-w) + var(--gap) 
 #refs li{margin:3px 0;line-height:1.45}
 #refs a{color:var(--accent);text-decoration:none}
 #refs a:hover{text-decoration:underline}
+#rel{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0 0}
+.rel-chip{display:inline-flex;align-items:center;padding:3px 10px;border-radius:12px;font-size:12px;background:var(--accent-soft);color:var(--accent-ink);border:1px solid var(--line);cursor:pointer;font:500 12px/1.4 var(--sans)}
+.rel-chip:hover{border-color:var(--accent);color:var(--accent)}
+.rel-chip:before{content:'→ ';opacity:.5;margin-right:2px}
 #advh{background:var(--accent-soft);color:var(--accent-ink)}
 #hardh{background:var(--ink);color:var(--paper)}
 #compwrap h3{font:600 14px/1.4 var(--sans);margin:0}
