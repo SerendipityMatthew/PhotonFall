@@ -143,6 +143,10 @@ body:has(#drawer:not([hidden])) #topbar{right:calc(var(--drawer-w) + var(--gap) 
 .cal-confirmed,.cal-general{background:#eaf3ea;color:#3d6b43;border-color:#c9e1cf}
 .cal-simplified,.cal-concept{background:#faf1d3;color:#8a6d00;border-color:#efdfa1}
 .cal-vendor,.cal-estimated,.cal-todo{background:#fbeaea;color:#8a3d3d;border-color:#ecc6c6}
+#refs{font-size:12px;color:var(--ink-dim);padding-left:1.4em;margin:6px 0 0;list-style:disc}
+#refs li{margin:3px 0;line-height:1.45}
+#refs a{color:var(--accent);text-decoration:none}
+#refs a:hover{text-decoration:underline}
 #advh{background:var(--accent-soft);color:var(--accent-ink)}
 #hardh{background:var(--ink);color:var(--paper)}
 #compwrap h3{font:600 14px/1.4 var(--sans);margin:0}

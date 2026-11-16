@@ -44,6 +44,13 @@ function renderPanel(i) {
   $('hard').innerHTML = s.hard || '';
   $('hardh').hidden = !s.hard;
 
+  /* 来源 */
+  const refs = s.refs || [];
+  $('refs').innerHTML = refs.map(r =>
+    `<li>${r.u ? `<a href="${r.u}" target="_blank" rel="noopener">${r.t}</a>` : r.t}${r.n ? ` — ${r.n}` : ''}</li>`
+  ).join('');
+  $('refsh').hidden = !refs.length;
+
   /* 抽屉「来龙去脉」：这一步背后的技术是哪年、为什么出现的；点卡片去时间轴 */
   const evs = evoForStep(i);
   $('evo').innerHTML = !evs.length ? '' : evs.map(e =>
