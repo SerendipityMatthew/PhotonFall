@@ -271,7 +271,7 @@ const EVO=[
  driver:'体育、野生动物和独立视频创作者需要相机自己判断该对哪里。',
  industry:'相机里开始配专门的 AI 处理单元，对焦能力成了软件和算力的比拼。',
  story:'2022 年 10 月，索尼 α7R V 加入专门的 AI 处理单元，用深度学习识别人的脸、眼和身体姿态，也能识别动物、鸟、昆虫和车辆。佳能、尼康等同期也在用深度学习训练主体识别。来源：Sony 新闻稿（2022）、Imaging Resource、CineD。',
- steps:[3,4,35],
+ steps:[3,4,36],
  draw(c,w,h){const u=evoBg(c,w,h);c.beginPath();c.arc(w/2,h/2,u*.22,0,7);c.stroke();c.beginPath();c.arc(w/2-u*.08,h/2-u*.04,u*.03,0,7);c.arc(w/2+u*.08,h/2-u*.04,u*.03,0,7);c.fill();
   c.strokeStyle=EVO_ACC;c.lineWidth*=2;c.strokeRect(w/2-u*.16,h/2-u*.11,u*.32,u*.14);}},
 

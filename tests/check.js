@@ -96,8 +96,8 @@ check('route: historyMode', () => {
 check('steps: shape', () => {
   const S = ctx.STEPS, C = ctx.CHAPTERS;
   assert.strictEqual(C.length, 7);
-  assert.strictEqual(S.length, 36);
-  const want = [0, ...Array(10).fill(1), ...Array(4).fill(2), ...Array(3).fill(3), ...Array(4).fill(4), ...Array(5).fill(5), ...Array(9).fill(6)];
+  assert.strictEqual(S.length, 37);
+  const want = [0, ...Array(10).fill(1), ...Array(4).fill(2), ...Array(3).fill(3), ...Array(4).fill(4), ...Array(5).fill(5), ...Array(10).fill(6)];
   assert.deepStrictEqual([...S.map(s => s.ch)], want);
   S.forEach((s, i) => {
     for (const k of ['t', 'g', 'adv']) assert.ok(typeof s[k] === 'string' && s[k].length, `step ${i} ${k}`);
@@ -110,7 +110,7 @@ check('steps: shape', () => {
   assert.strictEqual(S[8].g, 'coat');
   assert.ok(S[8].pn.includes('coatpn'), 'step 8 keeps the coating button');
   assert.ok(!S.some(s => s.t === '镜头镀膜、眩光与鬼影'), 'old coating step merged away');
-  assert.strictEqual(S[S.length - 1].t, '计算摄影：夜景、人像、超分');
+  assert.strictEqual(S[S.length - 1].t, '计算摄影 · ML 场景分析：人像、对焦、降噪');
 });
 
 check('steps: content', () => {
@@ -152,7 +152,7 @@ check('layout: locText', () => {
   assert.strictEqual(ctx.locText(0, S, C), '先看全景');
   assert.strictEqual(ctx.locText(1, S, C), '1 镜头 · 第 1/10 步');
   assert.strictEqual(ctx.locText(16, S, C), '3 像素 · 第 2/3 步');
-  assert.strictEqual(ctx.locText(35, S, C), '6 周边 · 第 9/9 步');
+  assert.strictEqual(ctx.locText(36, S, C), '6 周边 · 第 10/10 步');
   assert.strictEqual(ctx.locShort(16, S, C), '3 像素 · 2/3');
 });
 check('layout: fig', () => {
