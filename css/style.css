@@ -46,6 +46,7 @@
   --bar-h:34px;        /* 顶栏药丸高 */
   --card-w:340px;
   --drawer-w:min(460px,42vw);   /* 时间轴隔列的淡底（--paper-2 半透明） */
+  --pager-h:46px;
 
   /* 旧名字（index.html 内联样式和旧代码还在用） */
   --fg:var(--ink); --dim:var(--ink-dim); --light:var(--accent);
@@ -614,6 +615,47 @@ body.tl-open #tlaxis,body.tl-open .tl-lane{grid-template-columns:var(--tl-cols) 
   .cmos-stack{padding:14px 10px 18px}
   .cmos-stack .lyr{padding:7px 12px;min-height:36px;font-size:12px;transform:rotateX(45deg) skewX(-12deg)}
   .cmos-stack .lyr em{font-size:11px}
+}
+
+/* 底部章节 step pager — 学 designed-to-scale 的小圆步骤条 */
+#pager{position:fixed;z-index:11;left:0;right:0;bottom:0;height:var(--pager-h);
+  display:flex;align-items:stretch;gap:0;overflow-x:auto;overscroll-behavior-x:contain;
+  padding:0 max(10px,env(safe-area-inset-left,0px)) 0 max(10px,env(safe-area-inset-right,0px));
+  background:var(--glass);backdrop-filter:blur(10px);border-top:1px solid var(--line);
+  scrollbar-width:none;pointer-events:auto}
+#pager::-webkit-scrollbar{display:none}
+.pg-ch{display:inline-flex;flex-direction:column;align-items:flex-start;justify-content:center;
+  gap:3px;padding:4px 10px 5px;border-right:1px solid var(--line);flex-shrink:0;min-width:0}
+.pg-ch:last-child{border-right:0}
+.pg-ch-name{font:600 10px/1 var(--sans);letter-spacing:.04em;color:var(--ink-dim);
+  padding-left:2px;white-space:nowrap}
+.pg-ch.on .pg-ch-name{color:var(--accent-ink)}
+.pg-dots{display:inline-flex;gap:3px}
+.pg-dot{border:0;padding:0;cursor:pointer;background:var(--line);border-radius:3px;
+  width:22px;height:16px;font:600 9px/16px var(--sans);color:transparent;
+  transition:background .15s,width .2s,color .15s}
+.pg-dot:hover{background:var(--accent-soft);color:var(--accent-ink)}
+.pg-dot.done{background:var(--accent-soft)}
+.pg-dot[aria-current=step]{background:var(--accent);color:#fff;width:30px}
+
+/* 让 #card / #drawer / #topbar 给底部 pager 让位 */
+#card{bottom:calc(var(--gap) + var(--pager-h))}
+#drawer{bottom:var(--pager-h)}
+
+/* Mobile：把 pager 塞回顶部，宽度小屏幕放不下章节名 + 大 dot */
+@media (max-width:720px){
+  #pager{top:0;bottom:auto;height:34px;border-top:0;border-bottom:1px solid var(--line);
+    padding-top:max(0px,env(safe-area-inset-top,0px))}
+  .pg-ch{padding:4px 6px 5px}
+  .pg-ch-name{display:none}
+  .pg-dot{width:12px;height:12px;border-radius:50%;color:transparent}
+  .pg-dot[aria-current=step]{width:18px;border-radius:9px}
+  /* 顶部让出来 */
+  #prog{top:34px}
+  #topbar{top:calc(34px + var(--gap))}
+  /* 底部 #card 不动（原来 bottom:0 的 sheet 仍可用） */
+  #card{bottom:0}
+  #drawer{bottom:0}
 }
 
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
