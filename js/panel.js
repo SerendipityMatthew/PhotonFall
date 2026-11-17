@@ -22,8 +22,9 @@ function renderPanel(i) {
   $('title').textContent = (en && s.tEn) ? s.tEn : s.t;
   $('lead').innerHTML = (en && s.leadEn) ? s.leadEn : (s.lead || '');
 
-  /* KEY IDEA 紫色要点卡：可选字段。 */
-  if (s.key) { $('keyidea').innerHTML = s.key; $('keyidea').hidden = false; }
+  /* KEY IDEA 紫色要点卡：可选字段。按 lang 选 en / zh。 */
+  const keyContent = (en && s.keyEn) ? s.keyEn : s.key;
+  if (keyContent) { $('keyidea').innerHTML = keyContent; $('keyidea').hidden = false; }
   else $('keyidea').hidden = true;
 
   /* 给 #lead [data-hl] 绑定点击和悬停（Task 6）
