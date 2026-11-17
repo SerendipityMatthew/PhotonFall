@@ -150,7 +150,15 @@
     </div>
     <div id="adcwrap" data-pn hidden><canvas id="adcc" class="pc" width="330" height="210"></canvas></div>
     <div id="shutwrap" data-pn hidden><canvas id="shc" class="pc" width="330" height="180"></canvas></div>
-    <div id="paths" data-pn hidden><div class="cap">换个顺序看这些步：</div><div class="row" style="flex-wrap:wrap;gap:6px"><button type="button" data-path="5">快速入门（9 步）</button><button type="button" data-path="2">光学工程师（9 步）</button><button type="button" data-path="15">半导体工程师（10 步）</button><button type="button" data-path="12">色彩与显示（8 步）</button></div></div>
+    <div id="paths" data-pn hidden>
+      <div class="cap">换个顺序看这些步（点开展开整条路径）：</div>
+      <div class="paths-wrap">
+        <div class="path"><button type="button" class="path-head" data-steps="1,2,5,9,12,15,16,22,26" aria-expanded="false">快速入门（9 步）</button><ol class="path-body" hidden></ol></div>
+        <div class="path"><button type="button" class="path-head" data-steps="1,2,3,4,5,6,7,8,10" aria-expanded="false">光学工程师（9 步）</button><ol class="path-body" hidden></ol></div>
+        <div class="path"><button type="button" class="path-head" data-steps="15,16,17,18,19,20,21,22,23,24" aria-expanded="false">半导体工程师（10 步）</button><ol class="path-body" hidden></ol></div>
+        <div class="path"><button type="button" class="path-head" data-steps="12,14,26,28,29,30,31,32" aria-expanded="false">色彩与显示（8 步）</button><ol class="path-body" hidden></ol></div>
+      </div>
+    </div>
     <div id="tourpn" data-pn hidden>
       <ol id="flow" aria-label="一张照片走过的路">
         <li data-k="light"><b>光</b><small>景物反光</small></li>

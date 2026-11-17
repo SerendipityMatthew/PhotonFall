@@ -26,7 +26,20 @@ function applyRoute(r) {
 /* ---------- 事件委托 ---------- */
 $('prev').onclick = () => navigate({view: 'step', n: step - 1});
 $('next').onclick = () => navigate({view: 'step', n: step + 1});
-document.querySelectorAll('[data-path]').forEach(b => b.onclick = () => navigate({view: 'step', n: +b.dataset.path}));
+document.querySelectorAll('.path-head').forEach(h => h.onclick = () => {
+  const open = h.getAttribute('aria-expanded') === 'true';
+  document.querySelectorAll('.path-head').forEach(x => {x.setAttribute('aria-expanded', 'false'); x.nextElementSibling.hidden = true;});
+  if (open) return;
+  h.setAttribute('aria-expanded', 'true');
+  const body = h.nextElementSibling;
+  body.hidden = false;
+  if (!body.children.length) h.dataset.steps.split(',').map(Number).forEach((n, i) => {
+    const li = document.createElement('li'), b = document.createElement('button');
+    b.type = 'button'; b.textContent = `${i + 1}. ${STEPS[n].t}`;
+    b.onclick = () => navigate({view: 'step', n});
+    li.appendChild(b); body.appendChild(li);
+  });
+});
 
 function updateLblBtn() {
   $('lblbtn').setAttribute('aria-pressed', String(showAllLabels));
