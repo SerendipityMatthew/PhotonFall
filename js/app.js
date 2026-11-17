@@ -223,13 +223,15 @@ function frame() {
 function buildPager() {
   const pg = $('pager');
   if (!pg) return;
+  const en = typeof getLang === 'function' && getLang() === 'en';
   pg.innerHTML = CHAPTERS.map(ch => {
     const steps = STEPS.map((s, i) => [s, i]).filter(([s]) => s.ch === ch.id);
     if (!steps.length) return '';
+    const chName = (en && ch.nameEn) ? ch.nameEn : ch.name;
     const dots = steps.map(([s, i]) =>
-      `<button type="button" class="pg-dot" data-i="${i}" aria-label="第 ${i} 步：${s.t}">${i}</button>`
+      `<button type="button" class="pg-dot" data-i="${i}" aria-label="Step ${i}: ${s.t}">${i}</button>`
     ).join('');
-    return `<div class="pg-ch" data-ch="${ch.id}"><span class="pg-ch-name">${ch.name}</span><span class="pg-dots">${dots}</span></div>`;
+    return `<div class="pg-ch" data-ch="${ch.id}"><span class="pg-ch-name">${chName}</span><span class="pg-dots">${dots}</span></div>`;
   }).join('');
   pg.addEventListener('click', e => {
     const b = e.target.closest('.pg-dot');
@@ -254,13 +256,15 @@ function syncPager(i) {
 function buildSideTree() {
   const el = $('sidetree');
   if (!el) return;
+  const en = typeof getLang === 'function' && getLang() === 'en';
   el.innerHTML = CHAPTERS.map(ch => {
     const steps = STEPS.map((s, i) => [s, i]).filter(([s]) => s.ch === ch.id);
     if (!steps.length) return '';
+    const chName = (en && ch.nameEn) ? ch.nameEn : ch.name;
     return `<section class="st-ch" data-ch="${ch.id}">
-      <h3 class="st-ch-name">${ch.name}</h3>
+      <h3 class="st-ch-name">${chName}</h3>
       <ul class="st-steps">${steps.map(([s, i]) =>
-        `<li><button type="button" class="st-step" data-i="${i}" title="第 ${i} 步：${s.t}">${s.t}</button></li>`
+        `<li><button type="button" class="st-step" data-i="${i}" title="Step ${i}: ${s.t}">${s.t}</button></li>`
       ).join('')}</ul>
     </section>`;
   }).join('');
@@ -276,8 +280,14 @@ function syncSideTree(i) {
   el.querySelector('.st-step.on')?.scrollIntoView({block: 'nearest', behavior: 'smooth'});
 }
 
+/* ---------- 语言切换按钮 ---------- */
+if ($('langbtn')) {
+  $('langbtn').onclick = () => setLang(getLang() === 'en' ? 'zh' : 'en');
+}
+
 /* ---------- 启动 ---------- */
 updateLblBtn();
+if (typeof applyLang === 'function') applyLang();
 buildPager();
 buildSideTree();
 const origGo = go;
