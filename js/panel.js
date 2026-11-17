@@ -21,6 +21,10 @@ function renderPanel(i) {
   $('title').textContent = s.t;
   $('lead').innerHTML = s.lead || '';
 
+  /* KEY IDEA 紫色要点卡：可选字段。 */
+  if (s.key) { $('keyidea').innerHTML = s.key; $('keyidea').hidden = false; }
+  else $('keyidea').hidden = true;
+
   /* 给 #lead [data-hl] 绑定点击和悬停（Task 6）
      hover 只高亮标注（nudge=false）；click 和键盘还推镜头（nudge=true） */
   $('lead').querySelectorAll('[data-hl]').forEach(kEl => {
