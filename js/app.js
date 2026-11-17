@@ -66,6 +66,13 @@ function go(i) {
   step = i;
   const s = STEPS[i];
 
+  /* SEO: 按步动态更新 title / meta description / JSON-LD */
+  const seoDesc = `PhotonFall 第 ${i} 步：${s.t}（共 37 步可交互 3D 讲解）`;
+  document.title = `PhotonFall · 第 ${i} 步：${s.t}`;
+  document.querySelector('meta[name="description"]')?.setAttribute('content', seoDesc);
+  const jl = document.querySelector('script[type="application/ld+json"]');
+  if (jl) try { const o = JSON.parse(jl.textContent); o.description = seoDesc; jl.textContent = JSON.stringify(o); } catch(e) {}
+
   /* 场景可见性 */
   for (const k in GR) GR[k].visible = k === s.g;
 
