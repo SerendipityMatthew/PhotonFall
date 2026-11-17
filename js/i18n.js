@@ -13,6 +13,7 @@ const I18N = {
     pagerNav: '步骤导航', sidetreeNav: '课程目录',
     zoomDialog: '放大的小图', nextSlide: '下一张',
     langSwitch: 'EN', langSwitchAria: '切换语言：English',
+    quizBtn: '🎯 测验', quizBtnAria: '测验',
   },
   en: {
     menu: 'Menu', timeline: 'Timeline', labels: 'Labels', help: 'Help',
@@ -26,6 +27,7 @@ const I18N = {
     pagerNav: 'Step navigation', sidetreeNav: 'Course outline',
     zoomDialog: 'Zoomed figure', nextSlide: 'Next',
     langSwitch: '中', langSwitchAria: 'Switch language: 中文',
+    quizBtn: '🎯 Quiz', quizBtnAria: 'Practice quiz',
   },
 };
 
@@ -55,6 +57,15 @@ function applyLang() {
     if (typeof renderPanel === 'function') renderPanel(step);
     if (typeof syncPager === 'function') syncPager(step);
     if (typeof syncSideTree === 'function') syncSideTree(step);
+  }
+  /* 当前若在 quiz 视图，重渲染 */
+  const qv = document.getElementById('quizview');
+  if (qv && !qv.hidden) {
+    if (typeof quizState !== 'undefined' && quizState) {
+      if (typeof renderQuizQuestion === 'function') renderQuizQuestion();
+    } else {
+      if (typeof renderQuizIndex === 'function') renderQuizIndex();
+    }
   }
 }
 

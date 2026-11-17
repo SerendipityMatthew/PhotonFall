@@ -23,6 +23,11 @@ function parseRoute(hash, maxStep) {
     if (timelineMatch) {
       return { view: 'timeline', id: timelineMatch[1] !== undefined ? timelineMatch[1] : null };
     }
+
+    var quizMatch = hash.match(/^#\/quiz(?:\/([a-z]+))?$/);
+    if (quizMatch) {
+      return { view: 'quiz', cat: quizMatch[1] || null };
+    }
   }
 
   return { view: 'step', n: 0 };
@@ -40,6 +45,9 @@ function routeHash(r) {
   }
   if (r.view === 'timeline') {
     return r.id ? '#/timeline/' + r.id : '#/timeline';
+  }
+  if (r.view === 'quiz') {
+    return r.cat ? '#/quiz/' + r.cat : '#/quiz';
   }
   return '#/step/0';
 }

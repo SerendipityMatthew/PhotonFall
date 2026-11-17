@@ -37,9 +37,11 @@
   <button type="button" id="loc" data-i18n-aria="menu" aria-label="目录"></button>
   <button type="button" id="tlbtn" data-i18n-aria="timeline" aria-label="时间轴"><span aria-hidden="true">🕰</span><span class="bt" data-i18n="timeline"> 时间轴</span></button>
   <button type="button" id="lblbtn" aria-pressed="true" data-i18n="labels">标注</button>
+  <button type="button" id="quizbtn" data-i18n="quizBtn" data-i18n-aria="quizBtnAria" aria-label="测验">🎯 测验</button>
   <button type="button" id="langbtn" data-i18n="langSwitch" data-i18n-aria="langSwitchAria" aria-label="切换语言：English">EN</button>
   <button type="button" id="helpbtn" data-i18n-aria="help" aria-label="操作提示">?</button>
 </header>
+<section id="quizview" hidden></section>
 <section id="card" aria-labelledby="title">
   <button type="button" id="grip" data-i18n-aria="cardGrip" aria-label="调整讲解栏高度"></button>
   <button type="button" id="cardfold" aria-expanded="true" data-i18n="collapse">收起</button>
@@ -252,6 +254,7 @@
 <script src="js/sheet.js"></script>
 <script src="js/panel.js"></script>
 <script src="js/i18n.js"></script>
+<script src="js/quiz.js"></script>
 <script src="js/app.js"></script>
 </body>
 </html>
