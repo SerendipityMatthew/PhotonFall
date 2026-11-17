@@ -30,55 +30,56 @@
 <body>
 <div id="prog" role="progressbar" aria-valuemin="0" aria-valuemax="100"></div>
 <main id="view"></main>
-<nav id="pager" aria-label="步骤导航"></nav>
-<aside id="sidetree" aria-label="课程目录"></aside>
+<nav id="pager" data-i18n-aria="pagerNav" aria-label="步骤导航"></nav>
+<aside id="sidetree" data-i18n-aria="sidetreeNav" aria-label="课程目录"></aside>
 <header id="topbar">
-  <button type="button" id="tocbtn" aria-label="目录"><span aria-hidden="true">☰</span><span class="bt"> 目录</span></button>
-  <button type="button" id="loc" aria-label="目录"></button>
-  <button type="button" id="tlbtn" aria-label="时间轴"><span aria-hidden="true">🕰</span><span class="bt"> 时间轴</span></button>
-  <button type="button" id="lblbtn" aria-pressed="true">标注</button>
-  <button type="button" id="helpbtn" aria-label="操作提示">?</button>
+  <button type="button" id="tocbtn" data-i18n-aria="menu" aria-label="目录"><span aria-hidden="true">☰</span><span class="bt" data-i18n="menu"> 目录</span></button>
+  <button type="button" id="loc" data-i18n-aria="menu" aria-label="目录"></button>
+  <button type="button" id="tlbtn" data-i18n-aria="timeline" aria-label="时间轴"><span aria-hidden="true">🕰</span><span class="bt" data-i18n="timeline"> 时间轴</span></button>
+  <button type="button" id="lblbtn" aria-pressed="true" data-i18n="labels">标注</button>
+  <button type="button" id="langbtn" data-i18n="langSwitch" data-i18n-aria="langSwitchAria" aria-label="切换语言：English">EN</button>
+  <button type="button" id="helpbtn" data-i18n-aria="help" aria-label="操作提示">?</button>
 </header>
 <section id="card" aria-labelledby="title">
-  <button type="button" id="grip" aria-label="调整讲解栏高度"></button>
-  <button type="button" id="cardfold" aria-expanded="true">收起</button>
+  <button type="button" id="grip" data-i18n-aria="cardGrip" aria-label="调整讲解栏高度"></button>
+  <button type="button" id="cardfold" aria-expanded="true" data-i18n="collapse">收起</button>
   <h2 id="title" tabindex="-1"></h2>
   <div id="lead"></div>
   <div id="keyidea" class="key-box" hidden></div>
   <div id="cardctl"></div>
-  <div id="cardfig" role="button" tabindex="0" aria-label="放大这张小图"></div>
+  <div id="cardfig" role="button" tabindex="0" data-i18n-aria="zoomSmall" aria-label="放大这张小图"></div>
   <div id="cardevo"></div>
   <div class="nav">
-    <button type="button" id="detailbtn">详细 ↗</button>
-    <button type="button" id="prev" aria-label="上一步">←</button>
-    <button type="button" id="next">下一步：<span id="nextt"></span> →</button>
+    <button type="button" id="detailbtn" data-i18n="detail-arrow">详细 ↗</button>
+    <button type="button" id="prev" data-i18n-aria="prev" aria-label="上一步">←</button>
+    <button type="button" id="next"><span data-i18n="next">下一步：</span><span id="nextt"></span> →</button>
   </div>
 </section>
 <aside id="drawer" role="dialog" aria-modal="false" aria-labelledby="drawert" hidden>
-  <div class="drawer-head"><h2 id="drawert" tabindex="-1">详细</h2><button type="button" id="drawerclose" aria-label="关闭">×</button></div>
+  <div class="drawer-head"><h2 id="drawert" tabindex="-1" data-i18n="drawerTitle">详细</h2><button type="button" id="drawerclose" data-i18n-aria="close" aria-label="关闭">×</button></div>
   <div class="drawer-tabs" role="tablist">
-    <button type="button" id="tabbtdeep" role="tab" data-tab="deep" aria-controls="tabdeep">深入</button>
-    <button type="button" id="tabbtevo" role="tab" data-tab="evo" aria-controls="tabevo">来龙去脉</button>
-    <button type="button" id="tabbtcomp" role="tab" data-tab="comp" aria-controls="tabcomp">元器件</button>
+    <button type="button" id="tabbtdeep" role="tab" data-tab="deep" aria-controls="tabdeep" data-i18n="tabDeep">深入</button>
+    <button type="button" id="tabbtevo" role="tab" data-tab="evo" aria-controls="tabevo" data-i18n="tabEvo">来龙去脉</button>
+    <button type="button" id="tabbtcomp" role="tab" data-tab="comp" aria-controls="tabcomp" data-i18n="tabComp">元器件</button>
   </div>
   <div id="tabdeep" role="tabpanel" aria-labelledby="tabbtdeep">
     <div id="drawerfigs"></div>
     <div id="cal" hidden></div>
     <div id="limits" class="limits-box" hidden></div>
-    <h3 id="advh" hidden>进阶</h3>
+    <h3 id="advh" hidden data-i18n="hAdv">进阶</h3>
     <div id="adv"></div>
-    <h3 id="hardh">硬核</h3>
+    <h3 id="hardh" data-i18n="hHard">硬核</h3>
     <div id="hard"></div>
-    <h3 id="refsh" hidden>来源</h3>
+    <h3 id="refsh" hidden data-i18n="hRefs">来源</h3>
     <ul id="refs"></ul>
-    <h3 id="relh" hidden>相关知识点</h3>
+    <h3 id="relh" hidden data-i18n="hRel">相关知识点</h3>
     <div id="rel"></div>
   </div>
   <div id="tabevo" role="tabpanel" aria-labelledby="tabbtevo" hidden><div id="evo"></div></div>
-  <div id="tabcomp" role="tabpanel" aria-labelledby="tabbtcomp" hidden><div id="compwrap" hidden><h3>本步元器件（<span id="compn"></span>）</h3><dl id="complist"></dl></div></div>
+  <div id="tabcomp" role="tabpanel" aria-labelledby="tabbtcomp" hidden><div id="compwrap" hidden><h3><span data-i18n="stepComps">本步元器件</span>（<span id="compn"></span>）</h3><dl id="complist"></dl></div></div>
 </aside>
-<div id="zoom" role="dialog" aria-modal="true" aria-label="放大的小图" hidden>
-  <div class="zoom-box"><button type="button" id="zoomclose" aria-label="关闭">×</button><div id="zoombody"></div><p id="zoomcap"></p></div>
+<div id="zoom" role="dialog" aria-modal="true" data-i18n-aria="zoomDialog" aria-label="放大的小图" hidden>
+  <div class="zoom-box"><button type="button" id="zoomclose" data-i18n-aria="close" aria-label="关闭">×</button><div id="zoombody"></div><p id="zoomcap"></p></div>
 </div>
 <div id="onboard" role="dialog" aria-modal="true" aria-labelledby="onboard-t" hidden>
   <p id="onboard-t"></p>
@@ -88,19 +89,19 @@
       <span class="onboard-dot"></span>
       <span class="onboard-dot"></span>
     </span>
-    <button type="button" id="onboard-btn">下一张</button>
+    <button type="button" id="onboard-btn" data-i18n="nextSlide">下一张</button>
   </div>
 </div>
 <div id="toc" role="dialog" aria-modal="true" aria-labelledby="toctitle" hidden>
   <div class="toc-box">
-    <div class="toc-head"><h2 id="toctitle">目录</h2><button type="button" id="tocclose" aria-label="关闭">×</button></div>
+    <div class="toc-head"><h2 id="toctitle" data-i18n="tocTitle">目录</h2><button type="button" id="tocclose" data-i18n-aria="close" aria-label="关闭">×</button></div>
     <div id="tocbody" class="toc-body"></div>
-    <div id="tocfoot" class="toc-foot"><button type="button" id="refsopenbtn">📚 所有参考资料</button></div>
+    <div id="tocfoot" class="toc-foot"><button type="button" id="refsopenbtn" data-i18n="allRefsBtn">📚 所有参考资料</button></div>
   </div>
 </div>
 <div id="allrefs" role="dialog" aria-modal="true" aria-labelledby="allrefstitle" hidden>
   <div class="refs-box">
-    <div class="refs-head"><h2 id="allrefstitle">所有参考资料</h2><button type="button" id="allrefsclose" aria-label="关闭">×</button></div>
+    <div class="refs-head"><h2 id="allrefstitle" data-i18n="allRefsTitle">所有参考资料</h2><button type="button" id="allrefsclose" data-i18n-aria="close" aria-label="关闭">×</button></div>
     <div id="allrefsbody" class="refs-body"></div>
   </div>
 </div>
@@ -250,6 +251,7 @@
 <script src="js/onboard.js"></script>
 <script src="js/sheet.js"></script>
 <script src="js/panel.js"></script>
+<script src="js/i18n.js"></script>
 <script src="js/app.js"></script>
 </body>
 </html>
