@@ -282,7 +282,22 @@ const STEPS=[
 <tr><td>全画幅 4–6 µm（Sony A7R V 类）</td><td>~60 ke⁻</td><td>~1.5 e⁻</td><td>~92 dB ≈ 15 EV</td></tr>
 <tr><td>+ DCG / LOFIC</td><td>×10+</td><td>HG 不变</td><td>可到 100+ dB / 17+ EV</td></tr></table>
 <p><b>暗电流温度公式</b>：D(T) ≈ D₀ · 2^((T − T₀)/ΔT)，ΔT ≈ 6–8 °C。所以长曝光摄星机、科研 CMOS 常做制冷到 −30 °C 以下。</p>
-<p><b>和 ISO 的关系</b>：ISO 提高是<b>在 ADC 之前</b>做模拟放大（PGA），把小信号放到 ADC 的量程里。它不增加光子，所以散粒噪声和信号比不变；但 ADC 和列电路的读出噪声相对被压小，所以高 ISO 读噪（以电子算）反而比低 ISO 低。这就是「双原生 ISO」—— 在某个 ISO 以上切到高增益档（DCG），读噪明显下降。</p>`},
+<p><b>和 ISO 的关系</b>：ISO 提高是<b>在 ADC 之前</b>做模拟放大（PGA），把小信号放到 ADC 的量程里。它不增加光子，所以散粒噪声和信号比不变；但 ADC 和列电路的读出噪声相对被压小，所以高 ISO 读噪（以电子算）反而比低 ISO 低。这就是「双原生 ISO」—— 在某个 ISO 以上切到高增益档（DCG），读噪明显下降。</p>
+<h3 class="iq">EMVA 1288 — 传感器测试的工业标准</h3>
+<p><b>EMVA 1288</b>（European Machine Vision Association，最新 v4.0 / 2024）是衡量 CIS 性能的最常用标准。机器视觉行业全部采用，相机厂家也用其中指标口径。</p>
+<table class="cmp iqt">
+<tr><th>指标</th><th>含义</th><th>单位</th></tr>
+<tr><td>QE(λ)</td><td>按波长的量子效率</td><td>%</td></tr>
+<tr><td>Temporal Dark Noise σ_d</td><td>暗态单像素跨帧 RMS（≈ 读噪）</td><td>e⁻</td></tr>
+<tr><td>DSNU</td><td>暗帧像素间差异（固定模式）</td><td>e⁻</td></tr>
+<tr><td>PRNU</td><td>照度下像素增益不均（和信号成比例）</td><td>%</td></tr>
+<tr><td>Saturation Capacity</td><td>50% 饱和时的光子数（≈ FWC）</td><td>e⁻</td></tr>
+<tr><td>Dynamic Range</td><td>FWC / σ_d</td><td>dB 或 EV</td></tr>
+<tr><td>SNR_max</td><td>≈ √FWC</td><td>dB</td></tr>
+<tr><td>Linearity Error</td><td>偏离理想响应的最大 %</td><td>%</td></tr>
+</table>
+<p><b>测试条件硬性</b>：恒温（25°C ± 2°C）、单色光源（默认 505 nm 绿光）、变积分时间、均匀光场（积分球或柯勒照明）。违反任一条件，数据不可跨厂比较。</p>
+<p><b>为什么要独立标</b>：厂商宣传的「ISO 100 at 14 EV 动态范围」测试条件不公开，难以互相比较。EMVA 1288 要求公开光源、温度、曝光、裁切区域，第三方可复现。工业 CMOS 厂家（Sony SCMOS、OnSemi、Teledyne）数据手册几乎全用；DXOMARK / PhotoReview 等评测站部分采用；相机厂家（Sony α、Canon EOS、Nikon Z）仅公开部分指标。</p>`},
  {ch:5,t:'逐行读出与模数转换',cal:['general'],related:[16,21,24,25],refs:[{t:'Column-parallel ADC 原理（Sony Exmor 技术页）',u:'https://www.sony-semicon.com/en/technology/is/innovation.html'},{t:'Rolling shutter readout 时序（CMOS 传感器综述）'}],dn:1,g:'micro',fig:'dnwrap',cam:[4.2,3.4,6.4],look:[0,0.2,1.0],lead:`像素按行“点名”：一行像素同时把电压送上各自的<k data-hl="列线">列线</k>，每列底下的<k data-hl="列 ADC">ADC</k>像一台秤，把电压称成数字，然后轮到下一行。`,adv:`<p>回到 4×4 阵列。同一行像素的 SEL 一起打开（亮框是当前行），每个像素的电压各走自己那根<b>列线</b>（脉冲沿线下行）。</p><p>列尾电路依次做：</p><p>① <b>相关双采样</b>：复位电平减信号电平，得到只和电子数有关的电压。</p><p>② <b>模拟增益</b>放大，这就是 ISO。在量化之前放大，能压低后级电路噪声的影响。</p><p>③ <b>列并行 ADC</b> 把电压量化成 10–14 bit 的数字。每列一个 ADC，一整行同时转换。</p><p>一行一行往下读，各行曝光的起止时间略有先后，这就是卷帘快门，拍快速横移的物体会歪。</p>`,hard:`<h3 class="iq">读出带宽与外部接口：MIPI CSI-2 / SLVS-EC</h3>
 <p>ADC 之后的数字要出芯片去 ISP 或 SoC。手机 / 车载 / 安防几乎都用 MIPI CSI-2，Sony 自家高速相机用 SLVS-EC。</p>
 <ul>
