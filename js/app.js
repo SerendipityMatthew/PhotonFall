@@ -19,8 +19,9 @@ function navigate(r) {
 }
 
 function applyRoute(r) {
-  if (r.view === 'step') { hideTimeline(); go(r.n); }
-  else if (r.view === 'timeline') showTimeline(r.id);
+  if (r.view === 'step') { hideTimeline(); hideQuiz(); go(r.n); }
+  else if (r.view === 'timeline') { hideQuiz(); showTimeline(r.id); }
+  else if (r.view === 'quiz') { hideTimeline(); showQuiz(r.cat); }
 }
 
 /* ---------- 事件委托 ---------- */
@@ -283,6 +284,11 @@ function syncSideTree(i) {
 /* ---------- 语言切换按钮 ---------- */
 if ($('langbtn')) {
   $('langbtn').onclick = () => setLang(getLang() === 'en' ? 'zh' : 'en');
+}
+
+/* ---------- 测验按钮 ---------- */
+if ($('quizbtn')) {
+  $('quizbtn').onclick = () => navigate({view:'quiz', cat: null});
 }
 
 /* ---------- 启动 ---------- */
