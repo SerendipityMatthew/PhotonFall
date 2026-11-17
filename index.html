@@ -97,8 +97,8 @@
 <div id="parking" hidden>
     <div id="hudwrap" hidden><div id="hud"></div></div>
     <div id="vfwrap" hidden>
-      <figure id="vffig"><canvas id="vf" width="360" height="240"></canvas><figcaption>取景器（实时，按公式计算）</figcaption></figure>
-      <figure><canvas id="photo" width="360" height="240"></canvas><figcaption id="exif">按「拍照」后，这里是拍到的照片</figcaption></figure>
+      <figure id="vffig"><canvas id="vf" width="360" height="240" aria-label="取景器实时画面：按当前镜头和光圈的公式计算"></canvas><figcaption>取景器（实时，按公式计算）</figcaption></figure>
+      <figure><canvas id="photo" width="360" height="240" aria-label="拍到的照片：按下「拍照」按钮后出现"></canvas><figcaption id="exif">按「拍照」后，这里是拍到的照片</figcaption></figure>
     </div>
     <div class="ctl" id="ctl">
       <label for="zo">变焦（焦距）<output id="zoo"></output><input id="zo" type="range" min="50" max="150" step="1" value="85"></label>
@@ -109,38 +109,38 @@
       <label for="iso">ISO <output id="isoo"></output><input id="iso" type="range" min="0" max="7" step="1" value="0"></label>
       <div class="row"><button id="shoot">拍照</button></div>
     </div>
-    <div id="txwrap" hidden><canvas id="pot" width="340" height="150"></canvas><canvas id="tm" width="340" height="150"></canvas><div id="txs"></div></div>
+    <div id="txwrap" hidden><canvas id="pot" width="340" height="150" aria-label="4T 像素电势图：读出过程中的电子势阱变化"></canvas><canvas id="tm" width="340" height="150" aria-label="4T 像素时序图：复位 / 转移 / 读出的时间顺序"></canvas><div id="txs"></div></div>
     <div class="row" id="chipctl" hidden><button id="stk">把电路叠到像素下面（堆栈式）</button></div>
     <div id="dnwrap" hidden><div class="f" style="margin-bottom:6px">本轮读出的 RAW 值（10 bit，0–1023）</div><div id="dn"></div></div>
     <div id="isp" hidden>
-      <figure><canvas id="i0" width="96" height="64"></canvas><figcaption>① RAW（灰度，黑电平 64）</figcaption></figure>
-      <figure><canvas id="i1" width="96" height="64"></canvas><figcaption>② 扣黑电平</figcaption></figure>
-      <figure><canvas id="i2" width="96" height="64"></canvas><figcaption>③ 暗角校正</figcaption></figure>
-      <figure><canvas id="i3" width="96" height="64"></canvas><figcaption>④ 去马赛克（线性）</figcaption></figure>
-      <figure><canvas id="i4" width="96" height="64"></canvas><figcaption>⑤ 白平衡</figcaption></figure>
-      <figure><canvas id="i5" width="96" height="64"></canvas><figcaption>⑥ 色彩矩阵</figcaption></figure>
-      <figure><canvas id="i6" width="96" height="64"></canvas><figcaption>⑦ 伽马与色调</figcaption></figure>
-      <figure><canvas id="i7" width="96" height="64"></canvas><figcaption>⑧ 降噪</figcaption></figure>
-      <figure id="i8fig"><canvas id="i8" width="96" height="64"></canvas><figcaption>⑨ 锐化</figcaption></figure>
+      <figure><canvas id="i0" width="96" height="64" aria-label="ISP ① RAW 灰度图（黑电平 64）"></canvas><figcaption>① RAW（灰度，黑电平 64）</figcaption></figure>
+      <figure><canvas id="i1" width="96" height="64" aria-label="ISP ② 扣黑电平后"></canvas><figcaption>② 扣黑电平</figcaption></figure>
+      <figure><canvas id="i2" width="96" height="64" aria-label="ISP ③ 暗角校正后"></canvas><figcaption>③ 暗角校正</figcaption></figure>
+      <figure><canvas id="i3" width="96" height="64" aria-label="ISP ④ 去马赛克（线性）后"></canvas><figcaption>④ 去马赛克（线性）</figcaption></figure>
+      <figure><canvas id="i4" width="96" height="64" aria-label="ISP ⑤ 白平衡后"></canvas><figcaption>⑤ 白平衡</figcaption></figure>
+      <figure><canvas id="i5" width="96" height="64" aria-label="ISP ⑥ 色彩矩阵后"></canvas><figcaption>⑥ 色彩矩阵</figcaption></figure>
+      <figure><canvas id="i6" width="96" height="64" aria-label="ISP ⑦ 伽马与色调后"></canvas><figcaption>⑦ 伽马与色调</figcaption></figure>
+      <figure><canvas id="i7" width="96" height="64" aria-label="ISP ⑧ 降噪后"></canvas><figcaption>⑧ 降噪</figcaption></figure>
+      <figure id="i8fig"><canvas id="i8" width="96" height="64" aria-label="ISP ⑨ 锐化后"></canvas><figcaption>⑨ 锐化</figcaption></figure>
     </div>
-    <div id="airywrap" data-pn hidden><canvas id="airy" class="pc" width="320" height="170"></canvas><div class="cap">衍射：一个点经过当前光圈后，在传感器上实际成的光斑</div></div>
-    <div id="mtfwrap" data-pn hidden><canvas id="mtf" class="pc" width="320" height="170"></canvas><div class="cap">MTF：衍射（蓝）× 像素采样（紫）= 实际能达到的锐度（绿）。拖「光圈」看三条曲线怎么变。</div></div>
+    <div id="airywrap" data-pn hidden><canvas id="airy" class="pc" width="320" height="170" aria-label="衍射艾里斑：当前光圈下的点扩散光斑形态"></canvas><div class="cap">衍射：一个点经过当前光圈后，在传感器上实际成的光斑</div></div>
+    <div id="mtfwrap" data-pn hidden><canvas id="mtf" class="pc" width="320" height="170" aria-label="MTF 曲线：衍射（蓝）与像素采样（紫）合成的锐度响应（绿）"></canvas><div class="cap">MTF：衍射（蓝）× 像素采样（紫）= 实际能达到的锐度（绿）。拖「光圈」看三条曲线怎么变。</div></div>
     <div id="abwrap" data-pn hidden><label class="chk"><input type="checkbox" id="abon" checked> 显示未校正的像差（夸张）</label></div>
-    <div id="moire" data-pn hidden><div class="two"><figure><canvas id="mo1" class="pc px" width="120" height="80"></canvas><figcaption>无低通滤镜：细纹变成假的粗纹和彩色</figcaption></figure><figure><canvas id="mo2" class="pc px" width="120" height="80"></canvas><figcaption>有低通滤镜：太细的纹被抹成灰色</figcaption></figure></div><div class="cap">同一张由内向外越来越细的同心圆纹，经拜耳采样和去马赛克后的结果，按真实算法计算</div></div>
+    <div id="moire" data-pn hidden><div class="two"><figure><canvas id="mo1" class="pc px" width="120" height="80" aria-label="摩尔纹示意（无光学低通滤镜）"></canvas><figcaption>无低通滤镜：细纹变成假的粗纹和彩色</figcaption></figure><figure><canvas id="mo2" class="pc px" width="120" height="80" aria-label="摩尔纹示意（有光学低通滤镜）"></canvas><figcaption>有低通滤镜：太细的纹被抹成灰色</figcaption></figure></div><div class="cap">同一张由内向外越来越细的同心圆纹，经拜耳采样和去马赛克后的结果，按真实算法计算</div></div>
     <div id="pdafctl" data-pn hidden><label class="chkl" for="pdd" style="display:grid;grid-template-columns:1fr auto;font-size:13px;color:var(--dim)">离焦程度 <output id="pddo" style="font-family:var(--mono);color:var(--fg)"></output><input id="pdd" type="range" min="-1" max="1" step="0.01" value="0.5" style="grid-column:1/-1;width:100%;accent-color:var(--light)"></label></div>
-    <div id="pdafwrap" data-pn hidden><canvas id="pdc" class="pc" width="330" height="150"></canvas><div class="cap">一排对焦像素对着一根亮条：左 PD 和右 PD 各自读出的亮度</div></div>
+    <div id="pdafwrap" data-pn hidden><canvas id="pdc" class="pc" width="330" height="150" aria-label="相位对焦像素读数：左 PD 与右 PD 的亮度分布"></canvas><div class="cap">一排对焦像素对着一根亮条：左 PD 和右 PD 各自读出的亮度</div></div>
     <div id="ibctl" data-pn hidden><div class="row"><button id="ibon">防抖：关</button></div></div>
-    <div id="ibwrap" data-pn hidden><canvas id="ibc" class="pc" width="330" height="150"></canvas><div class="cap">最近 1.5 秒里，点光源的像在传感器上划过的轨迹</div></div>
-    <div id="specwrap" data-pn hidden><canvas id="spec" class="pc" width="330" height="190"></canvas><div class="cap">示意形状，各家滤色片的实际曲线不同</div></div>
+    <div id="ibwrap" data-pn hidden><canvas id="ibc" class="pc" width="330" height="150" aria-label="防抖轨迹：最近 1.5 秒点光源在传感器上划过的位移"></canvas><div class="cap">最近 1.5 秒里，点光源的像在传感器上划过的轨迹</div></div>
+    <div id="specwrap" data-pn hidden><canvas id="spec" class="pc" width="330" height="190" aria-label="CFA 滤色片光谱响应曲线（示意）"></canvas><div class="cap">示意形状，各家滤色片的实际曲线不同</div></div>
     <div id="mlsctl" data-pn hidden><div class="row"><button id="mlsbtn"></button></div></div>
-    <div id="crawrap" data-pn hidden><canvas id="cra" class="pc" width="330" height="170"></canvas><div class="cap">微透镜偏移量 vs CRA（主光线角）。假设微透镜到 PD 高度 h=1.5 µm。像素越小，相同 CRA 下相对偏移越大。</div></div>
+    <div id="crawrap" data-pn hidden><canvas id="cra" class="pc" width="330" height="170" aria-label="微透镜偏移量 vs CRA（主光线角）关系曲线"></canvas><div class="cap">微透镜偏移量 vs CRA（主光线角）。假设微透镜到 PD 高度 h=1.5 µm。像素越小，相同 CRA 下相对偏移越大。</div></div>
     <div id="quadctl" data-pn hidden><div class="row"><button data-q="raw" aria-pressed="true">四合一排列</button><button data-q="bin">合并（暗光）</button><button data-q="remo">重排成拜耳（亮光）</button></div><div class="cap">每格平均 9 个电子：单格散粒噪声 3，信噪比 3。四格合并：信号 36，噪声 6，信噪比 6。</div></div>
     <div id="codecctl" data-pn hidden><div class="ctl" style="border:0;padding:0"><label for="cq">JPEG 质量 <output id="cqo"></output><input id="cq" type="range" min="5" max="100" step="5" value="75"></label><label>压缩后大小 <output id="csizeo"></output></label><div class="row" style="margin-top:4px"><button type="button" data-chroma="444" aria-pressed="false">4:4:4</button><button type="button" data-chroma="422" aria-pressed="false">4:2:2</button><button type="button" data-chroma="420" aria-pressed="true">4:2:0</button></div></div></div>
-    <div id="codecwrap" data-pn hidden><canvas id="codecSrc" class="pc" width="256" height="170"></canvas><canvas id="codecDst" class="pc" width="256" height="170"></canvas><div class="cap">左原图（未压缩 BMP），右 JPEG 压缩后再解码。拖 "JPEG 质量" 看块效应、振铃、色彩退化。</div></div>
+    <div id="codecwrap" data-pn hidden><canvas id="codecSrc" class="pc" width="256" height="170" aria-label="JPEG 压缩前的原始位图"></canvas><canvas id="codecDst" class="pc" width="256" height="170" aria-label="JPEG 压缩再解码后的图"></canvas><div class="cap">左原图（未压缩 BMP），右 JPEG 压缩后再解码。拖 "JPEG 质量" 看块效应、振铃、色彩退化。</div></div>
     <div id="loficctl" data-pn hidden><div class="ctl" style="border:0;padding:0"><label for="lofp">PD 满阱 <output id="lofpo"></output><input id="lofp" type="range" min="2" max="30" step="1" value="5"></label><label for="lofk">LOFIC 电容/FD 比 <output id="lofko"></output><input id="lofk" type="range" min="5" max="100" step="5" value="40"></label><label for="lofn">读噪 <output id="lofno"></output><input id="lofn" type="range" min="0.5" max="5" step="0.1" value="2"></label></div></div>
-    <div id="loficwrap" data-pn hidden><canvas id="lofsig" class="pc" width="330" height="220"></canvas><div class="cap">同一场景亮度下记录到的电子数。无 LOFIC（红）在 PD 满阱处封顶；LOFIC（绿）接住溢出的电子，继续往上记。</div></div>
+    <div id="loficwrap" data-pn hidden><canvas id="lofsig" class="pc" width="330" height="220" aria-label="LOFIC 电子容量：无 LOFIC（红）vs 有 LOFIC（绿）的记录范围"></canvas><div class="cap">同一场景亮度下记录到的电子数。无 LOFIC（红）在 PD 满阱处封顶；LOFIC（绿）接住溢出的电子，继续往上记。</div></div>
     <div id="snrctl" data-pn hidden><div class="ctl" style="border:0;padding:0"><label for="np">像素边长 <output id="npo"></output><input id="np" type="range" min="0.8" max="6" step="0.1" value="3.8"></label><label for="nr">读出噪声 <output id="nro"></output><input id="nr" type="range" min="0.5" max="10" step="0.1" value="2"></label><label for="nd">暗电流累积电子数 N（σ²=N） <output id="ndo"></output><input id="nd" type="range" min="0" max="200" step="1" value="5"></label><label class="chk" style="display:inline-flex;align-items:center;gap:6px;margin-right:12px"><input type="checkbox" id="nprnu"> PRNU 1%</label><label style="display:inline-flex;align-items:center;gap:6px">ADC 位深 <select id="nbits" style="font-size:13px"><option value="8">8</option><option value="10">10</option><option value="12">12</option><option value="14" selected>14</option></select></label></div></div>
-    <div id="snrwrap" data-pn hidden><canvas id="snr" class="pc" width="330" height="200"></canvas><canvas id="nbreak" class="pc" width="330" height="160"></canvas><canvas id="npatch" class="pc" width="330" height="70"></canvas><div class="cap">三张图：SNR 曲线、噪声分量（谁在压制？）、以及暗 · 中 · 亮三块样片。拖三个滑块实时更新。</div></div>
+    <div id="snrwrap" data-pn hidden><canvas id="snr" class="pc" width="330" height="200" aria-label="SNR 信噪比随光强变化曲线"></canvas><canvas id="nbreak" class="pc" width="330" height="160" aria-label="噪声分量分解：读噪 / 散粒 / 固定模式各自贡献"></canvas><canvas id="npatch" class="pc" width="330" height="70" aria-label="暗 / 中 / 亮三档样片的噪声样貌"></canvas><div class="cap">三张图：SNR 曲线、噪声分量（谁在压制？）、以及暗 · 中 · 亮三块样片。拖三个滑块实时更新。</div></div>
     <div id="ispctl" data-pn hidden><div class="row"><button type="button" data-nr="bayer" aria-pressed="false">NR: Bayer 域</button><button type="button" data-nr="linear" aria-pressed="false">NR: 线性 RGB</button><button type="button" data-nr="gamma" aria-pressed="true">NR: gamma 后（默认）</button></div></div>
     <div id="archmatrix" data-pn hidden>
       <table class="cmp iqt" style="margin:0;font-size:12px"><tr><th></th><th>Monolithic 单层</th><th>Stacked 堆栈</th></tr>
@@ -148,8 +148,8 @@
       <tr><td><b>BSI 背面</b></td><td>Exmor R 2008<br>→ 2012 主流</td><td class="good">Exmor RS 2012<br>→ 现今旗舰</td></tr></table>
       <div class="cap">像素结构两条正交维度：受光面 (行) × 晶圆集成 (列)。3D 场景按常见教学序列线性展示，这张表把四种组合一次看全。</div>
     </div>
-    <div id="adcwrap" data-pn hidden><canvas id="adcc" class="pc" width="330" height="210"></canvas></div>
-    <div id="shutwrap" data-pn hidden><canvas id="shc" class="pc" width="330" height="180"></canvas></div>
+    <div id="adcwrap" data-pn hidden><canvas id="adcc" class="pc" width="330" height="210" aria-label="单斜率 ADC 时序：斜坡电压与像素输出的比较"></canvas></div>
+    <div id="shutwrap" data-pn hidden><canvas id="shc" class="pc" width="330" height="180" aria-label="卷帘 vs 全局快门：读出时序和运动物体变形"></canvas></div>
     <div id="paths" data-pn hidden>
       <div class="cap">换个顺序看这些步（点开展开整条路径）：</div>
       <div class="paths-wrap">
@@ -173,7 +173,7 @@
     </div>
     <div class="row" id="coatpn" data-pn hidden><button id="coatbtn">关掉镀膜（看脏画面）</button></div>
     <div id="reflctl" data-pn hidden><label class="chkl" for="refla">入射角 <output id="reflao"></output><input id="refla" type="range" min="0" max="60" step="1" value="0"></label></div>
-    <div id="reflwrap" data-pn hidden><canvas id="reflc" class="pc" width="330" height="230"></canvas><div class="cap">每个镜片表面反射掉多少光（纵轴对数刻度）。裸玻璃、单层、六层按薄膜干涉公式计算；亚波长结构用渐变折射率层近似，是示意</div></div>
+    <div id="reflwrap" data-pn hidden><canvas id="reflc" class="pc" width="330" height="230" aria-label="镜片镀膜反射率曲线：裸玻璃 / 单层 / 六层 / 亚波长结构（对数纵轴）"></canvas><div class="cap">每个镜片表面反射掉多少光（纵轴对数刻度）。裸玻璃、单层、六层按薄膜干涉公式计算；亚波长结构用渐变折射率层近似，是示意</div></div>
     <div id="gamutwrap" data-pn hidden>
       <div class="row">
         <button type="button" data-gamut="sRGB" aria-pressed="true">sRGB</button>
@@ -182,7 +182,7 @@
         <button type="button" data-gamut="rec2020" aria-pressed="true">Rec. 2020</button>
         <button type="button" data-gamut="prophoto" aria-pressed="false">ProPhoto</button>
       </div>
-      <canvas id="gamut" class="pc" width="320" height="300"></canvas>
+      <canvas id="gamut" class="pc" width="320" height="300" aria-label="CIE xy 色度图：sRGB / P3 / Rec.2020 色域三角形对比"></canvas>
       <div class="cap">CIE 1931 xy 色度图。马蹄形是人眼能看到的全部颜色；三角形是某色域能覆盖的子集。点标签切换显示。</div>
     </div>
     <div id="hdrwrap" data-pn hidden>
@@ -194,7 +194,7 @@
         <button type="button" data-hdr="linear" aria-pressed="false">Linear</button>
       </div>
       <div class="ctl" style="border:0;padding:0"><label for="hdrLw">HLG 显示峰值 Lw <output id="hdrLwo">1000 nits, γ=1.20</output><input id="hdrLw" type="range" min="100" max="4000" step="100" value="1000"></label></div>
-      <canvas id="hdr" class="pc" width="320" height="260"></canvas>
+      <canvas id="hdr" class="pc" width="320" height="260" aria-label="PQ EOTF 曲线：HDR 亮度编码与 Barten 对比度敏感阈值"></canvas>
       <div class="cap">传递曲线：数字编码 (0-1) → 屏幕亮度 (nits，对数轴)。SDR 封顶 100 nits，PQ 到 10000 nits。HLG 相对亮度，显示亮度随 Lw 和系统 γ 变化。</div>
     </div>
     <div class="row" id="shutpn" data-pn hidden><button id="shutbtn">切快门速度</button></div>
