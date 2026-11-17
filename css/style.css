@@ -47,6 +47,7 @@
   --card-w:340px;
   --drawer-w:min(460px,42vw);   /* 时间轴隔列的淡底（--paper-2 半透明） */
   --pager-h:46px;
+  --sidetree-w:180px;
 
   /* 旧名字（index.html 内联样式和旧代码还在用） */
   --fg:var(--ink); --dim:var(--ink-dim); --light:var(--accent);
@@ -617,6 +618,29 @@ body.tl-open #tlaxis,body.tl-open .tl-lane{grid-template-columns:var(--tl-cols) 
   .cmos-stack .lyr em{font-size:11px}
 }
 
+/* 右侧常驻课程树 — 学 DTS 的 Course outline（放到右侧且窄） */
+#sidetree{position:fixed;z-index:9;top:0;right:0;bottom:var(--pager-h);
+  width:var(--sidetree-w);padding:10px 0;overflow-y:auto;overscroll-behavior:contain;
+  background:var(--glass);backdrop-filter:blur(10px);
+  border-left:1px solid var(--line);
+  font:500 12px/1.3 var(--sans);scrollbar-width:thin}
+#sidetree::-webkit-scrollbar{width:4px}
+#sidetree::-webkit-scrollbar-thumb{background:var(--line);border-radius:2px}
+.st-ch{margin:0 0 4px}
+.st-ch-name{font:700 10px/1.2 var(--sans);letter-spacing:.08em;color:var(--ink-dim);
+  padding:6px 10px 4px;margin:0}
+.st-steps{list-style:none;padding:0;margin:2px 0 6px;border-bottom:1px dotted var(--line)}
+.st-step{display:block;width:100%;text-align:left;border:0;background:transparent;cursor:pointer;
+  padding:4px 10px 4px 14px;font:500 12px/1.35 var(--sans);color:var(--ink);border-radius:0;
+  transition:background .12s,color .12s;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.st-step:hover{background:var(--accent-soft);color:var(--accent-ink)}
+.st-step.on{background:var(--accent);color:#fff;font-weight:600}
+
+/* 让 #topbar 不盖在树上，#drawer 弹到树的左边 */
+#topbar{right:calc(var(--sidetree-w) + var(--gap))}
+body:has(#drawer:not([hidden])) #topbar{right:calc(var(--drawer-w) + var(--sidetree-w) + var(--gap))}
+#drawer{right:var(--sidetree-w)}
+
 /* KEY IDEA 紫色要点卡 — 学 designed-to-scale 的 KEY IDEA 盒 */
 .key-box{position:relative;background:#ebe3f1;border:1px solid #d5c8e2;border-radius:10px;
   padding:28px 14px 12px;margin:10px 0 2px;font:400 13px/1.5 var(--sans);color:#3b2f52}
@@ -659,10 +683,13 @@ body.tl-open #tlaxis,body.tl-open .tl-lane{grid-template-columns:var(--tl-cols) 
   .pg-dot[aria-current=step]{width:18px;border-radius:9px}
   /* 顶部让出来 */
   #prog{top:34px}
-  #topbar{top:calc(34px + var(--gap))}
+  #topbar{top:calc(34px + var(--gap));right:var(--gap)}
+  body:has(#drawer:not([hidden])) #topbar{right:var(--gap)}
   /* 底部 #card 不动（原来 bottom:0 的 sheet 仍可用） */
   #card{bottom:0}
-  #drawer{bottom:0}
+  #drawer{bottom:0;right:0}
+  /* 窄屏隐藏常驻树（改用 #toc 弹窗） */
+  #sidetree{display:none}
 }
 
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
