@@ -104,7 +104,16 @@ const STEPS=[
 <h3 class="iq">FWC 和漫溢（blooming）</h3>
 <p>PD 装满后，继续来的电子会从 PD 的最低势垒<b>溢出到邻居像素</b>（漫溢），在画面里表现成亮光拖出的垂直白线（CCD 时代很明显）。现代 CMOS 像素在 PD 周围加<b>反漫溢晶体管 / 深沟槽隔离</b>，溢出的电子直接倒进 VDD 或邻格的衬底，不影响邻居。</p>
 <p><b>线性度</b>：装到 FWC 的 80%–90% 之前，信号随光子数线性增加。靠近满阱时响应曲线弯曲（电子相互排斥变大，PD 势垒受 charge handling 影响），拍高光细节会损失。</p>
-<p><b>像素面积与 FWC 的尺度关系</b>：粗略 FWC ∝ 像素面积（都按 e⁻/µm²）。但现代 BSI 做到远超这个比例 —— 把晶体管搬到背面（双层像素）、把 PD 加深、用 charge-domain 结构，1 µm 像素能做到 8 ke⁻（简单尺度关系预测只有 3-4 ke⁻）。</p>`},
+<p><b>像素面积与 FWC 的尺度关系</b>：粗略 FWC ∝ 像素面积（都按 e⁻/µm²）。但现代 BSI 做到远超这个比例 —— 把晶体管搬到背面（双层像素）、把 PD 加深、用 charge-domain 结构，1 µm 像素能做到 8 ke⁻（简单尺度关系预测只有 3-4 ke⁻）。</p>
+<h3 class="iq">Pinned Photodiode 与暗电流的工艺根源</h3>
+<p>现代 CMOS 的 PD 不是普通的 PN 结，而是<b>钉扎光二极管</b>（Pinned PD, PPD）：在感光层（n 型）表面再做一层薄薄的 p+ 层把表面"钉"住。1982 年 Nobukazu Teranishi 在 NEC 发明给 CCD 用，CMOS 时代同样靠它低噪声。</p>
+<ul>
+<li><b>为什么要钉</b>：普通光二极管表面有 Si–SiO₂ 界面缺陷态，热激发在那里生成<b>暗电流电子</b>。p+ 层把表面能级固定住，把那里产生的电子推去衬底复合，不再流进势阱</li>
+<li><b>效果</b>：暗电流率从 nA/cm² 量级降到 10 pA/cm² 以下（降 100×+），现代 CIS 室温暗电流做到 me⁻/s 量级</li>
+<li><b>附带</b>：p+ 层还让 PD 到 FD 的电荷转移"完全"干净（无 kTC 残留），才能做真 CDS，才有 4T 像素的低读噪</li>
+</ul>
+<p><b>剩下的暗电流来源</b>：体内 Shockley-Read-Hall 生成（耗尽区里的深能级陷阱）、金属污染（Fe / Cu / Ni 原子即便 ppb 级也能让暗电流翻倍）、离子注入损伤。所以 CIS 工厂洁净度要求比普通 logic 工艺更严。偶发<b>白像素</b>（暗电流异常高的个别像素）通常来自局部晶格缺陷或污染原子，出厂前建<b>缺陷像素映射表</b>（defect map），ISP 读表用邻居插值替换，用户看不到。</p>
+<p><b>温度翻倍</b>：暗电流对温度是 Arrhenius 关系，常用近似 D(T) ∝ 2^((T − T₀) / ΔT)，ΔT ≈ 6-8 °C（硅禁带中部陷阱）。天文 / 科学 CMOS 制冷到 −40 °C 可把暗电流再降 300-1000×。</p>`},
  {ch:3,t:'单个像素：从光子到电压',cal:['general'],related:[15,17,18,23],refs:[{t:'Eric Fossum 1995「Active Pixel Sensors」IEEE Workshop on CCD and AIS'},{t:'美国专利 5,904,493（CMOS 4T 像素与 CDS）',u:'https://patents.google.com/patent/US5904493'},{t:'J. Nakamura《Image Sensors and Signal Processing for Digital Still Cameras》'}],g:'tx',fig:'pot',cam:[1.2,5.6,8.2],look:[0,.9,0],lead:`一个像素像带闸门的蓄水池：<k data-hl="光电二极管 PD">光电二极管</k>先攒电子，<k data-hl="TX 传输门">传输门</k>一开，电子全倒进<k data-hl="FD 浮置扩散">浮置扩散区</k>这只小量杯，量出的水位就是电压。`,adv:`<p>单独拿出<b>一个像素</b>（这里是一个绿色像素），看一次完整的工作循环。</p><p><b>光这一路</b>：白光里红、绿、蓝光子都有。微透镜把落在整格上的光收拢到感光区上方；滤色片吸收红和蓝，只放绿光子过去；绿光子进入硅，被光电二极管 PD 吸收，每个打出一个<i>电子</i>。</p><p><b>电这一路</b>靠四个晶体管（4T 结构）：</p><p><b>TX 传输门</b>：PD 和 FD 之间的闸门。关着时电子留在 PD 里累积，打开时全部倒进 FD。</p><p><b>FD 浮置扩散</b>：一个很小的电容，电子倒上去电压就下降，V = Q / C。电容越小，每个电子换来的电压越大（约 50–200 µV）。</p><p><b>RST 复位管</b>：打开时把 FD 接到电源 VDD，清掉上一次的电荷。</p><p><b>SF 源极跟随器</b>：栅极接 FD。它不取走 FD 上的电荷，只是把这个电压「照抄」到输出端，有足够的力气驱动长长的列线。</p><p><b>SEL 行选通</b>：开关。打开时这个像素的输出才接上列线，一列像素共用一根线，一次只开一行。</p><p><b>怎么看下面两张图</b>（和场景同步循环，每个青色小球代表 1000 个电子）：</p><p>第一张是<b>电势图</b>，沿 PD → TX → FD → RST → VDD 切一刀。把电子想成水：坑越深，电子越愿意待在里面。TX、RST 关着时是两道堤坝；打开就是把堤坝降下去，电子自己流向更深的坑。PD 的坑比 FD 浅，所以 TX 一开电子能<b>全部</b>倒干净，这是 4T 像素噪声低的关键。</p><p>第二张是<b>时序图</b>：三个控制信号和 FD 上的电压。</p><p>图里把晶体管和 PD 画在同一面便于看清。背照式传感器里光从另一面（背面）进来，不被这些金属线挡住；堆栈式传感器还把 ADC 和逻辑电路放到第二片晶圆上。</p>`,hard:`<div class="f">转换增益 CG = q / C_FD<br>q = 1.6 × 10⁻¹⁹ C（电子电荷）<br>C_FD = FD 电容（典型 1-5 fF）</div>
 <p><b>典型 CG</b>：q / 1 fF ≈ 160 µV/e⁻（高增益档极限）；q / 5 fF ≈ 32 µV/e⁻（常规）。相机厂家常把 CG 标在 5-40 µV/e⁻ 这档，DCG 高增益档能到 100-200 µV/e⁻。</p>
 <h3 class="iq">CG 决定了什么</h3>
@@ -236,7 +245,29 @@ const STEPS=[
 <li>没有列出<b>手机厂商定制型号</b>（如 Pixel 的 Google Tensor sensor、Apple 自研传感器 ILX），这些细节基本不公开。</li>
 <li>也没列<b>工业 / 科学 CMOS</b>（Teledyne Photometrics、Hamamatsu 等）—— 消费 / 车载之外的单独市场。</li>
 </ul>
-<p><b>数据以 2026-11 为准</b>，厂商每隔几个月发新品。想核对最新规格，去 sony-semicon.com / semiconductor.samsung.com / ovt.com / smartsenstech.com 官网，或看 TechInsights 拆解报告。</p>`},
+<p><b>数据以 2026-11 为准</b>，厂商每隔几个月发新品。想核对最新规格，去 sony-semicon.com / semiconductor.samsung.com / ovt.com / smartsenstech.com 官网，或看 TechInsights 拆解报告。</p>
+<h3 class="iq">芯片封装、die 尺寸与 scribe lane</h3>
+<p>传感器的 die（裸片）比感光面积大一圈，因为四周还要放电路、焊盘和 scribe lane（切割槽）。</p>
+<ul>
+<li><b>Die vs 光学格式</b>：全画幅 36 × 24 mm 光学面对应 die 约 40 × 28 mm（±2 mm 裁切余量 + 电路环）。1" 光学 13.2 × 8.8 mm，die 约 15 × 11 mm。堆栈式把 ADC 挪到下层后，die 能缩小到接近光学面积</li>
+<li><b>Scribe lane（切割巷）</b>：相邻 die 之间 50-100 µm 宽的空地，里面放 PCM 测试结构、对准标记、工艺监测器件。晶圆切割时锯条沿 scribe lane 切开，die 本体不受伤</li>
+<li><b>封装常见几种</b>：</li>
+<li>　<b>COB</b>（Chip-on-Board）：裸 die 直接贴在相机主板上，金线键合出引脚。手机主摄最常用——最薄、最便宜</li>
+<li>　<b>CSP</b>（Chip-Scale Package）：封装大小 ≈ die 大小，常见底部 BGA 焊球出引脚。一些手机副摄、工业视觉用</li>
+<li>　<b>LGA / PGA + 陶瓷盖板</b>：相机级传感器用金属引脚阵列封装，方便维修、热管理和手工装配（Sony A1、Canon R5 这类）</li>
+<li>　<b>盖板玻璃</b>：传感器表面必贴一片玻璃盖板（CSP 的 CGA 或相机的 cover glass），有的内嵌 IR-cut 镀膜。防尘，也让微透镜不被手碰到</li>
+</ul>
+<h3 class="iq">电源与地：模拟域 / 像素域 / 数字域要分开</h3>
+<p>一颗 CIS 内部至少有 3-4 个独立电源域，各自用单独焊盘进电、单独 ground 回流：</p>
+<ul>
+<li><b>AVDD / AGND</b>（模拟域，约 3.0-3.3 V）：像素、CDS、列 ADC、参考电压。要求最干净的电源，PSRR 60 dB+</li>
+<li><b>VPIX / VRST</b>（像素复位域，约 2.7-3.1 V）：专门给 RST 管复位 FD 用。这里的噪声会直接叠到每次复位电平上，kTC 噪声也从这里来</li>
+<li><b>DVDD / DGND</b>（数字域，1.0-1.2 V 核 + 1.8 V I/O）：时序逻辑、数字处理、MIPI PHY。开关跳变多，噪声大</li>
+<li><b>VNEG</b>（约 −1.0 V）：某些像素给 TX 用负偏压，把闸门关得更紧压暗电流</li>
+</ul>
+<p><b>为什么要分</b>：数字域的 ground bounce 一旦串到 AGND，直接变成读出里的随机噪声（横条纹、cross-hatch pattern）。所以 PCB layout 上 AGND 和 DGND 只在<b>一点</b>相连；die 内部则用 deep n-well 隔离、guard ring 包围模拟块。</p>
+<p><b>堆栈式更极端</b>：模拟块放上层晶圆、数字块放下层，中间用硅通孔（TSV）或铜–铜键合点连接，物理上天然隔离，PSRR 和 crosstalk 都比单层好一代。</p>
+<p><b>片上 LDO / 电荷泵</b>：现代 CIS 内部集成 LDO 把外部 1.8 V 降到核心 1.0 V，集成电荷泵产生 VNEG 和 TX ON 的高压（3.3+ V），减少外部元件数。</p>`},
  {ch:5,t:'噪声与信噪比',cal:['general','simplified'],related:[15,16,17,24],refs:[{t:'J. Nakamura《Image Sensors and Signal Processing for Digital Still Cameras》',n:'Shot noise、read noise、dark current'},{t:'EMVA 1288 Standard: Characterisation of Image Sensors',u:'https://www.emva.org/standards-technology/emva-1288/'}],g:'micro',fig:'snr',pn:['snrctl','snrwrap'],cam:[3.6,4.6,5.6],look:[0,0.6,0.4],lead:`噪点像录音里的沙沙声。<k data-hl="光电二极管（硅）">像素</k>接到的光越多，真正的信号就越能盖过它，所以光线足、像素大，画面就干净。`,adv:`<p>照片里的噪点来自几个互相独立的来源，按平方和叠加。</p><p><b>散粒噪声</b>：光子是一个个随机到达的，收到 N 个电子，起伏约 √N。这是光本身的性质，没法消除。所以信号越大，信噪比 √N 越高。</p><p><b>读出噪声</b>：源极跟随器、列电路和 ADC 带来，<b>每次读出固定几个电子的均方根</b>（现代 CIS 典型 1–3 e⁻ RMS，高增益档低到 1 e⁻ 以下），和信号大小无关。暗处信号少时它占主导。</p><p><b>暗电流</b>：硅受热自己产生电子，<b>和曝光时间成正比</b>；对温度是<b>指数关系</b>，每升约 6–8 °C 翻倍，不是简单正比。室温下现代 CIS 暗电流率在每秒几十 me⁻ 到 1 e⁻ 量级，长曝光和高温时才明显。</p><p>还有<b>固定图案噪声</b>（FPN），分两种：<b>PRNU</b>（灵敏度不均匀，和信号成比例，亮处明显）和 <b>DSNU</b>（暗电平不均匀，和信号无关，暗处明显）。PRNU 拍<b>平场</b>校正，DSNU 拍<b>暗帧</b>校正。</p><p><b>怎么看曲线</b>：横轴是收到的电子数，纵轴是信噪比，都是对数。左边被读出噪声压住；往右进入散粒噪声区，贴着虚线走；到满阱容量截止。<b>动态范围</b> = 满阱 ÷ 底噪。</p><p><b>像素大小</b>：同样的曝光，像素面积越大收到的光子越多，信噪比越高，满阱也越大。拖「像素边长」看曲线和下面三块样片的变化。</p><p><b>ISO</b>：提高 ISO 只是放大，不会多收光子，散粒噪声不变。在 ADC 之前放大能压低后级电路噪声的影响，所以适当提高 ISO 读出噪声反而略降。</p>`,hard:`<div class="f">散粒噪声 σ_shot = √N（N 是信号电子数）<br>暗电流噪声 σ_dark = √(D · t)（D 是暗电流率 e⁻/s，t 是曝光时间）<br>读出噪声 σ_read ≈ 1–3 e⁻ RMS（现代 CIS）<br>总噪声 σ = √(σ_shot² + σ_dark² + σ_read²)<br>信噪比 SNR = N / σ<br>动态范围 DR = 20·log₁₀(FWC / σ_read) dB</div>
 <p><b>典型动态范围</b>（单次曝光，base ISO）：</p>
 <table class="cmp iqt"><tr><th>传感器</th><th>FWC</th><th>读噪</th><th>DR</th></tr>
@@ -246,7 +277,17 @@ const STEPS=[
 <tr><td>+ DCG / LOFIC</td><td>×10+</td><td>HG 不变</td><td>可到 100+ dB / 17+ EV</td></tr></table>
 <p><b>暗电流温度公式</b>：D(T) ≈ D₀ · 2^((T − T₀)/ΔT)，ΔT ≈ 6–8 °C。所以长曝光摄星机、科研 CMOS 常做制冷到 −30 °C 以下。</p>
 <p><b>和 ISO 的关系</b>：ISO 提高是<b>在 ADC 之前</b>做模拟放大（PGA），把小信号放到 ADC 的量程里。它不增加光子，所以散粒噪声和信号比不变；但 ADC 和列电路的读出噪声相对被压小，所以高 ISO 读噪（以电子算）反而比低 ISO 低。这就是「双原生 ISO」—— 在某个 ISO 以上切到高增益档（DCG），读噪明显下降。</p>`},
- {ch:5,t:'逐行读出与模数转换',cal:['general'],related:[16,21,24,25],refs:[{t:'Column-parallel ADC 原理（Sony Exmor 技术页）',u:'https://www.sony-semicon.com/en/technology/is/innovation.html'},{t:'Rolling shutter readout 时序（CMOS 传感器综述）'}],dn:1,g:'micro',fig:'dnwrap',cam:[4.2,3.4,6.4],look:[0,0.2,1.0],lead:`像素按行“点名”：一行像素同时把电压送上各自的<k data-hl="列线">列线</k>，每列底下的<k data-hl="列 ADC">ADC</k>像一台秤，把电压称成数字，然后轮到下一行。`,adv:`<p>回到 4×4 阵列。同一行像素的 SEL 一起打开（亮框是当前行），每个像素的电压各走自己那根<b>列线</b>（脉冲沿线下行）。</p><p>列尾电路依次做：</p><p>① <b>相关双采样</b>：复位电平减信号电平，得到只和电子数有关的电压。</p><p>② <b>模拟增益</b>放大，这就是 ISO。在量化之前放大，能压低后级电路噪声的影响。</p><p>③ <b>列并行 ADC</b> 把电压量化成 10–14 bit 的数字。每列一个 ADC，一整行同时转换。</p><p>一行一行往下读，各行曝光的起止时间略有先后，这就是卷帘快门，拍快速横移的物体会歪。</p>`},
+ {ch:5,t:'逐行读出与模数转换',cal:['general'],related:[16,21,24,25],refs:[{t:'Column-parallel ADC 原理（Sony Exmor 技术页）',u:'https://www.sony-semicon.com/en/technology/is/innovation.html'},{t:'Rolling shutter readout 时序（CMOS 传感器综述）'}],dn:1,g:'micro',fig:'dnwrap',cam:[4.2,3.4,6.4],look:[0,0.2,1.0],lead:`像素按行“点名”：一行像素同时把电压送上各自的<k data-hl="列线">列线</k>，每列底下的<k data-hl="列 ADC">ADC</k>像一台秤，把电压称成数字，然后轮到下一行。`,adv:`<p>回到 4×4 阵列。同一行像素的 SEL 一起打开（亮框是当前行），每个像素的电压各走自己那根<b>列线</b>（脉冲沿线下行）。</p><p>列尾电路依次做：</p><p>① <b>相关双采样</b>：复位电平减信号电平，得到只和电子数有关的电压。</p><p>② <b>模拟增益</b>放大，这就是 ISO。在量化之前放大，能压低后级电路噪声的影响。</p><p>③ <b>列并行 ADC</b> 把电压量化成 10–14 bit 的数字。每列一个 ADC，一整行同时转换。</p><p>一行一行往下读，各行曝光的起止时间略有先后，这就是卷帘快门，拍快速横移的物体会歪。</p>`,hard:`<h3 class="iq">读出带宽与外部接口：MIPI CSI-2 / SLVS-EC</h3>
+<p>ADC 之后的数字要出芯片去 ISP 或 SoC。手机 / 车载 / 安防几乎都用 MIPI CSI-2，Sony 自家高速相机用 SLVS-EC。</p>
+<ul>
+<li><b>MIPI CSI-2 D-PHY</b>：差分对，v2.0 每对 2.5 Gbps，常见 4 lane 合计 10 Gbps。够一般传感器，但 48 MP × 30 fps × 10 bit ≈ 14 Gbps 就不够</li>
+<li><b>MIPI CSI-2 C-PHY</b>：3 线一组（trio），编码 2.28 bit/symbol，比 D-PHY 效率高 50%+；每 trio 约 3.5 Gsym/s × 2.28 ≈ 8 Gbps，3 trio ≈ 24 Gbps。手机旗舰主流</li>
+<li><b>Sony SLVS-EC</b>：Sony 专用高速接口，v3.0 每 lane 10 Gbps，8 lane 合计 80 Gbps。电影机、工业线扫、Sony α1 / α9 III 这种高速机用</li>
+<li><b>包结构</b>：数据按<b>行</b>打包。每行前有 SOT（Start Of Transmission）+ 包头（行号、数据类型，常见 RAW10 / RAW12 / RAW16 / Embedded）+ 像素数据 + CRC。整帧前后有 FS（Frame Start）/ FE（Frame End）</li>
+<li><b>Embedded Data</b>：第 0 行通常不是像素而是<b>元数据</b>——这一帧的曝光时间、模拟增益、WB 增益、PDAF 相位值、温度读数等。ISP 据此做 per-frame 补偿</li>
+</ul>
+<p><b>为什么带宽常是瓶颈</b>：200 MP × 10 bit × 30 fps ≈ 60 Gbps，即便 C-PHY 8 trio 也只有约 50 Gbps。所以 200 MP 传感器默认 Tetra²pixel（16 合 1）输出 12.5 MP；读满 200 MP 要降到 1-10 fps。</p>
+<p><b>出芯片以后</b>：MIPI/SLVS-EC 把 RAW 送到 ISP（手机内嵌在 SoC 里、相机独立 ISP），后续处理见步 26。有些传感器集成 miniISP（基础 BLC + DPC + 简单 ISP），直接输出 YUV 或 JPEG，省掉主 SoC 的处理，常见于低端 webcam 和一些车载传感器。</p>`},
  {ch:5,t:'单斜率 ADC',cal:['general','simplified'],related:[22,23,30],refs:[{t:'Single-slope column ADC 原理（Nakamura 书 Ch. 6）'},{t:'Sony Exmor column-parallel ADC 新闻稿（2007 年前后）'},{t:'IEEE J-SSC CMOS 图像传感器 ADC 综述论文'},{t:'EMVA 1288: ENOB / SNR 定义',u:'https://www.emva.org/standards-technology/emva-1288/'}],g:'micro',fig:'adcc',pn:['adcwrap'],cam:[4.2,3.4,6.4],look:[0,0.2,1.0],lead:`<k data-hl="列 ADC">ADC</k> 像用尺子量水位：一根刻度线从零匀速往上升，同时开始数数，升到和像素电压一样高就停，数到几，这个像素就记几。`,adv:`<p>像素电压在列尾变成数字，最常见的是<b>单斜率 ADC</b>，每列一个，整行同时转换：</p><p>① 一个公共的<b>斜坡电压</b>从 0 开始匀速上升，所有列共用。</p><p>② 每列有一个<b>比较器</b>，比较斜坡和本列的像素电压；一个<b>计数器</b>跟着时钟从 0 开始数。</p><p>③ 斜坡一超过像素电压，比较器翻转，这一列锁住此刻的计数值，这就是它的数字值。电压越高，斜坡要爬得越久，数越大。</p><p>相关双采样也能在这里用数字做：先对复位电平数一次，再对信号电平数一次，两个数相减。</p><p><b>代价是慢</b>：10 bit 要数到 1024，14 bit 要数到 16384，多 4 bit 时间就长 16 倍。按每秒几亿次的计数时钟算，读一行要几微秒，几千行就是十几毫秒。这决定了帧率，也决定了卷帘快门的歪斜程度（下一步）。高速传感器会用分段斜坡、更快的计数，或者换成逐次逼近（SAR）等更快的 ADC。</p>
 <h3 class="iq">ENOB：ADC 的有效位数</h3>
 <p>标 14 bit 的 ADC 不等于真能分出 16384 档可用灰度。真实 ADC 自己有量化噪声、热噪声、非线性（INL/DNL）、时钟抖动，<b>有效分辨率远低于名义位数</b>。</p>
@@ -273,7 +314,18 @@ const STEPS=[
 <h3 class="iq">ADC 和整条读出链路</h3>
 <p>整条链路 = <b>像素前端</b>（SF 源极跟随器噪声）+ <b>CDS</b>（抵消复位噪声 kTC）+ <b>PGA</b>（模拟增益，就是 ISO）+ <b>ADC</b>（量化）。</p>
 <p>在 ADC 之前加一级 <b>PGA</b>（可编程增益放大器）把小信号放大到 ADC 量程里，<b>ADC 的噪声折算回去就被 PGA 增益除小</b>，这是为什么高 ISO 读噪（以 e⁻ 算）反而低。但 PGA 自身有噪声、有饱和上限 —— 所以「ISO 不变光靠拉亮度曲线」和「真提高 ISO（PGA）」不一样，后者对 ADC/后级噪声更友好。</p>`},
- {ch:5,t:'卷帘快门与全局快门',cal:['general'],related:[21,23,27],refs:[{t:'Sony α9 III 全局快门 CMOS 新闻稿（2023-11）',u:'https://electronics.sony.com/imaging/interchangeable-lens-cameras/all-interchangeable-lens-cameras/p/ilce9m3-b'},{t:'Global shutter pixel 架构（CMOS 综述）'}],g:'micro',fig:'shc',pn:['shutwrap'],cam:[4.2,3.4,6.4],look:[0,0.2,1.0],lead:`逐行读出像百叶窗一片片翻开，上下各行拍下的时刻有先有后，快速移动的东西就会歪。全局快门让所有<k data-hl="光电二极管（硅）">像素</k>在同一瞬间停止曝光。`,adv:`<p>逐行读出意味着每一行的曝光时刻是错开的：第一行先结束，最后一行后结束，中间差十几毫秒。拍快速移动的物体，物体在这段时间里跑了一段，上下各行拍到的位置不同，直的变成斜的，这就是<b>果冻效应</b>（左图）。在闪烁的 LED 灯下还会出现明暗条纹。</p><p>机械快门用帘幕扫过画面，也是一行行先后曝光，但帘幕快（几毫秒），歪斜小。纯电子快门受读出速度限制，歪斜最明显；堆栈式读得快，所以改善很多。</p><p><b>全局快门</b>（右图）：所有像素同一时刻结束曝光。做法是每个像素多一个<b>存储节点</b>：曝光结束的瞬间，全阵列同时把电荷转进各自的存储节点，然后再慢慢一行行读出。存储节点要用金属遮住，以免读出期间继续感光。</p><p><b>代价</b>：存储节点和多出的晶体管占面积，PD 变小、满阱降低；存储期间漏进的光和漏电会带来噪声，所以全局快门传感器的动态范围和画质通常略逊。</p>`,hard:`<p>Sony α9 III 是第一款用全局快门全画幅传感器的可换镜头相机。</p>`},
+ {ch:5,t:'卷帘快门与全局快门',cal:['general'],related:[21,23,27],refs:[{t:'Sony α9 III 全局快门 CMOS 新闻稿（2023-11）',u:'https://electronics.sony.com/imaging/interchangeable-lens-cameras/all-interchangeable-lens-cameras/p/ilce9m3-b'},{t:'Global shutter pixel 架构（CMOS 综述）'}],g:'micro',fig:'shc',pn:['shutwrap'],cam:[4.2,3.4,6.4],look:[0,0.2,1.0],lead:`逐行读出像百叶窗一片片翻开，上下各行拍下的时刻有先有后，快速移动的东西就会歪。全局快门让所有<k data-hl="光电二极管（硅）">像素</k>在同一瞬间停止曝光。`,adv:`<p>逐行读出意味着每一行的曝光时刻是错开的：第一行先结束，最后一行后结束，中间差十几毫秒。拍快速移动的物体，物体在这段时间里跑了一段，上下各行拍到的位置不同，直的变成斜的，这就是<b>果冻效应</b>（左图）。在闪烁的 LED 灯下还会出现明暗条纹。</p><p>机械快门用帘幕扫过画面，也是一行行先后曝光，但帘幕快（几毫秒），歪斜小。纯电子快门受读出速度限制，歪斜最明显；堆栈式读得快，所以改善很多。</p><p><b>全局快门</b>（右图）：所有像素同一时刻结束曝光。做法是每个像素多一个<b>存储节点</b>：曝光结束的瞬间，全阵列同时把电荷转进各自的存储节点，然后再慢慢一行行读出。存储节点要用金属遮住，以免读出期间继续感光。</p><p><b>代价</b>：存储节点和多出的晶体管占面积，PD 变小、满阱降低；存储期间漏进的光和漏电会带来噪声，所以全局快门传感器的动态范围和画质通常略逊。</p>`,hard:`<p>Sony α9 III 是第一款用全局快门全画幅传感器的可换镜头相机。</p>
+<h3 class="iq">全局快门的 memory-in-pixel 架构</h3>
+<p>全局快门像素比卷帘快门多出"存储节点"（Storage Gate / Storage Diode，简称 SG），曝光一结束就把全阵列的电荷同时倒进各自的 SG，然后再慢慢一行行读。</p>
+<ul>
+<li><b>电压域 vs 电荷域 SG</b>：早期 GS 像素用电容存 FD 电压（voltage-domain），电容小、kTC 噪声大、不能真 CDS。<b>电荷域 SG</b>（charge-domain）把电子本身存在一个额外的势阱里，能做 true-CDS，噪声低得多，现代 GS 都是这一路</li>
+<li><b>遮光必须严</b>：SG 节点要用金属完全盖住。曝光时 SG 不透光，读出期间场景光继续照 PD，但不会污染已存的电荷</li>
+<li><b>PLS 与 GSE</b>：SG 遮光不可能 100% 完美，仍漏一点光进去，污染存的电荷。衡量指标叫 <b>Global Shutter Efficiency (GSE)</b> = PLS / 像素灵敏度，优秀的 GS 像素可做到 1/50000（50 ppm，即 PLS 比 PD 弱 10⁵ 倍）</li>
+<li><b>面积代价</b>：GS 像素常用 5-7T 结构（比 4T 多两三个晶体管 + SG 节点），同样像素尺寸下 PD 面积只有卷帘的 60-70%，满阱和灵敏度都低</li>
+<li><b>解法 · 堆栈 GS</b>：把 SG 和多余晶体管搬到下层晶圆（三层堆栈的中间层），PD 层恢复接近 100% 开口率。Sony α9 III（2023）的全画幅 24 MP GS 传感器就是这招，第一款消费级全画幅 GS</li>
+<li><b>解法 · 数字 memory-in-pixel</b>：每个像素内嵌 1-bit 或多 bit SRAM，模拟值读出后立刻量化成数字存起来。高速相机 / 工业线扫用，手机不用（太耗面积）</li>
+</ul>
+<p><b>和卷帘的取舍</b>：GS 换来"同一时刻"，代价是像素复杂、动态范围略低。消费相机只有 Sony α9 III 用了全画幅 GS，就是因为前面说的面积 / 噪声代价。工业机器视觉、科研、车载前视几乎都要 GS，那里精确时间比画质重要。</p>`},
  {ch:5,t:'ISP 把 RAW 变成照片',cal:['simplified','general'],related:[22,12,30,32],refs:[{t:'Qualcomm Spectra ISP（Snapdragon 技术页）',u:'https://www.qualcomm.com/products/technology/processors/image-signal-processors'},{t:'Google HDR+ 论文（Hasinoff et al., SIGGRAPH Asia 2016）',u:'https://hdrplusdata.org/hdrplus.pdf'},{t:'Apple「Photonic Engine」与 Smart HDR（WWDC 技术文档）',u:'https://developer.apple.com/documentation/avfoundation/photos_and_videos'}],isp:1,pn:['ispctl'],g:'micro',fig:'i8fig',cam:[4.2,3.4,6.4],look:[0,0.2,1.0],lead:`<k data-hl="列 ADC">ADC</k> 送出来的只是一堆灰灰的数，叫 RAW。ISP 像冲印店的流水线：补颜色、调白平衡、提亮、降噪、锐化，一步步把它变成照片。`,adv:`<p>ADC 出来的是 RAW：每个像素一个数，对应它那片滤色片的颜色。图像信号处理器（ISP）把它变成最终的照片。下面讲一个<b>典型流程</b>——真实 ISP 的步骤顺序、拆分和增减<b>各家不同</b>，这里是经典教学版，便于理解。九张小图是用同一幅景物按这个流程真实算出来的（96×64 像素，模拟了暗角、色彩串扰、散粒噪声、读出噪声和黑电平）：</p><p>① <b>RAW</b>：传感器给的就是一张灰度图，每格一个数。全黑处也不是 0，而是黑电平（这里 64），所以发灰。</p><p>② <b>扣黑电平</b>：减掉 64。这里按滤片颜色上色显示，看得出马赛克。黑电平由阵列外圈的遮光像素实时测得。</p><p>③ <b>暗角校正</b>：按镜头数据把四周补亮，四周的噪声也跟着被放大。</p><p>④ <b>去马赛克</b>：用邻居插值出每格缺的两个颜色。这时还是线性数据、没上伽马，所以偏暗；红、蓝的增益还没补，所以偏绿。</p><p>⑤ <b>白平衡</b>：给红、蓝乘上增益，让白色的东西变白。相机根据画面估计光源颜色。</p><p>⑥ <b>色彩矩阵</b>：滤色片的透光曲线互相重叠，传感器的颜色是混在一起的。用一个 3×3 矩阵换算到 sRGB，颜色变鲜。</p><p>⑦ <b>伽马与色调曲线</b>：按人眼的感受压缩线性数据，暗部提亮，再加一点 S 形对比。</p><p>⑧ <b>降噪</b>：平坦处抹平颗粒，边缘保留。</p><p>⑨ <b>锐化</b>：拉大边缘两侧的反差，补回镜头、低通滤镜和降噪损失的锐度。</p><p>最后压缩成 JPEG / HEIF。传感器上的像是倒的，读出时把行列顺序反过来就正了。手机还会在这之前做多帧合成：连拍多张对齐后叠加，降噪并扩展动态范围。</p><p><b>各家 ISP 常见的顺序差异</b>：<b>降噪</b>可以放在 Bayer 域（扣黑电平后、去马赛克前，Google Pixel、索尼主流做法）、线性 RGB 域（去马赛克后、伽马前）、或伽马后多处联合；<b>白平衡</b>有的在去马赛克之前就乘，有的等到 CCM 附近再做；<b>锐化</b>常和去马赛克融合而不是独立一步；<b>镜头校正</b>（暗角、畸变、横向色差）的具体顺序也因厂而异。所以同一场景不同机型拍出来的"味道"不同，很大一部分来自这些顺序和强度的调配。</p>
 <h3 class="iq">这个流程不是标准</h3>
 <p>上面九步是<b>教学用的典型顺序</b>，不是 ISP 规范。真实 ISP 有几个常见的变动点：</p>
