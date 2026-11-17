@@ -51,7 +51,7 @@ addEventListener('keydown', e => {
   if (['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName)) return;
   if (route && route.view === 'timeline') return;
   if (e.defaultPrevented) return;
-  if (!$('zoom').hidden || !$('toc').hidden || !$('onboard').hidden) return;   // 放大图 / 目录 / 操作提示开着：方向键不翻步
+  if (!$('zoom').hidden || !$('toc').hidden || !$('onboard').hidden || !$('allrefs').hidden) return;   // 放大图 / 目录 / 操作提示 / 参考资料开着：方向键不翻步
   if (e.altKey || e.metaKey || e.ctrlKey) return;      // Alt+← 是浏览器后退，⌘← 等也留给系统
   if (e.key === 'ArrowRight') navigate({view: 'step', n: step + 1});
   if (e.key === 'ArrowLeft')  navigate({view: 'step', n: step - 1});
