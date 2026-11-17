@@ -154,7 +154,15 @@ const STEPS=[
 <li><b>FWC（PD 侧）</b> 决定一次曝光能装多少电子（动态范围上限）</li>
 <li><b>CG</b> 决定电子变多大电压（读噪在电子单位下的下限）</li>
 </ul>
-<p>动态范围 DR = FWC / 读噪_e⁻。要么 FWC 大、要么读噪小，CG 影响读噪_e⁻。所以 DCG 两段读出同时拿「HCG 低读噪」和「LCG 大 FWC」的好处，是现代 CIS 扩 DR 的主力路线。</p>`},
+<p>动态范围 DR = FWC / 读噪_e⁻。要么 FWC 大、要么读噪小，CG 影响读噪_e⁻。所以 DCG 两段读出同时拿「HCG 低读噪」和「LCG 大 FWC」的好处，是现代 CIS 扩 DR 的主力路线。</p>
+<h3 class="iq">转移栅的下一代：Vertical TG 与 Dual VTG</h3>
+<p>常规 TG 是平面栅——多晶硅片覆盖在 PD 与 FD 之间的沟道上方，栅下耗尽区把电子引向 FD。像素缩到 ≤1 µm 后，水平沟道没地方做长，TX 的完全转移和暗电流控制开始互相矛盾，于是转移栅本身也被「拔起来」。</p>
+<ul>
+<li><b>Vertical TG（VTG，Sony 2016 IEDM 首发）</b>：把栅做成一根垂直插入硅里的柱子，深度 1–2 µm，从 PD 底部开始把电子往上提。好处是 PD 可以做得<b>又深又窄</b>（装更多电子且不占表面），完全转移的电场沿柱子方向成立。Sony 1 µm 及以下的手机 CIS 阵列普遍带它。</li>
+<li><b>Dual VTG（DVTG，Samsung ISOCELL HP 系列）</b>：在同一个 PD 旁边立两根垂直栅，两边同时拉电子，进一步缩短转移路径。支持 0.56–0.64 µm 像素的 200 MP 传感器（HP2 / HP3 / HP9）。</li>
+<li><b>代价</b>：深沟蚀刻 + 多晶硅填充工艺复杂（和 B-DTI 共用一类设备，不是免费的）、栅电容增大带来驱动功耗上升；柱侧壁的界面态要靠退火和钝化压暗电流。</li>
+</ul>
+<p><i>可信度：VTG / DVTG 已量产（confirmed，Sony、Samsung IEDM/VLSI 论文和产品规格书）。再往下的 GAA 环绕栅 pixel transistor 仍是论文（todo）。</i></p>`},
  {ch:3,t:'LOFIC：装不下的电子另存一处',cal:['general','vendor','estimated'],limits:'LOFIC 电容结构和位置是业界常见做法的汇编。Sony / OmniVision / SmartSens 等厂商的具体实现细节通常不公开；数值按已公开专利 + 论文估算。',related:[16,19,20,22,29],pn:['loficctl','loficwrap'],refs:[{t:'Sony LYT-910 发布（2026-06）',u:'https://www.sony-semicon.com/en/info/2026/2026061701.html'},{t:'Sony IMX908 4K 1.45 µm LOFIC（2026-03）',u:'https://www.sony-semicon.com/en/news/2026/2026031701.html'},{t:'Sony LOFIC 2.8 µm BSI pixel 论文 J-SSC',u:'https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6960954/'},{t:'OmniVision TheiaCel（Yole 2023）',u:'https://www.yolegroup.com/industry-news/omnivision-announces-new-theiacel-technology-and-automotive-image-sensor-for-led-flicker-free-exterior-cameras/'},{t:'SmartSens LOFIC HDR 3.0 / SC570XS',u:'https://www.smartsenstech.com/en/mpage?id=415'},{t:'Samsung ISOCELL HPA LOFIC 规划（GSMArena 2025）',u:'https://www.gsmarena.com/the_image_sensor_competition_is_on_lofic_sensors_will_see_wider_adoption_starting_in_2026-news-70224.php'},{t:'Sony 三段增益 LOFIC readout 论文',u:'https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12526854/'},{t:'OmniVision OX08D10 产品页',u:'https://www.ovt.com/products/ox08d10/'},{t:'TechInsights OX08D10 拆解报告',u:'https://www.techinsights.com/blog/omnivision-ox08d10-device-essentials-plus'}],g:'tx',fig:'pot',lofic:1,cam:[.6,5.4,-7.6],look:[-.4,.6,-.4],lead:`光太强时，像素的小桶很快就满了，多出的电子本来会白白溢走。LOFIC 在旁边加一口<k data-hl="LOFIC 大电容">大水缸</k>接住溢出的水，高光就不再一片死白。`,adv:`<p><b>问题</b>：PD 的坑只有这么大（满阱容量）。强光下很快装满，多出来的电子溢出丢掉，照片里高光就是一片死白。</p><p><b>LOFIC</b>（Lateral Overflow Integration Capacitor，横向溢出积分电容）的办法：在 FD 旁边经一个开关接一个<b>大电容</b>，容量是 FD 的几十倍。</p><p><b>曝光时</b>：TX 不完全关死，留一道比别处都矮的堤坝，LOFIC 开关开着。PD 满了以后，多出的电子越过 TX 流进 FD 和大电容，被存下来而不是丢掉。</p><p><b>读两次</b>：</p><p>① 关掉开关，只用小电容 FD，按上一步的方式读 PD 里的电子。每个电子换来的电压大（<b>高转换增益</b>，约 100 µV），噪声低，负责暗部。</p><p>② 打开开关，FD 和大电容连通，PD 的电子加上溢出的电子全摊在大电容上再读一次。每个电子只换来约 5 µV（<b>低转换增益</b>），但能装下几十万个电子，负责高光。</p><p><b>合成</b>：暗的像素用 ①，① 已经到顶的像素用 ② 乘上增益比。一次曝光就得到高动态范围，不像多帧 HDR 那样拍运动物体会有重影。</p><p><b>代价</b>：低增益那次读数做不了完整的相关双采样，噪声高一些；电容还要占面积。近年的车载传感器和部分手机主摄在用。</p><p>演示里 PD 满阱是 8 个小球（8000 个电子），这次曝光共产生 20 个，其中 12 个溢出。电势图里复位管没有画。</p><h3 class="iq">另一种做法：双转换增益（DCG）</h3><p>和 LOFIC 很像，FD 上也经开关并一个电容，但它<b>不接收溢出</b>，只在读出时切换：开关断开时 FD 电容小，每个电子换的电压大（高增益），读出噪声低；开关接通时电容变大（低增益），能读的电子更多。</p><p>DCG 和 LOFIC 的对比表见「硬核」。</p><p>很多传感器每帧读两次（高增益一次、低增益一次）再合成，叫 DCG-HDR。相机里说的「双原生 ISO」也是这个原理：到某个 ISO 以上切到高增益那一档，噪声突然变小。此外还有分割像素（一个大 PD 配一个小 PD，小的专拍高光）和多帧合成等方案。</p>`,hard:`<table class="cmp iqt"><tr><th></th><th>DCG</th><th>LOFIC</th></tr><tr><td>多出的电容</td><td>几倍于 FD</td><td>几十倍于 FD</td></tr><tr><td>曝光中溢出的电子</td><td class="bad">丢掉，上限仍是 PD 满阱</td><td class="good">存进电容</td></tr><tr><td>主要改善</td><td>暗部噪声</td><td>高光，动态范围大幅扩展</td></tr><tr><td>代价</td><td>小</td><td>电容占地方，低增益读数噪声偏高</td></tr></table>
 <h3 class="iq">各家 LOFIC 方案</h3>
 <p>LOFIC 最早是学术概念（东北大学菅原康弘等，2000 年代初），近几年才被 CIS 厂商陆续推进产品，先在车载铺开，2025–2026 年才上手机主摄。「一次曝光拿高动态范围」有几条路，LOFIC 只是其中一条，先列出全景，再看每家走的是哪条。</p>
@@ -293,7 +301,16 @@ const STEPS=[
 <li><b>（Stacked）键合</b>：铜-铜直连或 TSV 对准</li>
 <li><b>切割 + 封装</b>：划片 → die 测试 → COB / CSP / LGA → 终测</li>
 </ol>
-<p>FSI 省第 6 步；非堆栈省第 7 步。大 die（60+ mm²）良率常低于 50%，是高端传感器成本陡升的根源。工艺有<b>热预算</b>约束：高温步（epi、implant、CFA 固化）必须在特定顺序完成，否则前后工艺会互毁。</p>`},
+<p>FSI 省第 6 步；非堆栈省第 7 步。大 die（60+ mm²）良率常低于 50%，是高端传感器成本陡升的根源。工艺有<b>热预算</b>约束：高温步（epi、implant、CFA 固化）必须在特定顺序完成，否则前后工艺会互毁。</p>
+<h3 class="iq">下一代工艺展望</h3>
+<p>上面的工艺时序是 2020s 中端量产的 baseline（Cu BEOL、SiO₂ 或 Cu-Cu Hybrid Bonding、5–10 µm 外延）。再往下走有几个方向，成熟度不一：</p>
+<ul>
+<li><b>Co / Ru 替代 Cu 底层</b>：M0 / M1 这种最细的线上，Cu 的 TaN 阻挡层占截面比例太大、电阻反而拉升。钴（Co）和钌（Ru）不需要阻挡层，<20 nm 线宽下电阻更低。但电迁移寿命和沉积工艺都不如 Cu 成熟，目前主要出现在逻辑晶圆的下层互连，像素层的升级慢一拍。</li>
+<li><b>Hybrid Bonding pitch 继续缩</b>：IMX378（2016）首发 ~6 µm，IMX989（2022）到 ~3 µm，2024 公开的 Sony / imec 论文到 1 µm 以下。每像素独立 Cu 柱是三层堆叠和双层晶体管像素的前提。再细就逼近 Cu 柱对准和 CMP 平坦度极限，下一步往 <b>Chip-on-Wafer（CoW）异构</b>走：像素晶圆直接贴小颗芯片（DRAM、NPU），而不是整片晶圆对晶圆。</li>
+<li><b>Air Gap 介质</b>：Cu 线之间用空气（k ≈ 1）替代 Low-k（k ≈ 2.5），RC 延迟进一步降。工艺上可行，机械强度和长期可靠性仍在验证。</li>
+<li><b>4+ 层晶圆堆叠</b>：当前量产顶到三层（Sony IMX400 2017，像素 + DRAM + 逻辑）。四层以上要同时解决 TSV 对准精度、热预算和成本，ISSCC / IEDM 2024 都有论文，未见消费品量产。</li>
+</ul>
+<p><i>可信度：Co / Ru 用于先进逻辑工艺（confirmed）、用于 CIS BEOL（estimated）；Hybrid Bonding pitch 缩小（confirmed，有拆解与论文）；Air Gap 介质 / 4+ 层堆叠（todo）。</i></p>`},
  {ch:5,t:'噪声与信噪比',cal:['general','simplified'],related:[15,16,17,24],refs:[{t:'J. Nakamura《Image Sensors and Signal Processing for Digital Still Cameras》',n:'Shot noise、read noise、dark current'},{t:'EMVA 1288 Standard: Characterisation of Image Sensors',u:'https://www.emva.org/standards-technology/emva-1288/'}],g:'micro',fig:'snr',pn:['snrctl','snrwrap'],cam:[3.6,4.6,5.6],look:[0,0.6,0.4],lead:`噪点像录音里的沙沙声。<k data-hl="光电二极管（硅）">像素</k>接到的光越多，真正的信号就越能盖过它，所以光线足、像素大，画面就干净。`,adv:`<p>照片里的噪点来自几个互相独立的来源，按平方和叠加。</p><p><b>散粒噪声</b>：光子是一个个随机到达的，收到 N 个电子，起伏约 √N。这是光本身的性质，没法消除。所以信号越大，信噪比 √N 越高。</p><p><b>读出噪声</b>：源极跟随器、列电路和 ADC 带来，<b>每次读出固定几个电子的均方根</b>（现代 CIS 典型 1–3 e⁻ RMS，高增益档低到 1 e⁻ 以下），和信号大小无关。暗处信号少时它占主导。</p><p><b>暗电流</b>：硅受热自己产生电子，<b>和曝光时间成正比</b>；对温度是<b>指数关系</b>，每升约 6–8 °C 翻倍，不是简单正比。室温下现代 CIS 暗电流率在每秒几十 me⁻ 到 1 e⁻ 量级，长曝光和高温时才明显。</p><p>还有<b>固定图案噪声</b>（FPN），分两种：<b>PRNU</b>（灵敏度不均匀，和信号成比例，亮处明显）和 <b>DSNU</b>（暗电平不均匀，和信号无关，暗处明显）。PRNU 拍<b>平场</b>校正，DSNU 拍<b>暗帧</b>校正。</p><p><b>怎么看曲线</b>：横轴是收到的电子数，纵轴是信噪比，都是对数。左边被读出噪声压住；往右进入散粒噪声区，贴着虚线走；到满阱容量截止。<b>动态范围</b> = 满阱 ÷ 底噪。</p><p><b>像素大小</b>：同样的曝光，像素面积越大收到的光子越多，信噪比越高，满阱也越大。拖「像素边长」看曲线和下面三块样片的变化。</p><p><b>ISO</b>：提高 ISO 只是放大，不会多收光子，散粒噪声不变。在 ADC 之前放大能压低后级电路噪声的影响，所以适当提高 ISO 读出噪声反而略降。</p>`,hard:`<div class="f">散粒噪声 σ_shot = √N（N 是信号电子数）<br>暗电流噪声 σ_dark = √(D · t)（D 是暗电流率 e⁻/s，t 是曝光时间）<br>读出噪声 σ_read ≈ 1–3 e⁻ RMS（现代 CIS）<br>总噪声 σ = √(σ_shot² + σ_dark² + σ_read²)<br>信噪比 SNR = N / σ<br>动态范围 DR = 20·log₁₀(FWC / σ_read) dB</div>
 <p><b>典型动态范围</b>（单次曝光，base ISO）：</p>
 <table class="cmp iqt"><tr><th>传感器</th><th>FWC</th><th>读噪</th><th>DR</th></tr>
