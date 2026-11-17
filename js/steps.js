@@ -273,7 +273,20 @@ const STEPS=[
 </ul>
 <p><b>为什么要分</b>：数字域的 ground bounce 一旦串到 AGND，直接变成读出里的随机噪声（横条纹、cross-hatch pattern）。所以 PCB layout 上 AGND 和 DGND 只在<b>一点</b>相连；die 内部则用 deep n-well 隔离、guard ring 包围模拟块。</p>
 <p><b>堆栈式更极端</b>：模拟块放上层晶圆、数字块放下层，中间用硅通孔（TSV）或铜–铜键合点连接，物理上天然隔离，PSRR 和 crosstalk 都比单层好一代。</p>
-<p><b>片上 LDO / 电荷泵</b>：现代 CIS 内部集成 LDO 把外部 1.8 V 降到核心 1.0 V，集成电荷泵产生 VNEG 和 TX ON 的高压（3.3+ V），减少外部元件数。</p>`},
+<p><b>片上 LDO / 电荷泵</b>：现代 CIS 内部集成 LDO 把外部 1.8 V 降到核心 1.0 V，集成电荷泵产生 VNEG 和 TX ON 的高压（3.3+ V），减少外部元件数。</p>
+<h3 class="iq">半导体工艺时序（从晶圆到成品）</h3>
+<p>CMOS 图像传感器的完整制造链约 2-3 个月，按顺序：</p>
+<ol>
+<li><b>外延</b>（epitaxy）：硅基上长 5-10 µm 高纯 P 型外延层</li>
+<li><b>光刻 + 离子注入</b>：定义 PD 钉扎结、TG、FD、晶体管沟道等多次掺杂</li>
+<li><b>隔离</b>（STI / DTI）：浅沟槽隔离晶体管、深沟槽隔离像素</li>
+<li><b>金属互连</b>（BEOL）：3-5 层铜布线、绝缘和插塞</li>
+<li><b>CFA + 微透镜</b>：彩色染料涂布 + 热流动成形</li>
+<li><b>（BSI）减薄</b>：晶圆翻转后硅基面磨到 ~3 µm，光从背面入射</li>
+<li><b>（Stacked）键合</b>：铜-铜直连或 TSV 对准</li>
+<li><b>切割 + 封装</b>：划片 → die 测试 → COB / CSP / LGA → 终测</li>
+</ol>
+<p>FSI 省第 6 步；非堆栈省第 7 步。大 die（60+ mm²）良率常低于 50%，是高端传感器成本陡升的根源。工艺有<b>热预算</b>约束：高温步（epi、implant、CFA 固化）必须在特定顺序完成，否则前后工艺会互毁。</p>`},
  {ch:5,t:'噪声与信噪比',cal:['general','simplified'],related:[15,16,17,24],refs:[{t:'J. Nakamura《Image Sensors and Signal Processing for Digital Still Cameras》',n:'Shot noise、read noise、dark current'},{t:'EMVA 1288 Standard: Characterisation of Image Sensors',u:'https://www.emva.org/standards-technology/emva-1288/'}],g:'micro',fig:'snr',pn:['snrctl','snrwrap'],cam:[3.6,4.6,5.6],look:[0,0.6,0.4],lead:`噪点像录音里的沙沙声。<k data-hl="光电二极管（硅）">像素</k>接到的光越多，真正的信号就越能盖过它，所以光线足、像素大，画面就干净。`,adv:`<p>照片里的噪点来自几个互相独立的来源，按平方和叠加。</p><p><b>散粒噪声</b>：光子是一个个随机到达的，收到 N 个电子，起伏约 √N。这是光本身的性质，没法消除。所以信号越大，信噪比 √N 越高。</p><p><b>读出噪声</b>：源极跟随器、列电路和 ADC 带来，<b>每次读出固定几个电子的均方根</b>（现代 CIS 典型 1–3 e⁻ RMS，高增益档低到 1 e⁻ 以下），和信号大小无关。暗处信号少时它占主导。</p><p><b>暗电流</b>：硅受热自己产生电子，<b>和曝光时间成正比</b>；对温度是<b>指数关系</b>，每升约 6–8 °C 翻倍，不是简单正比。室温下现代 CIS 暗电流率在每秒几十 me⁻ 到 1 e⁻ 量级，长曝光和高温时才明显。</p><p>还有<b>固定图案噪声</b>（FPN），分两种：<b>PRNU</b>（灵敏度不均匀，和信号成比例，亮处明显）和 <b>DSNU</b>（暗电平不均匀，和信号无关，暗处明显）。PRNU 拍<b>平场</b>校正，DSNU 拍<b>暗帧</b>校正。</p><p><b>怎么看曲线</b>：横轴是收到的电子数，纵轴是信噪比，都是对数。左边被读出噪声压住；往右进入散粒噪声区，贴着虚线走；到满阱容量截止。<b>动态范围</b> = 满阱 ÷ 底噪。</p><p><b>像素大小</b>：同样的曝光，像素面积越大收到的光子越多，信噪比越高，满阱也越大。拖「像素边长」看曲线和下面三块样片的变化。</p><p><b>ISO</b>：提高 ISO 只是放大，不会多收光子，散粒噪声不变。在 ADC 之前放大能压低后级电路噪声的影响，所以适当提高 ISO 读出噪声反而略降。</p>`,hard:`<div class="f">散粒噪声 σ_shot = √N（N 是信号电子数）<br>暗电流噪声 σ_dark = √(D · t)（D 是暗电流率 e⁻/s，t 是曝光时间）<br>读出噪声 σ_read ≈ 1–3 e⁻ RMS（现代 CIS）<br>总噪声 σ = √(σ_shot² + σ_dark² + σ_read²)<br>信噪比 SNR = N / σ<br>动态范围 DR = 20·log₁₀(FWC / σ_read) dB</div>
 <p><b>典型动态范围</b>（单次曝光，base ISO）：</p>
 <table class="cmp iqt"><tr><th>传感器</th><th>FWC</th><th>读噪</th><th>DR</th></tr>
