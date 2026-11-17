@@ -17,9 +17,10 @@ function renderPanel(i) {
   /* #prog ： 进度条宽度 */
   $('prog').style.width = (i / (STEPS.length - 1) * 100).toFixed(2) + '%';
 
-  /* 文字内容 */
-  $('title').textContent = s.t;
-  $('lead').innerHTML = s.lead || '';
+  /* 文字内容（按 lang 选 en / zh） */
+  const en = typeof getLang === 'function' && getLang() === 'en';
+  $('title').textContent = (en && s.tEn) ? s.tEn : s.t;
+  $('lead').innerHTML = (en && s.leadEn) ? s.leadEn : (s.lead || '');
 
   /* KEY IDEA 紫色要点卡：可选字段。 */
   if (s.key) { $('keyidea').innerHTML = s.key; $('keyidea').hidden = false; }
