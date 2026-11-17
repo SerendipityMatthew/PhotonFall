@@ -617,6 +617,13 @@ body.tl-open #tlaxis,body.tl-open .tl-lane{grid-template-columns:var(--tl-cols) 
   .cmos-stack .lyr em{font-size:11px}
 }
 
+/* KEY IDEA 紫色要点卡 — 学 designed-to-scale 的 KEY IDEA 盒 */
+.key-box{position:relative;background:#ebe3f1;border:1px solid #d5c8e2;border-radius:10px;
+  padding:28px 14px 12px;margin:10px 0 2px;font:400 13px/1.5 var(--sans);color:#3b2f52}
+.key-box::before{content:'💡 KEY IDEA';position:absolute;top:8px;left:14px;
+  font:700 10px/1 var(--sans);letter-spacing:.14em;color:#7a5fb8}
+.key-box b{color:#2a1f42}
+
 /* 底部章节 step pager — 学 designed-to-scale 的小圆步骤条 */
 #pager{position:fixed;z-index:11;left:0;right:0;bottom:0;height:var(--pager-h);
   display:flex;align-items:stretch;gap:0;overflow-x:auto;overscroll-behavior-x:contain;
