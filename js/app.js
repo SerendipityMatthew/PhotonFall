@@ -250,11 +250,38 @@ function syncPager(i) {
   pg.querySelector('.pg-dot[aria-current=step]')?.scrollIntoView({block: 'nearest', inline: 'center', behavior: 'smooth'});
 }
 
+/* ---------- 右侧常驻课程树 ---------- */
+function buildSideTree() {
+  const el = $('sidetree');
+  if (!el) return;
+  el.innerHTML = CHAPTERS.map(ch => {
+    const steps = STEPS.map((s, i) => [s, i]).filter(([s]) => s.ch === ch.id);
+    if (!steps.length) return '';
+    return `<section class="st-ch" data-ch="${ch.id}">
+      <h3 class="st-ch-name">${ch.name}</h3>
+      <ul class="st-steps">${steps.map(([s, i]) =>
+        `<li><button type="button" class="st-step" data-i="${i}" title="第 ${i} 步：${s.t}">${s.t}</button></li>`
+      ).join('')}</ul>
+    </section>`;
+  }).join('');
+  el.addEventListener('click', e => {
+    const b = e.target.closest('.st-step');
+    if (b) navigate({view: 'step', n: +b.dataset.i});
+  });
+}
+function syncSideTree(i) {
+  const el = $('sidetree');
+  if (!el) return;
+  el.querySelectorAll('.st-step').forEach(b => b.classList.toggle('on', +b.dataset.i === i));
+  el.querySelector('.st-step.on')?.scrollIntoView({block: 'nearest', behavior: 'smooth'});
+}
+
 /* ---------- 启动 ---------- */
 updateLblBtn();
 buildPager();
+buildSideTree();
 const origGo = go;
-go = function(i) { origGo(i); syncPager(i); };
+go = function(i) { origGo(i); syncPager(i); syncSideTree(i); };
 rebuild();
 route = parseRoute(location.hash, STEPS.length - 1);
 history.replaceState(null, '', routeHash(route));
