@@ -204,6 +204,8 @@ addEventListener('keydown', e => {
   if (e.key !== 'Escape') return;
   // 1. 放大小图
   if (zoomed) { e.preventDefault(); closeZoom(); return; }
+  // 1b. 参考资料弹层
+  if (!$('allrefs').hidden) { e.preventDefault(); closeRefs(); return; }
   // 2. 目录弹层
   if (!$('toc').hidden) { e.preventDefault(); closeToc(); return; }
   // 3. 操作提示
@@ -280,4 +282,57 @@ $('toc').addEventListener('click', e => {
     navigate({view: 'step', n: +b.dataset.i});
     $('title').focus({preventScroll: true});
   } else if (e.target === $('toc')) closeToc();   // 点弹层外：还焦点给开启按钮
+});
+
+/* ---------- 参考资料弹层 ---------- */
+let refsOpener = null;
+
+function buildRefs() {
+  $('allrefsbody').innerHTML = CHAPTERS.map(ch => {
+    const indices = [];
+    for (let i = 0; i < STEPS.length; i++) {
+      if (STEPS[i].ch === ch.id && STEPS[i].refs && STEPS[i].refs.length) indices.push(i);
+    }
+    if (!indices.length) return '';
+    return '<section class="refs-ch"><h3 class="refs-chname">' + ch.name + '</h3>' +
+      indices.map(i => {
+        const s = STEPS[i];
+        return '<article class="refs-step"><button type="button" class="refs-step-head" data-i="' + i + '">' + i + '. ' + s.t + '</button>' +
+          '<ul class="refs-list">' +
+          s.refs.map(r => {
+            const t = r.t || '';
+            const u = r.u || '';
+            const n = r.n ? ' — <small>' + r.n + '</small>' : '';
+            return u
+              ? '<li><a href="' + u + '" target="_blank" rel="noopener">' + t + '</a>' + n + '</li>'
+              : '<li>' + t + n + '</li>';
+          }).join('') +
+          '</ul></article>';
+      }).join('') + '</section>';
+  }).join('');
+}
+
+function openRefs(opener) {
+  refsOpener = opener || $('refsopenbtn');
+  buildRefs();
+  closeToc();
+  $('allrefs').hidden = false;
+  $('allrefsclose').focus({preventScroll: true});
+}
+
+function closeRefs() {
+  if ($('allrefs').hidden) return;
+  $('allrefs').hidden = true;
+  if (refsOpener) refsOpener.focus({preventScroll: true});
+}
+
+$('refsopenbtn').onclick = () => openRefs($('refsopenbtn'));
+$('allrefsclose').onclick = closeRefs;
+$('allrefs').addEventListener('click', e => {
+  const b = e.target.closest('[data-i]');
+  if (b) {
+    $('allrefs').hidden = true;
+    navigate({view: 'step', n: +b.dataset.i});
+    $('title').focus({preventScroll: true});
+  } else if (e.target === $('allrefs')) closeRefs();
 });
