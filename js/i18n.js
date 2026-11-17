@@ -50,7 +50,9 @@ function applyLang() {
   /* 让 pager / sidetree 换成对应语言的章节名 */
   if (typeof buildPager === 'function') buildPager();
   if (typeof buildSideTree === 'function') buildSideTree();
+  /* 重渲染当前步（让 step title / lead 跟语言切换）*/
   if (typeof step === 'number') {
+    if (typeof renderPanel === 'function') renderPanel(step);
     if (typeof syncPager === 'function') syncPager(step);
     if (typeof syncSideTree === 'function') syncSideTree(step);
   }
