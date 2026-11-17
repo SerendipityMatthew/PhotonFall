@@ -219,8 +219,42 @@ function frame() {
   renderer.render(scene, cam);
 }
 
+/* ---------- 底部章节 step pager ---------- */
+function buildPager() {
+  const pg = $('pager');
+  if (!pg) return;
+  pg.innerHTML = CHAPTERS.map(ch => {
+    const steps = STEPS.map((s, i) => [s, i]).filter(([s]) => s.ch === ch.id);
+    if (!steps.length) return '';
+    const dots = steps.map(([s, i]) =>
+      `<button type="button" class="pg-dot" data-i="${i}" aria-label="第 ${i} 步：${s.t}">${i}</button>`
+    ).join('');
+    return `<div class="pg-ch" data-ch="${ch.id}"><span class="pg-ch-name">${ch.name}</span><span class="pg-dots">${dots}</span></div>`;
+  }).join('');
+  pg.addEventListener('click', e => {
+    const b = e.target.closest('.pg-dot');
+    if (b) navigate({view: 'step', n: +b.dataset.i});
+  });
+}
+function syncPager(i) {
+  const pg = $('pager');
+  if (!pg) return;
+  const curCh = STEPS[i].ch;
+  pg.querySelectorAll('.pg-ch').forEach(el => el.classList.toggle('on', +el.dataset.ch === curCh));
+  pg.querySelectorAll('.pg-dot').forEach(b => {
+    const n = +b.dataset.i;
+    b.classList.toggle('done', n < i);
+    if (n === i) b.setAttribute('aria-current', 'step');
+    else b.removeAttribute('aria-current');
+  });
+  pg.querySelector('.pg-dot[aria-current=step]')?.scrollIntoView({block: 'nearest', inline: 'center', behavior: 'smooth'});
+}
+
 /* ---------- 启动 ---------- */
 updateLblBtn();
+buildPager();
+const origGo = go;
+go = function(i) { origGo(i); syncPager(i); };
 rebuild();
 route = parseRoute(location.hash, STEPS.length - 1);
 history.replaceState(null, '', routeHash(route));
