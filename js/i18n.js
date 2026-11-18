@@ -14,6 +14,18 @@ const I18N = {
     zoomDialog: '放大的小图', nextSlide: '下一张',
     langSwitch: 'EN', langSwitchAria: '切换语言：English',
     quizBtn: '🎯 测验', quizBtnAria: '测验',
+    pathsHint: '换个顺序看这些步（点开展开整条路径）：',
+    pathBasics: '快速入门（9 步）', pathOptics: '光学工程师（9 步）',
+    pathSemi: '半导体工程师（10 步）', pathColor: '色彩与显示（8 步）',
+    tourFlowAria: '一张照片走过的路',
+    flowLight: '光', flowLightSub: '景物反光',
+    flowLens: '镜头', flowLensSub: '聚成像',
+    flowSensor: '传感器', flowSensorSub: '光变成电',
+    flowAdc: '电路', flowAdcSub: '电变数字',
+    flowIsp: 'ISP', flowIspSub: '算出颜色',
+    flowPhoto: '照片', flowPhotoSub: '存成文件',
+    tourCap: '导览跟着光走到传感器表面为止。之后的事在芯片里，看不见：电路把每格攒下的电读成数字（RAW），ISP 再把这堆数字算成一张彩色照片，存进卡里（第 5 章）。',
+    tourReplay: '重播',
   },
   en: {
     menu: 'Menu', timeline: 'Timeline', labels: 'Labels', help: 'Help',
@@ -28,6 +40,18 @@ const I18N = {
     zoomDialog: 'Zoomed figure', nextSlide: 'Next',
     langSwitch: '中', langSwitchAria: 'Switch language: 中文',
     quizBtn: '🎯 Quiz', quizBtnAria: 'Practice quiz',
+    pathsHint: 'Other orderings of these steps (click to expand a path):',
+    pathBasics: 'Basics (9 steps)', pathOptics: 'Optical engineer (9 steps)',
+    pathSemi: 'Semiconductor engineer (10 steps)', pathColor: 'Color & display (8 steps)',
+    tourFlowAria: 'The path of a photo',
+    flowLight: 'Light', flowLightSub: 'Scene reflection',
+    flowLens: 'Lens', flowLensSub: 'Focus to image',
+    flowSensor: 'Sensor', flowSensorSub: 'Light → electrons',
+    flowAdc: 'Circuit', flowAdcSub: 'Electrons → digits',
+    flowIsp: 'ISP', flowIspSub: 'Compute colors',
+    flowPhoto: 'Photo', flowPhotoSub: 'Save to file',
+    tourCap: 'The tour follows light up to the sensor surface. What happens afterward lives inside the chip, invisible: circuits read each cell\\\'s charge into digits (RAW), the ISP turns those digits into a color photo, and writes it to the card (Chapter 5).',
+    tourReplay: 'Replay',
   },
 };
 
@@ -58,9 +82,10 @@ function applyLang() {
     if (!key) return;
     el.textContent = (lang === 'en' && typeof LABEL_EN === 'object' && LABEL_EN[key]) ? LABEL_EN[key] : key;
   });
-  /* 重渲染当前步（让 step title / lead 跟语言切换）*/
+  /* 重渲染当前步（让 step title / lead / card 跟语言切换）*/
   if (typeof step === 'number') {
     if (typeof renderPanel === 'function') renderPanel(step);
+    if (typeof renderCard === 'function') renderCard(step);
     if (typeof syncPager === 'function') syncPager(step);
     if (typeof syncSideTree === 'function') syncSideTree(step);
   }

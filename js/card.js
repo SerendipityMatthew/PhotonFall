@@ -155,7 +155,13 @@ function renderCard(i) {
   $('cardevo').innerHTML = evoForStep(i).map(e =>
     `<button type="button" class="evo-chip" data-id="${e.id}"><span aria-hidden="true">🕰</span> <time>${e.year}</time> · ${e.title}</button>`).join('');
 
-  $('nextt').textContent = i < STEPS.length - 1 ? STEPS[i + 1].t : '';
+  if (i < STEPS.length - 1) {
+    const ns = STEPS[i + 1];
+    const en = typeof getLang === 'function' && getLang() === 'en';
+    $('nextt').textContent = (en && ns.tEn) ? ns.tEn : ns.t;
+  } else {
+    $('nextt').textContent = '';
+  }
   $('prev').title = i > 0 ? '上一步：' + STEPS[i - 1].t : '';
   $('prev').disabled = i === 0;
   $('next').disabled = i === STEPS.length - 1;
