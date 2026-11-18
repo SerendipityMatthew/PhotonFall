@@ -164,25 +164,25 @@
     <div id="adcwrap" data-pn hidden><canvas id="adcc" class="pc" width="330" height="210" aria-label="单斜率 ADC 时序：斜坡电压与像素输出的比较"></canvas></div>
     <div id="shutwrap" data-pn hidden><canvas id="shc" class="pc" width="330" height="180" aria-label="卷帘 vs 全局快门：读出时序和运动物体变形"></canvas></div>
     <div id="paths" data-pn hidden>
-      <div class="cap">换个顺序看这些步（点开展开整条路径）：</div>
+      <div class="cap" data-i18n="pathsHint">换个顺序看这些步（点开展开整条路径）：</div>
       <div class="paths-wrap">
-        <div class="path"><button type="button" class="path-head" data-steps="1,2,5,9,12,15,16,22,26" aria-expanded="false">快速入门（9 步）</button><ol class="path-body" hidden></ol></div>
-        <div class="path"><button type="button" class="path-head" data-steps="1,2,3,4,5,6,7,8,10" aria-expanded="false">光学工程师（9 步）</button><ol class="path-body" hidden></ol></div>
-        <div class="path"><button type="button" class="path-head" data-steps="15,16,17,18,19,20,21,22,23,24" aria-expanded="false">半导体工程师（10 步）</button><ol class="path-body" hidden></ol></div>
-        <div class="path"><button type="button" class="path-head" data-steps="12,14,26,28,29,30,31,32" aria-expanded="false">色彩与显示（8 步）</button><ol class="path-body" hidden></ol></div>
+        <div class="path"><button type="button" class="path-head" data-steps="1,2,5,9,12,15,16,22,26" aria-expanded="false" data-i18n="pathBasics">快速入门（9 步）</button><ol class="path-body" hidden></ol></div>
+        <div class="path"><button type="button" class="path-head" data-steps="1,2,3,4,5,6,7,8,10" aria-expanded="false" data-i18n="pathOptics">光学工程师（9 步）</button><ol class="path-body" hidden></ol></div>
+        <div class="path"><button type="button" class="path-head" data-steps="15,16,17,18,19,20,21,22,23,24" aria-expanded="false" data-i18n="pathSemi">半导体工程师（10 步）</button><ol class="path-body" hidden></ol></div>
+        <div class="path"><button type="button" class="path-head" data-steps="12,14,26,28,29,30,31,32" aria-expanded="false" data-i18n="pathColor">色彩与显示（8 步）</button><ol class="path-body" hidden></ol></div>
       </div>
     </div>
     <div id="tourpn" data-pn hidden>
-      <ol id="flow" aria-label="一张照片走过的路">
-        <li data-k="light"><b>光</b><small>景物反光</small></li>
-        <li data-k="lens"><b>镜头</b><small>聚成像</small></li>
-        <li data-k="sensor"><b>传感器</b><small>光变成电</small></li>
-        <li data-k="adc"><b>电路</b><small>电变数字</small></li>
-        <li data-k="isp"><b>ISP</b><small>算出颜色</small></li>
-        <li data-k="photo"><b>照片</b><small>存成文件</small></li>
+      <ol id="flow" data-i18n-aria="tourFlowAria" aria-label="一张照片走过的路">
+        <li data-k="light"><b data-i18n="flowLight">光</b><small data-i18n="flowLightSub">景物反光</small></li>
+        <li data-k="lens"><b data-i18n="flowLens">镜头</b><small data-i18n="flowLensSub">聚成像</small></li>
+        <li data-k="sensor"><b data-i18n="flowSensor">传感器</b><small data-i18n="flowSensorSub">光变成电</small></li>
+        <li data-k="adc"><b data-i18n="flowAdc">电路</b><small data-i18n="flowAdcSub">电变数字</small></li>
+        <li data-k="isp"><b data-i18n="flowIsp">ISP</b><small data-i18n="flowIspSub">算出颜色</small></li>
+        <li data-k="photo"><b data-i18n="flowPhoto">照片</b><small data-i18n="flowPhotoSub">存成文件</small></li>
       </ol>
-      <p class="cap">导览跟着光走到传感器表面为止。之后的事在芯片里，看不见：电路把每格攒下的电读成数字（RAW），ISP 再把这堆数字算成一张彩色照片，存进卡里（第 5 章）。</p>
-      <div class="row"><button id="tourbtn">重播</button></div>
+      <p class="cap" data-i18n="tourCap">导览跟着光走到传感器表面为止。之后的事在芯片里，看不见：电路把每格攒下的电读成数字（RAW），ISP 再把这堆数字算成一张彩色照片，存进卡里（第 5 章）。</p>
+      <div class="row"><button id="tourbtn" data-i18n="tourReplay">重播</button></div>
     </div>
     <div class="row" id="coatpn" data-pn hidden><button id="coatbtn">关掉镀膜（看脏画面）</button></div>
     <div id="reflctl" data-pn hidden><label class="chkl" for="refla">入射角 <output id="reflao"></output><input id="refla" type="range" min="0" max="60" step="1" value="0"></label></div>
@@ -250,11 +250,11 @@
 <script src="js/highlight.js"></script>
 <script src="js/tour.js"></script>
 <script src="js/timeline.js"></script>
+<script src="js/i18n.js"></script>
 <script src="js/card.js"></script>
 <script src="js/onboard.js"></script>
 <script src="js/sheet.js"></script>
 <script src="js/panel.js"></script>
-<script src="js/i18n.js"></script>
 <script src="js/quiz.js"></script>
 <script src="js/app.js"></script>
 </body>

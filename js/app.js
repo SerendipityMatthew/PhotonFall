@@ -36,7 +36,10 @@ document.querySelectorAll('.path-head').forEach(h => h.onclick = () => {
   body.hidden = false;
   if (!body.children.length) h.dataset.steps.split(',').map(Number).forEach((n, i) => {
     const li = document.createElement('li'), b = document.createElement('button');
-    b.type = 'button'; b.textContent = `${i + 1}. ${STEPS[n].t}`;
+    b.type = 'button';
+    const en = typeof getLang === 'function' && getLang() === 'en';
+    const title = (en && STEPS[n].tEn) ? STEPS[n].tEn : STEPS[n].t;
+    b.textContent = `${i + 1}. ${title}`;
     b.onclick = () => navigate({view: 'step', n});
     li.appendChild(b); body.appendChild(li);
   });
@@ -235,9 +238,10 @@ function buildPager() {
     const steps = STEPS.map((s, i) => [s, i]).filter(([s]) => s.ch === ch.id);
     if (!steps.length) return '';
     const chName = (en && ch.nameEn) ? ch.nameEn : ch.name;
-    const dots = steps.map(([s, i]) =>
-      `<button type="button" class="pg-dot" data-i="${i}" aria-label="Step ${i}: ${s.t}">${i}</button>`
-    ).join('');
+    const dots = steps.map(([s, i]) => {
+      const title = (en && s.tEn) ? s.tEn : s.t;
+      return `<button type="button" class="pg-dot" data-i="${i}" aria-label="Step ${i}: ${title}">${i}</button>`;
+    }).join('');
     return `<div class="pg-ch" data-ch="${ch.id}"><span class="pg-ch-name">${chName}</span><span class="pg-dots">${dots}</span></div>`;
   }).join('');
   pg.addEventListener('click', e => {
@@ -270,9 +274,10 @@ function buildSideTree() {
     const chName = (en && ch.nameEn) ? ch.nameEn : ch.name;
     return `<section class="st-ch" data-ch="${ch.id}">
       <h3 class="st-ch-name">${chName}</h3>
-      <ul class="st-steps">${steps.map(([s, i]) =>
-        `<li><button type="button" class="st-step" data-i="${i}" title="Step ${i}: ${s.t}">${s.t}</button></li>`
-      ).join('')}</ul>
+      <ul class="st-steps">${steps.map(([s, i]) => {
+        const title = (en && s.tEn) ? s.tEn : s.t;
+        return `<li><button type="button" class="st-step" data-i="${i}" title="Step ${i}: ${title}">${title}</button></li>`;
+      }).join('')}</ul>
     </section>`;
   }).join('');
   el.addEventListener('click', e => {
