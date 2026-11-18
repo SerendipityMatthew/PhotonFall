@@ -50,10 +50,12 @@ function renderPanel(i) {
   else $('limits').hidden = true;
 
   /* 抽屉「深入」：进阶，后接硬核（没有硬核时连小标题一起藏） */
-  $('adv').innerHTML = s.adv || '';
-  $('advh').hidden = !s.adv;
-  $('hard').innerHTML = s.hard || '';
-  $('hardh').hidden = !s.hard;
+  const advContent = (en && s.advEn) ? s.advEn : (s.adv || '');
+  $('adv').innerHTML = advContent;
+  $('advh').hidden = !advContent;
+  const hardContent = (en && s.hardEn) ? s.hardEn : (s.hard || '');
+  $('hard').innerHTML = hardContent;
+  $('hardh').hidden = !hardContent;
 
   /* 来源 */
   const refs = s.refs || [];
