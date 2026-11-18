@@ -31,7 +31,9 @@ function setSheet(s, animate = false) {
   if (animate) sheetAnim(); else sheetAnimEnd();
   document.body.dataset.sheet = s;
   cardFolded = s === 'min';
-  $('grip').setAttribute('aria-label', '调整讲解栏高度（现在：' + {min: '收起', mid: '默认', max: '展开'}[s] + '）');
+  const _en = typeof getLang === 'function' && getLang() === 'en';
+  const _stateLbl = _en ? {min:'collapsed',mid:'default',max:'expanded'}[s] : {min:'收起',mid:'默认',max:'展开'}[s];
+  $('grip').setAttribute('aria-label', _en ? ('Adjust panel height (now: ' + _stateLbl + ')') : ('调整讲解栏高度（现在：' + _stateLbl + '）'));
   if (s === 'max' && !drawerOpen) openDrawer();
   if (s !== 'max' && drawerOpen) {
     const inside = $('drawer').contains(document.activeElement);
@@ -57,7 +59,8 @@ function sheetLayout() {
     delete document.body.dataset.sheet;
     $('card').style.height = '';
     $('card').classList.toggle('folded', cardFolded);
-    $('cardfold').textContent = cardFolded ? '展开' : '收起';
+    const _en2 = typeof getLang === 'function' && getLang() === 'en';
+    $('cardfold').textContent = cardFolded ? (_en2 ? 'Expand' : '展开') : (_en2 ? 'Collapse' : '收起');
     $('cardfold').setAttribute('aria-expanded', String(!cardFolded));
   }
   if (typeof STEPS !== 'undefined' && typeof step !== 'undefined')

@@ -44,8 +44,9 @@ function renderPanel(i) {
   $('cal').innerHTML = cal.map(k => `<span class="cal cal-${k}" title="${CAL[k].hint}">${CAL[k].label}</span>`).join('');
   $('cal').hidden = !cal.length;
 
-  /* 模型限制：对 cal 标签的具体展开。可选字段。 */
-  if (s.limits) { $('limits').innerHTML = s.limits; $('limits').hidden = false; }
+  /* 模型限制：对 cal 标签的具体展开。可选字段。按 lang 选。 */
+  const limitsText = (en && s.limitsEn) ? s.limitsEn : s.limits;
+  if (limitsText) { $('limits').innerHTML = limitsText; $('limits').hidden = false; }
   else $('limits').hidden = true;
 
   /* 抽屉「深入」：进阶，后接硬核（没有硬核时连小标题一起藏） */

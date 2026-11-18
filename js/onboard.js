@@ -3,11 +3,22 @@
 
 const ONBOARD_KEY = 'photonfall.onboarded';
 
-const TIPS = [
-  '拖动画面可以转动，双指或滚轮缩放。',
-  '文字里带下划线的词可以点，3D 里会标出来。',
-  '点"下一步"往下走；"详细"里有更深的内容和来龙去脉。',
-];
+const TIPS = {
+  zh: [
+    '拖动画面可以转动，双指或滚轮缩放。',
+    '文字里带下划线的词可以点，3D 里会标出来。',
+    '点"下一步"往下走；"详细"里有更深的内容和来龙去脉。',
+  ],
+  en: [
+    'Drag to rotate; pinch or scroll to zoom.',
+    'Underlined words in the text are clickable — they highlight the matching thing in 3D.',
+    'Click "Next" to continue; "Detail" has deeper content and backstory.',
+  ],
+};
+function _tips() {
+  const lang = typeof getLang === 'function' ? getLang() : 'zh';
+  return TIPS[lang] || TIPS.zh;
+}
 
 let _onboardIdx = 0;
 let _onboardOpener = null;
@@ -21,8 +32,13 @@ function markOnboard() {
 }
 
 function _renderOnboard() {
-  $('onboard-t').textContent = TIPS[_onboardIdx];
-  $('onboard-btn').textContent = _onboardIdx < TIPS.length - 1 ? '下一张' : '知道了';
+  const tips = _tips();
+  const lang = typeof getLang === 'function' ? getLang() : 'zh';
+  $('onboard-t').textContent = tips[_onboardIdx];
+  const isLast = _onboardIdx >= tips.length - 1;
+  $('onboard-btn').textContent = isLast
+    ? (lang === 'en' ? 'Got it' : '知道了')
+    : (lang === 'en' ? 'Next' : '下一张');
   const dots = $('onboard').querySelectorAll('.onboard-dot');
   dots.forEach((d, i) => d.classList.toggle('active', i === _onboardIdx));
 }
@@ -45,7 +61,7 @@ function hideOnboard() {
 }
 
 $('onboard-btn').addEventListener('click', () => {
-  if (_onboardIdx < TIPS.length - 1) {
+  if (_onboardIdx < _tips().length - 1) {
     _onboardIdx++;
     _renderOnboard();
     $('onboard-btn').focus({ preventScroll: true });

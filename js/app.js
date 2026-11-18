@@ -67,9 +67,15 @@ function go(i) {
   step = i;
   const s = STEPS[i];
 
-  /* SEO: 按步动态更新 title / meta description / JSON-LD */
-  const seoDesc = `PhotonFall 第 ${i} 步：${s.t}（共 37 步可交互 3D 讲解）`;
-  document.title = `PhotonFall · 第 ${i} 步：${s.t}`;
+  /* SEO: 按步 + 按 lang 动态更新 title / meta description / JSON-LD */
+  const _en = typeof getLang === 'function' && getLang() === 'en';
+  const _t = (_en && s.tEn) ? s.tEn : s.t;
+  const seoDesc = _en
+    ? `PhotonFall Step ${i}: ${_t} (37-step interactive 3D explainer)`
+    : `PhotonFall 第 ${i} 步：${_t}（共 37 步可交互 3D 讲解）`;
+  document.title = _en
+    ? `PhotonFall · Step ${i}: ${_t}`
+    : `PhotonFall · 第 ${i} 步：${_t}`;
   document.querySelector('meta[name="description"]')?.setAttribute('content', seoDesc);
   const jl = document.querySelector('script[type="application/ld+json"]');
   if (jl) try { const o = JSON.parse(jl.textContent); o.description = seoDesc; jl.textContent = JSON.stringify(o); } catch(e) {}
