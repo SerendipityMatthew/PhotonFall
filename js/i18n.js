@@ -52,6 +52,12 @@ function applyLang() {
   /* 让 pager / sidetree 换成对应语言的章节名 */
   if (typeof buildPager === 'function') buildPager();
   if (typeof buildSideTree === 'function') buildSideTree();
+  /* 刷新 3D 场景 label */
+  document.querySelectorAll('.lb').forEach(el => {
+    const key = el.dataset.labelKey;
+    if (!key) return;
+    el.textContent = (lang === 'en' && typeof LABEL_EN === 'object' && LABEL_EN[key]) ? LABEL_EN[key] : key;
+  });
   /* 重渲染当前步（让 step title / lead 跟语言切换）*/
   if (typeof step === 'number') {
     if (typeof renderPanel === 'function') renderPanel(step);

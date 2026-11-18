@@ -35,5 +35,5 @@ view.addEventListener('wheel',e=>{if(e.ctrlKey)return;                       // 
 new ResizeObserver(()=>{const w=view.clientWidth,h=view.clientHeight;renderer.setSize(w,h);cam.aspect=w/h;cam.updateProjectionMatrix()}).observe(view);
 scene.add(new THREE.AmbientLight(0x8899bb,.55));
 const macro=new THREE.Group(), micro=new THREE.Group(), tx=new THREE.Group();scene.add(macro,micro,tx);
-const labels=[];function label(g,text,v){const el=document.createElement('div');el.className='lb';el.textContent=text;view.appendChild(el);labels.push({g,el,v});return v;}
+const labels=[];function label(g,text,v){const el=document.createElement('div');el.className='lb';el.dataset.labelKey=text;const en=typeof getLang==='function'&&getLang()==='en';el.textContent=(en&&typeof LABEL_EN==='object'&&LABEL_EN[text])?LABEL_EN[text]:text;view.appendChild(el);labels.push({g,el,v});return v;}
 const basic=(color,o={})=>new THREE.MeshBasicMaterial({color,...o});
