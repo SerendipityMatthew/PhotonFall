@@ -29,7 +29,15 @@ const G={front:elem(1.85,.34),vari:elem(1.3,.16),comp:elem(1.2,.22),focA:elem(1.
 G.front.position.x=-8.3;G.rear.position.x=-1.15;
 const barrel=new THREE.Mesh(new THREE.CylinderGeometry(2.06,2.06,8,48,1,true,0,Math.PI),std(0xe9e6df,{transparent:true,opacity:.3,side:THREE.DoubleSide,depthWrite:false}));barrel.rotation.z=Math.PI/2;barrel.rotation.x=Math.PI/2;barrel.position.x=-4.72;lensG.add(barrel);
 const irisMat=std(0x10151d,{side:THREE.DoubleSide,metalness:.6,roughness:.5});
-const iris=new THREE.Mesh(new THREE.BufferGeometry(),irisMat);iris.rotation.y=Math.PI/2;lensG.add(iris);
+const irisMat2=std(0x2a3240,{side:THREE.DoubleSide,metalness:.6,roughness:.45}),irisMat3=std(0x1c2230,{side:THREE.DoubleSide,metalness:.6,roughness:.5});
+const iris=new THREE.Mesh(new THREE.BufferGeometry(),[irisMat,irisMat2,irisMat3]);iris.rotation.y=Math.PI/2;lensG.add(iris);
+/* 11 片光圈叶片的分界线：11 条辐射线从光圈内缘到镜筒 */
+const BLADES=11;
+const irisSeams=new THREE.LineSegments(
+  new THREE.BufferGeometry().setAttribute('position',new THREE.BufferAttribute(new Float32Array(BLADES*6),3)),
+  new THREE.LineBasicMaterial({color:0xaab6cc})
+);
+irisSeams.rotation.y=Math.PI/2;lensG.add(irisSeams);
 const plane=new THREE.Mesh(new THREE.TorusGeometry(1.95,.02,8,64),basic(0xffc45c));plane.rotation.y=Math.PI/2;lensG.add(plane);
 /* 机身：主体仍是线框（保留剖视感），再加取景器凸起、手柄、快门按钮、模式转盘和卡口环 */
 const bodyLn=new THREE.LineBasicMaterial({color:0x56657e});
@@ -71,7 +79,14 @@ function rebuild(){
   const s=st.s, N=st.N=NS[+$('ap').value], t=st.t=TS[+$('sh').value], iso=st.iso=ISOS[+$('iso').value];
   const vs=st.vs=img(f,s), xL=-vs/U, R=f/(2*N)/U, z=(f-50)/100, fo=(1/s-1/30)/(1/m-1/30);
   G.vari.position.x=-7.3+2.3*z;G.comp.position.x=-4.7+.5*Math.sin(Math.PI*z);G.focA.position.x=-3.3-.5*fo;G.focB.position.x=-2.2+.35*fo;
-  iris.geometry.dispose();iris.geometry=new THREE.RingGeometry(R,1.95,11);iris.position.x=plane.position.x=xL;
+  /* 每个 theta 段就是一片叶片：内缘是 11 边形（收光圈时光斑就是这个形状），三色交替让叶片分得开 */
+  iris.geometry.dispose();iris.geometry=new THREE.RingGeometry(R,1.95,BLADES,1);
+  iris.geometry.clearGroups();for(let i=0;i<BLADES;i++)iris.geometry.addGroup(6*i,6,i%3);
+  iris.position.x=plane.position.x=xL;
+  {const sp=irisSeams.geometry.attributes.position.array;
+   for(let i=0;i<BLADES;i++){const a=2*Math.PI*i/BLADES,c=Math.cos(a),s=Math.sin(a);
+     sp[i*6]=c*R;sp[i*6+1]=s*R;sp[i*6+2]=0;sp[i*6+3]=c*1.95;sp[i*6+4]=s*1.95;sp[i*6+5]=0;}
+   irisSeams.geometry.attributes.position.needsUpdate=true;irisSeams.position.x=xL;}
   LV.vari.set(G.vari.position.x,-1.6,0);LV.foc.set(-2.75,-1.3,0);LV.pl.set(xL,2.2,.9);
   LPT.front.set(G.front.position.x,-2.25,0);LPT.comp.set(G.comp.position.x,-2.6,0);LPT.rear.set(G.rear.position.x,1.3,0);
   fplane.position.x=sx(s);LV.fp.set(sx(s),-1.4,1.6);
