@@ -114,10 +114,11 @@
       <figure><canvas id="photo" width="360" height="240" aria-label="拍到的照片：按下「拍照」按钮后出现"></canvas><figcaption id="exif">按「拍照」后，这里是拍到的照片</figcaption></figure>
     </div>
     <div class="ctl" id="ctl">
+      <label for="lens"><span data-i18n="lensPick">镜头</span><select id="lens"></select></label>
       <label for="zo">变焦（焦距）<output id="zoo"></output><input id="zo" type="range" min="50" max="150" step="1" value="85"></label>
       <label for="fo">对焦距离 <output id="foo"></output><input id="fo" type="range" min="0" max="1" step="0.001" value="0.5"></label>
       <div class="row"><button data-s="1.2">对到前景</button><button data-s="3">对到主体</button><button data-s="8">对到背景灯</button></div>
-      <label for="ap">光圈 <output id="apo"></output><input id="ap" type="range" min="0" max="7" step="1" value="0"></label>
+      <label for="ap">光圈 <output id="apo"></output><input id="ap" type="range" min="3" max="10" step="1" value="3"></label>
       <label for="sh">快门 <output id="sho"></output><input id="sh" type="range" min="0" max="6" step="1" value="3"></label>
       <label for="iso">ISO <output id="isoo"></output><input id="iso" type="range" min="0" max="7" step="1" value="0"></label>
       <div class="row"><button id="shoot">拍照</button></div>

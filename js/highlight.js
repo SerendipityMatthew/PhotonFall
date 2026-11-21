@@ -32,7 +32,7 @@ let _hlEl = null;     // 当前持有 .hl 类的 DOM 元素
    - 返回 true */
 function hl(text, nudge = false) {
   const found = labels.find(l => {
-    if (l.el.textContent !== text) return false;
+    if (l.el.textContent !== text && l.el.dataset.labelKey !== text) return false;
     // 遍历整条 THREE.Object3D 祖先链
     let obj = l.g;
     while (obj) {
