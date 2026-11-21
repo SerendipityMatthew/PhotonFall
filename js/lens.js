@@ -51,6 +51,10 @@ const glassMat=new THREE.MeshPhongMaterial({color:0xa9d4ff,transparent:true,opac
 const GK=['front','vari','comp','focA','focB','rear'], GRAD=[1.85,1.3,1.2,1,1,.95], GW=[.2,.2,.15,.1,.1,.25], GMAX=[.9,.6,.5,.4,.4,.8];
 const G={};GK.forEach(k=>{G[k]=new THREE.Group();lensG.add(G[k]);});
 const sphG=new THREE.SphereGeometry(1,36,20), flatG=new THREE.CylinderGeometry(1,1,1,36);
+/* 每片镜片一圈亮边：薄镜片斜着看会叠成一团，有了边才数得清 */
+const rimG=new THREE.BufferGeometry().setFromPoints(Array.from({length:49},(_,i)=>{const a=i/48*2*Math.PI;return V(0,Math.cos(a),Math.sin(a));}));
+const rimMat=new THREE.LineBasicMaterial({color:0xd6ecff,transparent:true,opacity:.8});
+const lensName=()=>{const [e,g]=LENS.el.split('/'),en=typeof getLang==='function'&&getLang()==='en';return LENS.n+(en?` · ${e} elements in ${g} groups`:` · ${e} 片 ${g} 组`);};
 function glassCounts(n){   // 最大余数法，每组至少 1 片
   const raw=GW.map(w=>w*n), c=raw.map(r=>Math.max(1,Math.floor(r)));
   while(c.reduce((a,b)=>a+b)<n){let b=0;raw.forEach((r,i)=>{if(r-c[i]>raw[b]-c[b])b=i;});c[b]++;}
@@ -67,6 +71,7 @@ function buildGlass(){
       const r=GRAD[gi]*(1-.03*j),flat=LENS.fl&&k==='rear'&&j===m-1,e=new THREE.Mesh(flat?flatG:sphG,glassMat);
       if(flat){e.rotation.z=Math.PI/2;e.scale.set(r*.85,.03,r*.85);}else e.scale.set(th,r,r);
       e.position.x=x-xs[m-1]/2;g.add(e);
+      const rim=new THREE.Line(rimG,rimMat);rim.position.x=e.position.x;rim.scale.set(1,flat?r*.85:r,flat?r*.85:r);g.add(rim);
     });
   });
 }
@@ -186,7 +191,7 @@ function selectLens(i){
   const zo=$('zo'), ap=$('ap'), [f0,f1=f0]=LENS.f;
   zo.min=f0;zo.max=f1;zo.value=Math.min(f1,Math.max(f0,+zo.value));zo.disabled=f0===f1;
   const k=NS.findIndex(n=>n>=LENS.N-.01);ap.min=k;ap.max=NS.length-1;ap.value=Math.max(k,+ap.value);
-  $('lens').value=i;lensLbl.textContent=LENS.n;
+  $('lens').value=i;lensLbl.textContent=lensName();
   buildGlass();rebuild();
   if(typeof renderLensDb==='function')renderLensDb();
 }

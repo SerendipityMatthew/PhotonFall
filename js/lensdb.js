@@ -13,7 +13,7 @@ const elTxt = (l, en) => {
 };
 
 function renderLensDb() {
-  lensLbl.textContent = LENS.n;   // applyLang 会把 3D 标签刷回原文，这里补回当前镜头名
+  lensLbl.textContent = lensName();   // applyLang 会把 3D 标签刷回原文，这里补回当前镜头名和片数
   const el = $('lensdb');
   if (!el) return;
   const en = typeof getLang === 'function' && getLang() === 'en';
