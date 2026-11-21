@@ -3,9 +3,15 @@
    依赖 lens.js 的 st / LENS / rebuild / placeFoc / mfd，optics-extras.js 的 PANIM / cx2，core.js 的 PAL / FONT。 */
 
 const MOTORS = {
-  XD:    {w: 40, z: .75, v: 12,  zh: 'XD 线性马达',      en: 'XD Linear Motor'},
-  DLM:   {w: 24, z: .85, v: 6,   zh: '双线性马达',       en: 'Double Linear Motor'},
-  DDSSM: {w: 20, z: 1,   v: 3, zh: 'DDSSM 直驱超声马达', en: 'DDSSM (piezo drive)'},
+  XD:    {w: 40, z: .75, v: 12,  zh: 'XD 线性马达',      en: 'XD Linear Motor',
+          note: '一组线圈 + 加强磁路：推力大、加速快、几乎没声音。适合要快速追焦的大光圈和长焦，一个对焦组可以配 2～4 个。',
+          noteEn: 'One coil set with a beefed-up magnetic circuit: high thrust, fast acceleration, near-silent. Used where fast tracking matters (fast primes, telephotos), often 2-4 per lens.'},
+  DLM:   {w: 24, z: .85, v: 6,   zh: '双线性马达',       en: 'Double Linear Motor',
+          note: '同一个对焦组两侧各装一个普通线性马达，一起推：推得动更重的镜组，受力均衡不偏。比 XD 早一代，速度中等。',
+          noteEn: 'Two ordinary linear motors, on opposite sides, push the same group together: moves heavier glass with balanced force. One generation older than XD, medium speed.'},
+  DDSSM: {w: 20, z: 1,   v: 3, zh: 'DDSSM 直驱超声马达', en: 'DDSSM (piezo drive)',
+          note: '没有磁铁和线圈：压电陶瓷以超声频率振动驱动杆，夹块靠摩擦一点点被带着走。定位细、静止时自锁不耗电，但速度最慢。',
+          noteEn: 'No magnets or coils: a piezo element vibrates the drive rod at ultrasonic rates and the clamp creeps along by friction. Fine positioning and self-locking at rest, but the slowest.'},
 };
 const ms = {st: 0, type: 'XD', lens: null, v: 0, a: 0, hist: [], t0: 0, done: null, lastT: null, auto: false, autoT: 0, far: false};
 
@@ -13,6 +19,7 @@ function motorActive() { return typeof step === 'number' && (STEPS[step].pn || [
 function syncMotorBtns() {
   document.querySelectorAll('#motbtns [data-mt]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.mt === ms.type)));
   $('motauto').setAttribute('aria-pressed', String(ms.auto));
+  const M = MOTORS[ms.type]; $('motnote').textContent = getLang() === 'en' ? M.noteEn : M.note;
 }
 document.querySelectorAll('#motbtns [data-mt]').forEach(b => b.onclick = () => { ms.type = b.dataset.mt; syncMotorBtns(); });
 $('motauto').onclick = () => { ms.auto = !ms.auto; ms.autoT = -9; syncMotorBtns(); };

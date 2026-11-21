@@ -96,21 +96,29 @@ OBJ.forEach((o,p)=>{for(let i=0;i<NR*PH;i++)photons.setColorAt(p*NR*PH+i,new THR
 
 const st={f:85,s:3,coc:[0,0,0],gain:1};let paths=[];
 /* 3D 对焦马达（示意）：导杆 + 磁铁条（线性马达）或压电块 + 驱动杆（DDSSM），每个对焦组挂一个滑架；双线性马达上下各一套 */
-const motG=[1,-1].map(sg=>{
-  const g=new THREE.Group(),y=1.5*sg,box=(w,h,d,m,x,yy)=>{const b=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),m);b.position.set(x,yy,0);g.add(b);return b;};
-  const rod=new THREE.Mesh(new THREE.CylinderGeometry(.03,.03,2.9,8),std(0xb8c0cc,{metalness:.8,roughness:.3}));rod.rotation.z=Math.PI/2;rod.position.set(-2.85,y,0);g.add(rod);
+/* 3D 对焦马达（示意）。三种长得不一样：
+   XD 线性 = 一套粗磁铁条 + 大线圈；双线性 = 顶上和背面两套小一号的线性马达一起推同一组；
+   DDSSM = 没有磁铁，导杆尾端压电陶瓷 + 黄铜驱动杆，夹块靠摩擦被振动带着走 */
+const motG=[0,1].map(i=>{
+  const sg=1,g=new THREE.Group(),y=1.5;g.rotation.x=-i*Math.PI/2;  // 第二套转到镜筒背面（底下是地面，放不下）
+  const box=(w,h,d,m,x,yy)=>{const b=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),m);b.position.set(x,yy,0);g.add(b);return b;};
+  const rodM=std(0xb8c0cc,{metalness:.8,roughness:.3}),rod=new THREE.Mesh(new THREE.CylinderGeometry(.03,.03,2.9,8),rodM);rod.rotation.z=Math.PI/2;rod.position.set(-2.85,y,0);g.add(rod);
   const mag=new THREE.Group();for(let k=0;k<12;k++)mag.add(box(.24,.1,.3,std(k%2?0xe0565b:0x4d7fe0),-4.17+k*.24,y+.17*sg));g.add(mag);
-  const pz=box(.22,.36,.36,std(0xb59ae0),-4.3,y);
+  const pzM=std(0xb59ae0,{emissive:0x9b6bff,emissiveIntensity:0}),pz=box(.34,.5,.5,pzM,-1.25,y);
   const coilM=std(0xd9773d,{emissive:0xff6a1a,emissiveIntensity:0});
-  const car=[0,1].map(()=>{const c=new THREE.Group();c.add(box(.3,.16,.34,coilM,0,y));c.add(box(.05,.5,.06,std(0x8a8f99),0,y-.27*sg));g.add(c);return c;});
+  const coils=[],car=[0,1].map(()=>{const c=new THREE.Group();coils.push(box(.3,.16,.34,coilM,0,y));c.add(coils[coils.length-1]);c.add(box(.05,.5,.06,std(0x8a8f99),0,y-.27*sg));g.add(c);return c;});
   lensG.add(g);
-  return {g,mag,pz,coilM,car};
+  return {g,sg,mag,pz,pzM,rod,rodM,coilM,coils,car};
 });
 const placeFoc=fo=>{G.focA.position.x=-3.3-.5*fo;G.focB.position.x=-2.2+.35*fo;motG.forEach(m=>{m.car[0].position.x=G.focA.position.x;m.car[1].position.x=G.focB.position.x;});};   // fo: 0 = 对远处，1 = 对最近
-/* type: XD / DLM / DDSSM；I: 0..1 线圈电流（发光）或压电振动 */
-const motor3d=(type,I=0)=>{const pz=type==='DDSSM';motG.forEach((m,i)=>{
-  m.g.visible=!i||type==='DLM';m.mag.visible=!pz;m.pz.visible=pz;m.pz.scale.x=pz&&I>.05?1+.15*Math.sin(performance.now()):1;
-  m.coilM.color.set(pz?0x5d5750:0xd9773d);m.coilM.emissiveIntensity=pz?0:I*1.5;});};
+/* type: XD / DLM / DDSSM；I: 0..1 线圈电流（发光）或压电振动强度 */
+const motor3d=(type,I=0)=>{const pz=type==='DDSSM',xd=type==='XD',buzz=pz&&I>.05?Math.sin(performance.now()*.9):0;motG.forEach((m,i)=>{
+  m.g.visible=!i||type==='DLM';m.mag.visible=!pz;m.pz.visible=pz;
+  m.mag.children.forEach(b=>b.scale.set(1,xd?1.8:1,xd?1.3:1));
+  m.coils.forEach(c=>c.scale.set(pz?.75:xd?1.3:.8,pz?1.3:xd?1.5:.9,pz?.9:xd?1.2:.8));
+  m.coilM.color.set(pz?0x5d5750:0xd9773d);m.coilM.emissiveIntensity=pz?0:I*1.5;
+  m.rodM.color.set(pz?0xc9a227:0xb8c0cc);m.rod.scale.set(pz?1.8:1,1,pz?1.8:1);m.rod.position.x=-2.85+.03*buzz;
+  m.pz.scale.x=1+.12*buzz;m.pzM.emissiveIntensity=pz?Math.min(1,I*3)*.8:0;});};
 label(macro,'对焦马达',V(-2.85,1.95,0));
 const mfd=f=>{const m=LENS.mf;return m.length>1?m[0]+(m[1]-m[0])*lensZ(f):m[0];}, img=(f,d)=>f*d*1000/(d*1000-f);          // 像距 mm（d 用 m）
 function rebuild(){
