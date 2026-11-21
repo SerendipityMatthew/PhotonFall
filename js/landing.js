@@ -36,10 +36,14 @@ function renderLanding() {
     <p class="lp-hint">${T.hint}</p>`;
 }
 
-function leaveLanding(r) {
+function hideLanding() {
   const el = $('landing');
+  if (el.hidden) return;
   el.classList.add('out');
   setTimeout(() => { el.hidden = true; lp.run = false; }, 600);
+}
+function leaveLanding(r) {
+  hideLanding();
   navigate(r);
   if (r.view === 'step' && !onboardSeen()) setTimeout(showOnboard, 650);
 }
@@ -103,7 +107,23 @@ function lpFrame(now) {
   });
   if (!lp.still) requestAnimationFrame(lpFrame);
 }
-if (LANDING) {
-  lpSize(); addEventListener('resize', lpSize);
+function lpStart() {
+  lp.run = true; lp.t = 0; lpSize();
   if (lp.still) { for (let i = 0; i < 90; i++) lpFrame(i * 33); } else requestAnimationFrame(lpFrame);
+}
+/* 顶栏 ⌂ 回首页：地址变成 #/，刷新也还在首页；浏览器后退回到原来那一步 */
+function showLanding() {
+  const el = $('landing');
+  if (location.hash !== '#/') history.pushState(null, '', '#/');
+  el.hidden = false; el.classList.remove('out');
+  if (!lp.run) lpStart();
+  renderLanding();
+  el.querySelector('.lp-go')?.focus({preventScroll: true});
+}
+addEventListener('resize', () => { if (lp.run) lpSize(); });
+addEventListener('popstate', () => { if (location.hash === '#/') showLanding(); else hideLanding(); });
+$('homebtn').onclick = showLanding;
+if (LANDING) {
+  lpStart();
+  addEventListener('load', () => history.replaceState(null, '', '#/'));   // app.js 启动时把地址改成了 #/step/0，改回来
 }
