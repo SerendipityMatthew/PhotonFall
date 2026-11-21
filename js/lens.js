@@ -5,20 +5,22 @@ const U=25, K=3, SUN=V(-20,13,9);
 const sx=d=>-10.5-14.5*Math.log(d/.4)/Math.log(20);                      // 真实距离 d(m) → 画在哪
 const OBJ=[{n:'前景',d:1.2,Y:-.04,c:0xff6fae},{n:'主体',d:3,Y:.12,c:0xffffff},{n:'背景灯',d:8,Y:.4,c:0xffc45c}];
 const NS=[1.2,1.4,1.8,2,2.8,4,5.6,8,11,16,22], TS=[1/4,1/15,1/60,1/250,1/1000,1/4000,1/8000], TN=['1/4','1/15','1/60','1/250','1/1000','1/4000','1/8000'], ISOS=[100,200,400,800,1600,3200,6400,12800];
-/* 可选镜头（Sony FE，参数以官网为准）。f 焦段 mm；N 最大光圈（N2 = 长焦端，可变光圈变焦）；b 叶片；g 克；mf 最近对焦 m（变焦两端） */
+/* 可选镜头（Sony FE）。规格核对自 sony.jp 各型号 spec / feature 页（2026-11）。
+   f 焦段 mm；N 最大光圈（N2 = 长焦端）；b 叶片；g 克（50-150 / 70-200 / 200-600 不含脚架环）；mf 最近对焦 m（变焦两端）；
+   el 片/组（fl:1 = 含 1 片后置滤镜）；sp 特殊镜片（官方没给片数的只写种类）；m × mt 对焦马达：XD 线性 / DDSSM 直驱超声 / DLM 双线性 */
 const LENSES=[
-  {n:'FE 50-150mm F2 GM', f:[50,150], N:2, b:11, g:1340, mf:[.4,.74], zh:'本站默认演示镜头：人像长焦变焦，全程 F2', en:'This site\'s default demo lens: portrait tele zoom, constant F2'},
-  {n:'FE 16-35mm F2.8 GM II', f:[16,35], N:2.8, b:11, g:547, mf:[.22,.22], zh:'超广角：风光、建筑、星空', en:'Ultra-wide: landscape, architecture, astro'},
-  {n:'FE 24mm F1.4 GM', f:[24], N:1.4, b:11, g:445, mf:[.24], zh:'广角定焦：星空、环境人像、街拍', en:'Wide prime: astro, environmental portrait, street'},
-  {n:'FE 24-70mm F2.8 GM II', f:[24,70], N:2.8, b:11, g:695, mf:[.21,.30], zh:'标准变焦：一支走天下', en:'Standard zoom: the do-everything lens'},
-  {n:'FE 50mm F1.2 GM', f:[50], N:1.2, b:11, g:778, mf:[.40], zh:'标准大光圈：人像、暗光，虚化最强的标头', en:'Fast standard: portrait, low light, strongest-bokeh 50'},
-  {n:'FE 85mm F1.8', f:[85], N:1.8, b:9, g:371, mf:[.80], zh:'人像定焦：便宜轻巧的虚化入门', en:'Portrait prime: light, affordable bokeh starter'},
-  {n:'FE 90mm F2.8 Macro G OSS', f:[90], N:2.8, b:9, g:602, mf:[.28], zh:'微距：1:1 放大，花、昆虫、产品', en:'Macro: 1:1 magnification, flowers, insects, products'},
-  {n:'FE 135mm F1.8 GM', f:[135], N:1.8, b:11, g:950, mf:[.70], zh:'中长焦人像：背景压缩 + 奶油虚化', en:'Tele portrait: background compression + creamy bokeh'},
-  {n:'FE 70-200mm F2.8 GM OSS II', f:[70,200], N:2.8, b:11, g:1045, mf:[.40,.82], zh:'长焦变焦：活动、舞台、人像', en:'Tele zoom: events, stage, portrait'},
-  {n:'FE 200-600mm F5.6-6.3 G OSS', f:[200,600], N:5.6, N2:6.3, b:11, g:2115, mf:[2.4,2.4], zh:'超长焦变焦：鸟类、野生动物、体育（性价比）', en:'Super-tele zoom: birds, wildlife, sports (value)'},
-  {n:'FE 400mm F2.8 GM OSS', f:[400], N:2.8, b:11, g:2895, mf:[2.7], zh:'超长焦大光圈：职业体育、暗光运动', en:'Fast super-tele: pro sports, low-light action'},
-  {n:'FE 600mm F4 GM OSS', f:[600], N:4, b:11, g:3040, mf:[4.5], zh:'超长焦大光圈：远距离鸟类、野生动物', en:'Fast super-tele: distant birds, wildlife'},
+  {n:'FE 50-150mm F2 GM', el:'19/17',sp:'2 XA · 2 Super ED · 3 ED',m:4,mt:'XD',f:[50,150], N:2, b:11, g:1340, mf:[.4,.74], zh:'本站默认演示镜头：人像长焦变焦，全程 F2', en:'This site\'s default demo lens: portrait tele zoom, constant F2'},
+  {n:'FE 16-35mm F2.8 GM II', el:'15/12',sp:'5 asph (3 XA) · 1 Super ED · 2 ED',m:4,mt:'XD',f:[16,35], N:2.8, b:11, g:547, mf:[.22,.22], zh:'超广角：风光、建筑、星空', en:'Ultra-wide: landscape, architecture, astro'},
+  {n:'FE 24mm F1.4 GM', el:'13/10',sp:'2 XA · 3 ED',m:1,mt:'DDSSM',f:[24], N:1.4, b:11, g:445, mf:[.24], zh:'广角定焦：星空、环境人像、街拍', en:'Wide prime: astro, environmental portrait, street'},
+  {n:'FE 24-70mm F2.8 GM II', el:'20/15',sp:'5 asph (2 XA) · 2 Super ED · 2 ED',m:4,mt:'XD',f:[24,70], N:2.8, b:11, g:695, mf:[.21,.30], zh:'标准变焦：一支走天下', en:'Standard zoom: the do-everything lens'},
+  {n:'FE 50mm F1.2 GM', el:'14/10',sp:'3 XA',m:4,mt:'XD',f:[50], N:1.2, b:11, g:778, mf:[.40], zh:'标准大光圈：人像、暗光，虚化最强的标头', en:'Fast standard: portrait, low light, strongest-bokeh 50'},
+  {n:'FE 85mm F1.8', el:'9/8',sp:'ED',m:1,mt:'DLM',f:[85], N:1.8, b:9, g:371, mf:[.80], zh:'人像定焦：便宜轻巧的虚化入门', en:'Portrait prime: light, affordable bokeh starter'},
+  {n:'FE 90mm F2.8 Macro G OSS', el:'15/11',sp:'Super ED',m:2,mt:'DDSSM',f:[90], N:2.8, b:9, g:602, mf:[.28], zh:'微距：1:1 放大，花、昆虫、产品', en:'Macro: 1:1 magnification, flowers, insects, products'},
+  {n:'FE 135mm F1.8 GM', el:'13/10',sp:'XA · 1 Super ED · 1 ED',m:4,mt:'XD',f:[135], N:1.8, b:11, g:950, mf:[.70], zh:'中长焦人像：背景压缩 + 奶油虚化', en:'Tele portrait: background compression + creamy bokeh'},
+  {n:'FE 70-200mm F2.8 GM OSS II', el:'17/14',sp:'XA · ED asph · 2 Super ED · 2 ED',m:4,mt:'XD',f:[70,200], N:2.8, b:11, g:1045, mf:[.40,.82], zh:'长焦变焦：活动、舞台、人像', en:'Tele zoom: events, stage, portrait'},
+  {n:'FE 200-600mm F5.6-6.3 G OSS', el:'24/17',sp:'5 ED · 1 asph',m:1,mt:'DDSSM',f:[200,600], N:5.6, N2:6.3, b:11, g:2115, mf:[2.4,2.4], zh:'超长焦变焦：鸟类、野生动物、体育（性价比）', en:'Super-tele zoom: birds, wildlife, sports (value)'},
+  {n:'FE 400mm F2.8 GM OSS', el:'23/17',sp:'3 fluorite',m:2,mt:'XD',fl:1,f:[400], N:2.8, b:11, g:2895, mf:[2.7], zh:'超长焦大光圈：职业体育、暗光运动', en:'Fast super-tele: pro sports, low-light action'},
+  {n:'FE 600mm F4 GM OSS', el:'24/18',sp:'3 fluorite · 1 XA',m:2,mt:'XD',fl:1,f:[600], N:4, b:11, g:3040, mf:[4.5], zh:'超长焦大光圈：远距离鸟类、野生动物', en:'Fast super-tele: distant birds, wildlife'},
 ];
 let LENS=LENSES[0];
 const lensZ=f=>LENS.f.length>1?(f-LENS.f[0])/(LENS.f[1]-LENS.f[0]):0;                  // 焦段内位置 0..1
