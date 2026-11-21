@@ -26,6 +26,7 @@ const I18N = {
     flowPhoto: '照片', flowPhotoSub: '存成文件',
     tourCap: '导览跟着光走到传感器表面为止。之后的事在芯片里，看不见：电路把每格攒下的电读成数字（RAW），ISP 再把这堆数字算成一张彩色照片，存进卡里（第 5 章）。',
     tourReplay: '重播',
+    lensPick: '镜头',
   },
   en: {
     menu: 'Menu', timeline: 'Timeline', labels: 'Labels', help: 'Help',
@@ -52,6 +53,7 @@ const I18N = {
     flowPhoto: 'Photo', flowPhotoSub: 'Save to file',
     tourCap: 'The tour follows light up to the sensor surface. What happens afterward lives inside the chip, invisible: circuits read each cell\\\'s charge into digits (RAW), the ISP turns those digits into a color photo, and writes it to the card (Chapter 5).',
     tourReplay: 'Replay',
+    lensPick: 'Lens',
   },
 };
 

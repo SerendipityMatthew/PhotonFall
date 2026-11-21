@@ -4,7 +4,27 @@
 const U=25, K=3, SUN=V(-20,13,9);
 const sx=d=>-10.5-14.5*Math.log(d/.4)/Math.log(20);                      // 真实距离 d(m) → 画在哪
 const OBJ=[{n:'前景',d:1.2,Y:-.04,c:0xff6fae},{n:'主体',d:3,Y:.12,c:0xffffff},{n:'背景灯',d:8,Y:.4,c:0xffc45c}];
-const NS=[2,2.8,4,5.6,8,11,16,22], TS=[1/4,1/15,1/60,1/250,1/1000,1/4000,1/8000], TN=['1/4','1/15','1/60','1/250','1/1000','1/4000','1/8000'], ISOS=[100,200,400,800,1600,3200,6400,12800];
+const NS=[1.2,1.4,1.8,2,2.8,4,5.6,8,11,16,22], TS=[1/4,1/15,1/60,1/250,1/1000,1/4000,1/8000], TN=['1/4','1/15','1/60','1/250','1/1000','1/4000','1/8000'], ISOS=[100,200,400,800,1600,3200,6400,12800];
+/* 可选镜头（Sony FE，参数以官网为准）。f 焦段 mm；N 最大光圈（N2 = 长焦端，可变光圈变焦）；b 叶片；g 克；mf 最近对焦 m（变焦两端） */
+const LENSES=[
+  {n:'FE 50-150mm F2 GM', f:[50,150], N:2, b:11, g:1340, mf:[.4,.74], zh:'本站默认演示镜头：人像长焦变焦，全程 F2', en:'This site\'s default demo lens: portrait tele zoom, constant F2'},
+  {n:'FE 16-35mm F2.8 GM II', f:[16,35], N:2.8, b:11, g:547, mf:[.22,.22], zh:'超广角：风光、建筑、星空', en:'Ultra-wide: landscape, architecture, astro'},
+  {n:'FE 24mm F1.4 GM', f:[24], N:1.4, b:11, g:445, mf:[.24], zh:'广角定焦：星空、环境人像、街拍', en:'Wide prime: astro, environmental portrait, street'},
+  {n:'FE 24-70mm F2.8 GM II', f:[24,70], N:2.8, b:11, g:695, mf:[.21,.30], zh:'标准变焦：一支走天下', en:'Standard zoom: the do-everything lens'},
+  {n:'FE 50mm F1.2 GM', f:[50], N:1.2, b:11, g:778, mf:[.40], zh:'标准大光圈：人像、暗光，虚化最强的标头', en:'Fast standard: portrait, low light, strongest-bokeh 50'},
+  {n:'FE 85mm F1.8', f:[85], N:1.8, b:9, g:371, mf:[.80], zh:'人像定焦：便宜轻巧的虚化入门', en:'Portrait prime: light, affordable bokeh starter'},
+  {n:'FE 90mm F2.8 Macro G OSS', f:[90], N:2.8, b:9, g:602, mf:[.28], zh:'微距：1:1 放大，花、昆虫、产品', en:'Macro: 1:1 magnification, flowers, insects, products'},
+  {n:'FE 135mm F1.8 GM', f:[135], N:1.8, b:11, g:950, mf:[.70], zh:'中长焦人像：背景压缩 + 奶油虚化', en:'Tele portrait: background compression + creamy bokeh'},
+  {n:'FE 70-200mm F2.8 GM OSS II', f:[70,200], N:2.8, b:11, g:1045, mf:[.40,.82], zh:'长焦变焦：活动、舞台、人像', en:'Tele zoom: events, stage, portrait'},
+  {n:'FE 200-600mm F5.6-6.3 G OSS', f:[200,600], N:5.6, N2:6.3, b:11, g:2115, mf:[2.4,2.4], zh:'超长焦变焦：鸟类、野生动物、体育（性价比）', en:'Super-tele zoom: birds, wildlife, sports (value)'},
+  {n:'FE 400mm F2.8 GM OSS', f:[400], N:2.8, b:11, g:2895, mf:[2.7], zh:'超长焦大光圈：职业体育、暗光运动', en:'Fast super-tele: pro sports, low-light action'},
+  {n:'FE 600mm F4 GM OSS', f:[600], N:4, b:11, g:3040, mf:[4.5], zh:'超长焦大光圈：远距离鸟类、野生动物', en:'Fast super-tele: distant birds, wildlife'},
+];
+let LENS=LENSES[0];
+const lensZ=f=>LENS.f.length>1?(f-LENS.f[0])/(LENS.f[1]-LENS.f[0]):0;                  // 焦段内位置 0..1
+const lensMinN=f=>LENS.N2?LENS.N+(LENS.N2-LENS.N)*lensZ(f):LENS.N;                     // 当前焦距下的最大光圈
+/* 画面比例：像方 1 单位 = U mm 只适合 50-150 mm；超长焦压缩、超广角放大，让光圈始终落在镜筒里 */
+const lensU=()=>U*Math.max(LENS.f[LENS.f.length-1]/150,Math.min(1,LENS.f[0]/50));
 const LIGHTS=[-1.2,-.8,-.4,0,.4,.8,1.2].map((X,i)=>({X,c:['#ffd27a','#ff9d6b','#ffe9b0','#ff7f9a','#ffd27a','#9ad0ff','#ffb35c'][i]}));
 const ballX=t=>.25*Math.sin(t*4.2), ballV=t=>.25*4.2*Math.cos(t*4.2);       // 小球：m，m/s
 const std=(color,o={})=>new THREE.MeshStandardMaterial({color,roughness:.8,...o});
@@ -59,7 +79,7 @@ const shutter=add(macro,new THREE.BoxGeometry(.03,1.15,1.65),std(0x2c3545,{metal
 const fplane=new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.PlaneGeometry(3.2,2.4)),new THREE.LineBasicMaterial({color:0x4fd8e8}));fplane.rotation.y=Math.PI/2;macro.add(fplane);
 const frustum=new THREE.LineSegments(new THREE.BufferGeometry(),new THREE.LineBasicMaterial({color:0xffe27a,transparent:true,opacity:.5}));frustum.geometry.setAttribute('position',new THREE.BufferAttribute(new Float32Array(48),3));macro.add(frustum);
 label(macro,'太阳',SUN.clone().add(V(0,1.1,0)));OBJ.forEach(o=>label(macro,`${o.n}（${o.d} m）`,V(sx(o.d),o.d===8?1.9:1.1,o.d===1.2?-.3:0)));
-label(macro,'FE 50-150mm F2 GM',V(-4.7,2.45,0));label(macro,'全画幅 CMOS',V(0,-.85,0));label(macro,'快门',V(-.16,2.1,0));
+label(macro,'FE 50-150mm F2 GM',V(-4.7,2.45,0));const lensLbl=labels[labels.length-1].el;label(macro,'全画幅 CMOS',V(0,-.85,0));label(macro,'快门',V(-.16,2.1,0));
 const LV={vari:label(macro,'变焦组',V()),foc:label(macro,'对焦组',V()),pl:label(macro,'等效主平面 + 光圈',V()),fp:label(macro,'对焦平面',V())};
 /* 第 7 步「镜头里的每片镜片」才显示的镜组标注（示意分工，不是真实光学设计）；可见性由 STEPS 的 lg:'parts' 控制 */
 const partsL=new THREE.Group();partsL.visible=false;macro.add(partsL);
@@ -73,25 +93,25 @@ const photons=new THREE.InstancedMesh(new THREE.SphereGeometry(.05,8,6),basic(0x
 OBJ.forEach((o,p)=>{for(let i=0;i<NR*PH;i++)photons.setColorAt(p*NR*PH+i,new THREE.Color(o.c))});
 
 const st={f:85,s:3,coc:[0,0,0],gain:1};let paths=[];
-const mfd=f=>.4+(f-50)/100*.34, img=(f,d)=>f*d*1000/(d*1000-f);          // 像距 mm（d 用 m）
+const mfd=f=>{const m=LENS.mf;return m.length>1?m[0]+(m[1]-m[0])*lensZ(f):m[0];}, img=(f,d)=>f*d*1000/(d*1000-f);          // 像距 mm（d 用 m）
 function rebuild(){
   const f=st.f=+$('zo').value, m=mfd(f);st.s=Math.max(st.s,m);$('fo').value=Math.log(st.s/m)/Math.log(30/m);
-  const s=st.s, N=st.N=NS[+$('ap').value], t=st.t=TS[+$('sh').value], iso=st.iso=ISOS[+$('iso').value];
-  const vs=st.vs=img(f,s), xL=-vs/U, R=f/(2*N)/U, z=(f-50)/100, fo=(1/s-1/30)/(1/m-1/30);
+  const s=st.s, N=st.N=Math.round(Math.max(NS[+$('ap').value],lensMinN(f))*10)/10, t=st.t=TS[+$('sh').value], iso=st.iso=ISOS[+$('iso').value];
+  const Ul=lensU(), B=LENS.b, vs=st.vs=img(f,s), xL=-vs/Ul, R=Math.min(1.85,f/(2*N)/Ul), z=lensZ(f), fo=(1/s-1/30)/(1/m-1/30);
   G.vari.position.x=-7.3+2.3*z;G.comp.position.x=-4.7+.5*Math.sin(Math.PI*z);G.focA.position.x=-3.3-.5*fo;G.focB.position.x=-2.2+.35*fo;
   /* 每个 theta 段就是一片叶片：内缘是 11 边形（收光圈时光斑就是这个形状），三色交替让叶片分得开 */
-  iris.geometry.dispose();iris.geometry=new THREE.RingGeometry(R,1.95,BLADES,1);
-  iris.geometry.clearGroups();for(let i=0;i<BLADES;i++)iris.geometry.addGroup(6*i,6,i%3);
+  iris.geometry.dispose();iris.geometry=new THREE.RingGeometry(R,1.95,B,1);
+  iris.geometry.clearGroups();for(let i=0;i<B;i++)iris.geometry.addGroup(6*i,6,B%3===1&&i===B-1?1:i%3);
   iris.position.x=plane.position.x=xL;
   {const sp=irisSeams.geometry.attributes.position.array;
-   for(let i=0;i<BLADES;i++){const a=2*Math.PI*i/BLADES,c=Math.cos(a),s=Math.sin(a);
+   for(let i=0;i<B;i++){const a=2*Math.PI*i/B,c=Math.cos(a),s=Math.sin(a);
      sp[i*6]=c*R;sp[i*6+1]=s*R;sp[i*6+2]=0;sp[i*6+3]=c*1.95;sp[i*6+4]=s*1.95;sp[i*6+5]=0;}
-   irisSeams.geometry.attributes.position.needsUpdate=true;irisSeams.position.x=xL;}
+   irisSeams.geometry.setDrawRange(0,B*2);irisSeams.geometry.attributes.position.needsUpdate=true;irisSeams.position.x=xL;}
   LV.vari.set(G.vari.position.x,-1.6,0);LV.foc.set(-2.75,-1.3,0);LV.pl.set(xL,2.2,.9);
   LPT.front.set(G.front.position.x,-2.25,0);LPT.comp.set(G.comp.position.x,-2.6,0);LPT.rear.set(G.rear.position.x,1.3,0);
   fplane.position.x=sx(s);LV.fp.set(sx(s),-1.4,1.6);
   paths=[];const pos=rayGeo.attributes.position.array;let o=0;
-  OBJ.forEach((ob,k)=>{const vd=img(f,ob.d), P=V(sx(ob.d),ob.Y*K,0), I=V(xL+vd/U,-ob.Y*vd/ob.d/U,0);st.coc[k]=f/N*Math.abs(vs-vd)/vd;
+  OBJ.forEach((ob,k)=>{const vd=img(f,ob.d), P=V(sx(ob.d),ob.Y*K,0), I=V(xL+vd/Ul,-ob.Y*vd/ob.d/Ul,0);st.coc[k]=f/N*Math.abs(vs-vd)/vd;
     for(let j=0;j<NR;j++){const a=j*Math.PI/3, r=j?R*.94:0, Q=V(xL,r*Math.sin(a),r*Math.cos(a)), S=Q.clone().add(I.clone().sub(Q).multiplyScalar(vs/vd));
       [[SUN,P],[P,Q],[Q,S]].forEach(([A,B])=>{A.toArray(pos,o);B.toArray(pos,o+3);o+=6});
       const pts=[SUN,P,Q,S], len=[0];for(let i=1;i<4;i++)len[i]=len[i-1]+pts[i].distanceTo(pts[i-1]);paths.push({pts,len});}});
@@ -110,6 +130,18 @@ function rebuild(){
   drawAiry();
 }
 ['zo','ap','sh','iso'].forEach(id=>$(id).oninput=rebuild);
+/* 换镜头：焦段、最大光圈、最近对焦、叶片数都换成这支镜头的 */
+function selectLens(i){
+  LENS=LENSES[i];
+  const zo=$('zo'), ap=$('ap'), [f0,f1=f0]=LENS.f;
+  zo.min=f0;zo.max=f1;zo.value=Math.min(f1,Math.max(f0,+zo.value));zo.disabled=f0===f1;
+  const k=NS.findIndex(n=>n>=LENS.N-.01);ap.min=k;ap.max=NS.length-1;ap.value=Math.max(k,+ap.value);
+  $('lens').value=i;lensLbl.textContent=LENS.n;
+  rebuild();
+  if(typeof renderLensDb==='function')renderLensDb();
+}
+$('lens').innerHTML=LENSES.map((l,i)=>`<option value="${i}">${l.n}</option>`).join('');
+$('lens').onchange=e=>selectLens(+e.target.value);
 $('fo').oninput=()=>{const m=mfd(st.f);st.s=m*(30/m)**+$('fo').value;rebuild();};
 document.querySelectorAll('[data-s]').forEach(b=>b.onclick=()=>{st.s=+b.dataset.s;rebuild();});
 
@@ -121,9 +153,9 @@ function drawVF(t){const f=st.f, cx=W/2, cy=HH/2, ppm=d=>img(f,d)/d*PX, bl=k=>ca
   sg.globalCompositeOperation='source-over';sg.filter='none';sg.fillStyle='#000';sg.fillRect(0,0,W,HH);
   let p=ppm(8);sg.filter=bl(2);sg.drawImage(srcCv,cx-3.2*p,cy-2.135*p,6.4*p,4.27*p);sg.filter='none';
   sg.globalCompositeOperation='lighter';const r=Math.max(1.6,st.coc[2]*PX/2);sg.globalAlpha=Math.min(1,Math.max(.22,14/(r*r)));
-  LIGHTS.forEach(l=>{const lx=cx+l.X*p,ly=cy-.4*p,dx=lx-cx,dy=ly-cy,dl=Math.hypot(dx,dy)||1,cut=Math.max(0,1-(st.N-2)/3.6)*Math.min(1,dl/Math.hypot(cx,cy))*1.3;sg.save();
+  LIGHTS.forEach(l=>{const lx=cx+l.X*p,ly=cy-.4*p,dx=lx-cx,dy=ly-cy,dl=Math.hypot(dx,dy)||1,cut=Math.min(1,Math.max(0,1-(st.N-2)/3.6))*Math.min(1,dl/Math.hypot(cx,cy))*1.3;sg.save();
     if(cut>.02){sg.beginPath();sg.arc(lx-dx/dl*r*cut,ly-dy/dl*r*cut,r*1.02,0,7);sg.clip();}   // 猫眼：镜筒挡掉边缘光斑的外侧
-    sg.fillStyle=l.c;sg.beginPath();for(let i=0;i<11;i++){const a=i/11*6.2832+.3;sg.lineTo(lx+r*Math.cos(a),ly+r*Math.sin(a));}sg.fill();
+    sg.fillStyle=l.c;sg.beginPath();for(let i=0;i<LENS.b;i++){const a=i/LENS.b*6.2832+.3;sg.lineTo(lx+r*Math.cos(a),ly+r*Math.sin(a));}sg.fill();
     if(st.ab&&r>5){sg.strokeStyle='rgba(255,255,255,.35)';sg.lineWidth=1;[.35,.6,.82].forEach(k=>{sg.beginPath();sg.arc(lx,ly,r*k,0,7);sg.stroke();});}sg.restore();});
   sg.globalAlpha=1;sg.globalCompositeOperation='source-over';
   p=ppm(3);sg.filter=bl(1);sg.fillStyle='#39455a';sg.fillRect(cx-.15*p,cy+.2*p,.3*p,.05*p);sg.fillStyle='#e8823a';sg.fillRect(cx-.1*p,cy-.05*p,.2*p,.25*p);
