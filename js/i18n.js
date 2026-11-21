@@ -27,6 +27,9 @@ const I18N = {
     tourCap: '导览跟着光走到传感器表面为止。之后的事在芯片里，看不见：电路把每格攒下的电读成数字（RAW），ISP 再把这堆数字算成一张彩色照片，存进卡里（第 5 章）。',
     tourReplay: '重播',
     lensPick: '镜头',
+    motorHint: '点上面「对到前景 / 主体 / 背景灯」或拖「对焦距离」，看马达怎么把对焦组推过去；默认是当前镜头用的马达。',
+    motXD: 'XD 线性', motDLM: '双线性', motDDSSM: 'DDSSM 超声', motAuto: '自动来回',
+    motAria: '对焦马达模拟：马达结构剖面和对焦组位置随时间变化',
   },
   en: {
     menu: 'Menu', timeline: 'Timeline', labels: 'Labels', help: 'Help',
@@ -54,6 +57,9 @@ const I18N = {
     tourCap: 'The tour follows light up to the sensor surface. What happens afterward lives inside the chip, invisible: circuits read each cell\\\'s charge into digits (RAW), the ISP turns those digits into a color photo, and writes it to the card (Chapter 5).',
     tourReplay: 'Replay',
     lensPick: 'Lens',
+    motorHint: 'Click "Focus on foreground / subject / background lights" above, or drag the focus slider, to watch the motor push the focus group. Defaults to the current lens\'s motor.',
+    motXD: 'XD linear', motDLM: 'Double linear', motDDSSM: 'DDSSM piezo', motAuto: 'Auto back-and-forth',
+    motAria: 'Focus motor simulator: motor cross-section and focus-group position over time',
   },
 };
 
