@@ -89,6 +89,7 @@ function applyLang() {
     if (typeof syncPager === 'function') syncPager(step);
     if (typeof syncSideTree === 'function') syncSideTree(step);
   }
+  if (typeof renderLensDb === 'function') renderLensDb();
   /* 当前若在 quiz 视图，重渲染 */
   const qv = document.getElementById('quizview');
   if (qv && !qv.hidden) {
