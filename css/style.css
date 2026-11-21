@@ -258,6 +258,10 @@ button[aria-pressed=true],[data-q][aria-pressed=true]{background:var(--accent-so
 
 /* 学习路径：点开展开整条步序 */
 .paths-wrap{display:flex;flex-direction:column;gap:6px;margin-top:6px}
+#lensdb{margin-top:8px}#lensdb summary{list-style:none;display:block}#lensdb summary::-webkit-details-marker{display:none}
+.ldb{display:flex;flex-direction:column;gap:6px;margin-top:6px}
+.ldb-c{display:flex;flex-direction:column;gap:2px;padding:7px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);font:400 12px/1.4 var(--sans);color:var(--ink-dim)}
+.ldb-c b{font:600 13px/1.3 var(--sans);color:var(--ink)}.ldb-c small{color:var(--ink);font-size:12px}
 .path{display:flex;flex-direction:column;gap:4px}
 .path-head{padding:8px 10px;border-radius:8px;border:1px solid var(--line-2);background:var(--card);color:var(--ink);font:500 13px/1.3 var(--sans);cursor:pointer;text-align:left}
 .path-head:hover{border-color:var(--accent);background:#fff}

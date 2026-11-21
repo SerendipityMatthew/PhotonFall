@@ -69,4 +69,4 @@ function locShort(i, steps, chapters) {
  * 进卡片的控件容器 id 列表（后四个是 Task 2 拆出来的新容器）。
  * @type {string[]}
  */
-const CARD_CTL = ['ctl','chipctl','tourpn','coatpn','shutpn','storpn','mlsctl','quadctl','abwrap','pdafctl','snrctl','ibctl','reflctl','codecctl','loficctl','archmatrix','crawrap','ispctl','paths'];
+const CARD_CTL = ['ctl','chipctl','tourpn','coatpn','shutpn','storpn','mlsctl','quadctl','abwrap','pdafctl','snrctl','ibctl','reflctl','codecctl','loficctl','archmatrix','crawrap','ispctl','paths','lensdb'];
