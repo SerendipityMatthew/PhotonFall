@@ -3,6 +3,14 @@
    点卡片 = 换成这支镜头，并跳到第 5 步（光圈与虚化）看取景器效果。 */
 
 const fov = f => Math.round(2 * Math.atan(43.27 / (2 * f)) * 180 / Math.PI);
+const MOTOR = {XD: ['XD 线性马达', 'XD Linear Motor'], DDSSM: ['DDSSM 直驱超声马达', 'DDSSM (direct-drive SSM)'], DLM: ['双线性马达', 'Double Linear Motor']};
+const motorTxt = (l, en) => `${l.m > 1 ? l.m + ' × ' : ''}${MOTOR[l.mt][en ? 1 : 0]}`;
+const glassTxt = (l, en) => en ? l.sp.replace(/asph/g, 'aspherical') : l.sp.replace(/asph/g, '非球面').replace('fluorite', '萤石');
+const elTxt = (l, en) => {
+  const [e, g] = l.el.split('/');
+  const base = en ? `${e} elements in ${g} groups` : `${e} 片 ${g} 组`;
+  return l.fl ? base + (en ? ' (incl. 1 filter)' : '（含 1 片滤镜）') : base;
+};
 
 function renderLensDb() {
   lensLbl.textContent = LENS.n;   // applyLang 会把 3D 标签刷回原文，这里补回当前镜头名
@@ -21,9 +29,11 @@ function renderLensDb() {
       return `<button type="button" class="ldb-c" data-i="${i}" aria-pressed="${l === LENS}"><b>${l.n}</b>
         <span>${fl} · ${ap} · ${en ? 'FoV' : '视角'} ${v}</span>
         <span>D ${D} mm · ${l.b} ${en ? 'blades' : '片叶片'} · ${l.g} g</span>
+        <span>${elTxt(l, en)} · ${glassTxt(l, en)}</span>
+        <span>${en ? 'AF: ' : '对焦：'}${motorTxt(l, en)}</span>
         <small>${en ? l.en : l.zh}</small></button>`;
     }).join('')}</div>
-    <p class="cap">${en ? 'Specs per Sony official pages; check there for current values.' : '参数以 Sony 官网为准。'}</p></details>`;
+    <p class="cap">${en ? 'Specs checked against each model\'s spec / feature pages on sony.jp (2026-11). Where Sony gives a glass type but no count, only the type is listed.' : '规格核对自 sony.jp 各型号规格页与特长页（2026-11）。官方只写了种类没写片数的特殊镜片，这里只写种类。'}</p></details>`;
   el.querySelectorAll('.ldb-c').forEach(b => b.onclick = () => {
     selectLens(+b.dataset.i);
     if (typeof navigate === 'function') navigate({view: 'step', n: 5});
