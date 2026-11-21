@@ -34,6 +34,7 @@ PANIM.motorwrap = (t, dt) => {
     x += v * h;
   }
   st.foA = x; ms.v = v; ms.a = a; placeFoc(x);
+  motor3d(ms.type, ms.type === 'DDSSM' ? Math.abs(v) : Math.min(1, Math.abs(a) / (M.w * M.w * .25)));
   if (ms.done === null && Math.abs(st.foT - x) < .005 && Math.abs(v) < .05) ms.done = ms.st - ms.t0;
   ms.hist.push([ms.st, st.foT, x]);
   while (ms.hist.length && ms.hist[0][0] < ms.st - 1.6) ms.hist.shift();

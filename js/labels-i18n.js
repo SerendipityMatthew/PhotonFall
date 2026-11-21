@@ -53,6 +53,7 @@ const LABEL_EN = {
   '太阳': 'Sun',
   '对焦平面': 'Focal plane',
   '对焦组': 'Focus group',
+  '对焦马达': 'Focus motor',
   '对齐 + 叠加 + 色调映射': 'Align + stack + tone map',
   '对齐 → 线性叠加 → 色调映射': 'Align → linear stack → tone map',
   '左 PD': 'Left PD',
