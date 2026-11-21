@@ -74,4 +74,4 @@ $('onboard-btn').addEventListener('click', () => {
 $('helpbtn').addEventListener('click', () => showOnboard($('helpbtn')));
 
 /* 首次进入自动显示 */
-if (!onboardSeen()) showOnboard();
+if (!onboardSeen() && !LANDING) showOnboard();   // 有首页时等点「开始」再弹
