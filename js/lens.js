@@ -95,12 +95,13 @@ const photons=new THREE.InstancedMesh(new THREE.SphereGeometry(.05,8,6),basic(0x
 OBJ.forEach((o,p)=>{for(let i=0;i<NR*PH;i++)photons.setColorAt(p*NR*PH+i,new THREE.Color(o.c))});
 
 const st={f:85,s:3,coc:[0,0,0],gain:1};let paths=[];
+const placeFoc=fo=>{G.focA.position.x=-3.3-.5*fo;G.focB.position.x=-2.2+.35*fo;};   // fo: 0 = 对远处，1 = 对最近
 const mfd=f=>{const m=LENS.mf;return m.length>1?m[0]+(m[1]-m[0])*lensZ(f):m[0];}, img=(f,d)=>f*d*1000/(d*1000-f);          // 像距 mm（d 用 m）
 function rebuild(){
   const f=st.f=+$('zo').value, m=mfd(f);st.s=Math.max(st.s,m);$('fo').value=Math.log(st.s/m)/Math.log(30/m);
   const s=st.s, N=st.N=Math.round(Math.max(NS[+$('ap').value],lensMinN(f))*10)/10, t=st.t=TS[+$('sh').value], iso=st.iso=ISOS[+$('iso').value];
   const Ul=lensU(), B=LENS.b, vs=st.vs=img(f,s), xL=-vs/Ul, R=Math.min(1.85,f/(2*N)/Ul), z=lensZ(f), fo=(1/s-1/30)/(1/m-1/30);
-  G.vari.position.x=-7.3+2.3*z;G.comp.position.x=-4.7+.5*Math.sin(Math.PI*z);G.focA.position.x=-3.3-.5*fo;G.focB.position.x=-2.2+.35*fo;
+  G.vari.position.x=-7.3+2.3*z;G.comp.position.x=-4.7+.5*Math.sin(Math.PI*z);st.foT=fo;if(!(typeof motorActive==='function'&&motorActive()))st.foA=fo;placeFoc(st.foA);
   /* 每个 theta 段就是一片叶片：内缘是 11 边形（收光圈时光斑就是这个形状），三色交替让叶片分得开 */
   iris.geometry.dispose();iris.geometry=new THREE.RingGeometry(R,1.95,B,1);
   iris.geometry.clearGroups();for(let i=0;i<B;i++)iris.geometry.addGroup(6*i,6,B%3===1&&i===B-1?1:i%3);
