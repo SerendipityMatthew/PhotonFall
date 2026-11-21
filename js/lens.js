@@ -46,8 +46,31 @@ add(macro,new THREE.CylinderGeometry(.03,.03,.5,8),std(0x2f6b3d),sx(1.2),-.5,-.3
 
 const lensG=new THREE.Group();macro.add(lensG);
 const glassMat=new THREE.MeshPhongMaterial({color:0xa9d4ff,transparent:true,opacity:.26,shininess:120,specular:0xffffff,depthWrite:false});
-const elem=(r,th)=>{const m=new THREE.Mesh(new THREE.SphereGeometry(r,36,20),glassMat);m.scale.x=th/r;lensG.add(m);return m;};
-const G={front:elem(1.85,.34),vari:elem(1.3,.16),comp:elem(1.2,.22),focA:elem(1.0,.14),focB:elem(1.0,.18),rear:elem(.95,.24)};
+/* 镜片按当前镜头的「片数 / 组数」画：片数按比例分到 6 个镜组里（示意分工），片数 − 组数 = 胶合面数，胶合的两片贴在一起；
+   带滤镜的超长焦（fl）把最后一片画成平板。G.xxx 是 Group，变焦 / 对焦只动 Group 的 x。 */
+const GK=['front','vari','comp','focA','focB','rear'], GRAD=[1.85,1.3,1.2,1,1,.95], GW=[.2,.2,.15,.1,.1,.25], GMAX=[.9,.6,.5,.4,.4,.8];
+const G={};GK.forEach(k=>{G[k]=new THREE.Group();lensG.add(G[k]);});
+const sphG=new THREE.SphereGeometry(1,36,20), flatG=new THREE.CylinderGeometry(1,1,1,36);
+function glassCounts(n){   // 最大余数法，每组至少 1 片
+  const raw=GW.map(w=>w*n), c=raw.map(r=>Math.max(1,Math.floor(r)));
+  while(c.reduce((a,b)=>a+b)<n){let b=0;raw.forEach((r,i)=>{if(r-c[i]>raw[b]-c[b])b=i;});c[b]++;}
+  while(c.reduce((a,b)=>a+b)>n)c[c.indexOf(Math.max(...c))]--;
+  return c;
+}
+function buildGlass(){
+  const [n,ng]=LENS.el.split('/').map(Number), cnt=glassCounts(n);let joints=n-ng;
+  const cem=cnt.map(()=>[]);[5,0,2,1,3,4].forEach(gi=>{for(let j=1;j<cnt[gi]&&joints>0;j++,joints--)cem[gi][j]=1;});
+  GK.forEach((k,gi)=>{
+    const g=G[k],m=cnt[gi],sp=Math.min(.2,GMAX[gi]/Math.max(1,m-1)),th=Math.min(.07,sp*.42);g.clear();
+    const xs=[0];for(let j=1;j<m;j++)xs.push(xs[j-1]+(cem[gi][j]?2*th:sp));
+    xs.forEach((x,j)=>{
+      const r=GRAD[gi]*(1-.03*j),flat=LENS.fl&&k==='rear'&&j===m-1,e=new THREE.Mesh(flat?flatG:sphG,glassMat);
+      if(flat){e.rotation.z=Math.PI/2;e.scale.set(r*.85,.03,r*.85);}else e.scale.set(th,r,r);
+      e.position.x=x-xs[m-1]/2;g.add(e);
+    });
+  });
+}
+buildGlass();
 G.front.position.x=-8.3;G.rear.position.x=-1.15;
 const barrel=new THREE.Mesh(new THREE.CylinderGeometry(2.06,2.06,8,48,1,true,0,Math.PI),std(0xe9e6df,{transparent:true,opacity:.3,side:THREE.DoubleSide,depthWrite:false}));barrel.rotation.z=Math.PI/2;barrel.rotation.x=Math.PI/2;barrel.position.x=-4.72;lensG.add(barrel);
 const irisMat=std(0x10151d,{side:THREE.DoubleSide,metalness:.6,roughness:.5});
@@ -125,7 +148,7 @@ function rebuild(){
   const f=st.f=+$('zo').value, m=mfd(f);st.s=Math.max(st.s,m);$('fo').value=Math.log(st.s/m)/Math.log(30/m);
   const s=st.s, N=st.N=Math.round(Math.max(NS[+$('ap').value],lensMinN(f))*10)/10, t=st.t=TS[+$('sh').value], iso=st.iso=ISOS[+$('iso').value];
   const Ul=lensU(), B=LENS.b, vs=st.vs=img(f,s), xL=-vs/Ul, R=Math.min(1.85,f/(2*N)/Ul), z=lensZ(f), fo=(1/s-1/30)/(1/m-1/30);
-  G.vari.position.x=-7.3+2.3*z;G.comp.position.x=-4.7+.5*Math.sin(Math.PI*z);st.foT=fo;if(!(typeof motorActive==='function'&&motorActive())){st.foA=fo;motor3d(LENS.mt);}placeFoc(st.foA);
+  G.vari.position.x=-7.3+1.85*z;G.comp.position.x=-4.7+.4*Math.sin(Math.PI*z);st.foT=fo;if(!(typeof motorActive==='function'&&motorActive())){st.foA=fo;motor3d(LENS.mt);}placeFoc(st.foA);
   /* 每个 theta 段就是一片叶片：内缘是 11 边形（收光圈时光斑就是这个形状），三色交替让叶片分得开 */
   iris.geometry.dispose();iris.geometry=new THREE.RingGeometry(R,1.95,B,1);
   iris.geometry.clearGroups();for(let i=0;i<B;i++)iris.geometry.addGroup(6*i,6,B%3===1&&i===B-1?1:i%3);
@@ -164,7 +187,7 @@ function selectLens(i){
   zo.min=f0;zo.max=f1;zo.value=Math.min(f1,Math.max(f0,+zo.value));zo.disabled=f0===f1;
   const k=NS.findIndex(n=>n>=LENS.N-.01);ap.min=k;ap.max=NS.length-1;ap.value=Math.max(k,+ap.value);
   $('lens').value=i;lensLbl.textContent=LENS.n;
-  rebuild();
+  buildGlass();rebuild();
   if(typeof renderLensDb==='function')renderLensDb();
 }
 $('lens').innerHTML=LENSES.map((l,i)=>`<option value="${i}">${l.n}</option>`).join('');
