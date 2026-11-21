@@ -95,13 +95,29 @@ const photons=new THREE.InstancedMesh(new THREE.SphereGeometry(.05,8,6),basic(0x
 OBJ.forEach((o,p)=>{for(let i=0;i<NR*PH;i++)photons.setColorAt(p*NR*PH+i,new THREE.Color(o.c))});
 
 const st={f:85,s:3,coc:[0,0,0],gain:1};let paths=[];
-const placeFoc=fo=>{G.focA.position.x=-3.3-.5*fo;G.focB.position.x=-2.2+.35*fo;};   // fo: 0 = 对远处，1 = 对最近
+/* 3D 对焦马达（示意）：导杆 + 磁铁条（线性马达）或压电块 + 驱动杆（DDSSM），每个对焦组挂一个滑架；双线性马达上下各一套 */
+const motG=[1,-1].map(sg=>{
+  const g=new THREE.Group(),y=1.5*sg,box=(w,h,d,m,x,yy)=>{const b=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),m);b.position.set(x,yy,0);g.add(b);return b;};
+  const rod=new THREE.Mesh(new THREE.CylinderGeometry(.03,.03,2.9,8),std(0xb8c0cc,{metalness:.8,roughness:.3}));rod.rotation.z=Math.PI/2;rod.position.set(-2.85,y,0);g.add(rod);
+  const mag=new THREE.Group();for(let k=0;k<12;k++)mag.add(box(.24,.1,.3,std(k%2?0xe0565b:0x4d7fe0),-4.17+k*.24,y+.17*sg));g.add(mag);
+  const pz=box(.22,.36,.36,std(0xb59ae0),-4.3,y);
+  const coilM=std(0xd9773d,{emissive:0xff6a1a,emissiveIntensity:0});
+  const car=[0,1].map(()=>{const c=new THREE.Group();c.add(box(.3,.16,.34,coilM,0,y));c.add(box(.05,.5,.06,std(0x8a8f99),0,y-.27*sg));g.add(c);return c;});
+  lensG.add(g);
+  return {g,mag,pz,coilM,car};
+});
+const placeFoc=fo=>{G.focA.position.x=-3.3-.5*fo;G.focB.position.x=-2.2+.35*fo;motG.forEach(m=>{m.car[0].position.x=G.focA.position.x;m.car[1].position.x=G.focB.position.x;});};   // fo: 0 = 对远处，1 = 对最近
+/* type: XD / DLM / DDSSM；I: 0..1 线圈电流（发光）或压电振动 */
+const motor3d=(type,I=0)=>{const pz=type==='DDSSM';motG.forEach((m,i)=>{
+  m.g.visible=!i||type==='DLM';m.mag.visible=!pz;m.pz.visible=pz;m.pz.scale.x=pz&&I>.05?1+.15*Math.sin(performance.now()):1;
+  m.coilM.color.set(pz?0x5d5750:0xd9773d);m.coilM.emissiveIntensity=pz?0:I*1.5;});};
+label(macro,'对焦马达',V(-2.85,1.95,0));
 const mfd=f=>{const m=LENS.mf;return m.length>1?m[0]+(m[1]-m[0])*lensZ(f):m[0];}, img=(f,d)=>f*d*1000/(d*1000-f);          // 像距 mm（d 用 m）
 function rebuild(){
   const f=st.f=+$('zo').value, m=mfd(f);st.s=Math.max(st.s,m);$('fo').value=Math.log(st.s/m)/Math.log(30/m);
   const s=st.s, N=st.N=Math.round(Math.max(NS[+$('ap').value],lensMinN(f))*10)/10, t=st.t=TS[+$('sh').value], iso=st.iso=ISOS[+$('iso').value];
   const Ul=lensU(), B=LENS.b, vs=st.vs=img(f,s), xL=-vs/Ul, R=Math.min(1.85,f/(2*N)/Ul), z=lensZ(f), fo=(1/s-1/30)/(1/m-1/30);
-  G.vari.position.x=-7.3+2.3*z;G.comp.position.x=-4.7+.5*Math.sin(Math.PI*z);st.foT=fo;if(!(typeof motorActive==='function'&&motorActive()))st.foA=fo;placeFoc(st.foA);
+  G.vari.position.x=-7.3+2.3*z;G.comp.position.x=-4.7+.5*Math.sin(Math.PI*z);st.foT=fo;if(!(typeof motorActive==='function'&&motorActive())){st.foA=fo;motor3d(LENS.mt);}placeFoc(st.foA);
   /* 每个 theta 段就是一片叶片：内缘是 11 边形（收光圈时光斑就是这个形状），三色交替让叶片分得开 */
   iris.geometry.dispose();iris.geometry=new THREE.RingGeometry(R,1.95,B,1);
   iris.geometry.clearGroups();for(let i=0;i<B;i++)iris.geometry.addGroup(6*i,6,B%3===1&&i===B-1?1:i%3);
