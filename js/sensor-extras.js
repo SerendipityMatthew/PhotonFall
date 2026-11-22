@@ -15,7 +15,7 @@
 const mls=new THREE.Group();mls.visible=false;scene.add(mls);
 {const l=new THREE.DirectionalLight(0xffffff,.9);l.position.set(2,8,6);mls.add(l);}
 const CRA=[0,8,16,24,32], MH=1.55, MLS=[];let mlsOn=false;
-const mlsRays=new THREE.LineSegments(new THREE.BufferGeometry(),new THREE.LineBasicMaterial({color:0xffc45c,transparent:true,opacity:.5}));mls.add(mlsRays);
+const mlsRays=new THREE.LineSegments(new THREE.BufferGeometry(),new THREE.LineBasicMaterial({color:0xffc45c,transparent:true,opacity:.5}));mls.add(fatLines(mlsRays));
 const mlsPh=new THREE.InstancedMesh(new THREE.SphereGeometry(.05,8,6),basic(0xffc45c),25);mls.add(mlsPh);
 CRA.forEach((a,i)=>{const x=i*2.7-5.4,o={x,a:a*Math.PI/180};
   add(mls,new THREE.BoxGeometry(2.6,.9,1.6),std(0x353a48,{transparent:true,opacity:.4,depthWrite:false}),x,.45,0);add(mls,new THREE.BoxGeometry(1.6,.8,1.3),std(0x3b82f6),x,.45,0);

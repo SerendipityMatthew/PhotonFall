@@ -107,7 +107,7 @@ add(senG,new THREE.BoxGeometry(.06,1.1,1.6),std(0x0a0d12),.04,0,0);
 const senImg=add(senG,new THREE.PlaneGeometry(1.44,.96),senMat,0,0,0);senImg.rotation.y=-Math.PI/2;senImg.scale.x=-1;
 const shutter=add(macro,new THREE.BoxGeometry(.03,1.15,1.65),std(0x2c3545,{metalness:.7,roughness:.4}),-.16,1.3,0);
 const fplane=new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.PlaneGeometry(3.2,2.4)),new THREE.LineBasicMaterial({color:0x4fd8e8}));fplane.rotation.y=Math.PI/2;macro.add(fplane);
-const frustum=new THREE.LineSegments(new THREE.BufferGeometry(),new THREE.LineBasicMaterial({color:0xffe27a,transparent:true,opacity:.5}));frustum.geometry.setAttribute('position',new THREE.BufferAttribute(new Float32Array(48),3));macro.add(frustum);
+const frustum=fatLines(new THREE.LineSegments(new THREE.BufferGeometry(),new THREE.LineBasicMaterial({color:0xffe27a,transparent:true,opacity:.5})),1);frustum.geometry.setAttribute('position',new THREE.BufferAttribute(new Float32Array(48),3));macro.add(frustum);
 label(macro,'太阳',SUN.clone().add(V(0,1.1,0)));OBJ.forEach(o=>label(macro,`${o.n}（${o.d} m）`,V(sx(o.d),o.d===8?1.9:1.1,o.d===1.2?-.3:0)));
 label(macro,'FE 50-150mm F2 GM',V(-4.7,2.45,0));const lensLbl=labels[labels.length-1].el;label(macro,'全画幅 CMOS',V(0,-.85,0));label(macro,'快门',V(-.16,2.1,0));
 const LV={vari:label(macro,'变焦组',V()),foc:label(macro,'对焦组',V()),pl:label(macro,'等效主平面 + 光圈',V()),fp:label(macro,'对焦平面',V())};
@@ -118,7 +118,7 @@ const LPT={front:label(partsL,'前组',V()),comp:label(partsL,'补偿组',V()),r
 const NR=7, PH=3, NRAY=OBJ.length*NR;
 const rayGeo=new THREE.BufferGeometry();rayGeo.setAttribute('position',new THREE.BufferAttribute(new Float32Array(NRAY*18),3));
 {const rc=new Float32Array(NRAY*18);OBJ.forEach((o,p)=>{const c=new THREE.Color(o.c);for(let i=0;i<NR*18;i+=3)c.toArray(rc,p*NR*18+i)});rayGeo.setAttribute('color',new THREE.BufferAttribute(rc,3));}
-macro.add(new THREE.LineSegments(rayGeo,new THREE.LineBasicMaterial({vertexColors:true,transparent:true,opacity:.45})));
+macro.add(fatLines(new THREE.LineSegments(rayGeo,new THREE.LineBasicMaterial({vertexColors:true,transparent:true,opacity:.45}))));
 const photons=new THREE.InstancedMesh(new THREE.SphereGeometry(.05,8,6),basic(0xffffff),NRAY*PH);macro.add(photons);
 OBJ.forEach((o,p)=>{for(let i=0;i<NR*PH;i++)photons.setColorAt(p*NR*PH+i,new THREE.Color(o.c))});
 
