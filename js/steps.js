@@ -600,8 +600,8 @@ const STEPS=[
 <li><b>Cars (plus security and industrial)</b>: must run at −40 to 105–125 °C for over a decade and see tunnel exits and LED traffic lights; they care most about <b>dynamic range, LED flicker, temperature and functional safety</b>. Automotive qualification (AEC-Q100, ISO 26262) and 3–5-year design cycles make them usually last on process, but first on HDR pixels.</li>
 </ul>
 <table><tr><th>Technology</th><th>First market: First product (year)</th><th>Then spread to</th></tr>
-<tr><td>Back-illuminated (BSI)</td><td><b>Small consumer cameras</b>: Sony Exmor R announced 2008, HDR-XR520V camcorder (2009)</td><td>Phones: iPhone 4 (2010) → full frame α7R II (2015) → cars</td></tr>
-<tr><td>Stacked (pixel + logic wafer)</td><td><b>Phones</b>: Sony Exmor RS announced 2012, Xperia Z (2013)</td><td>1-inch RX100 IV (2015) → full frame α9 (2017) → cars</td></tr>
+<tr><td>Back-illuminated (BSI)</td><td><b>Small consumer cameras</b>: Sony Exmor R announced 2008, HDR-XR520V camcorder (2009)</td><td>Phones: iPhone 4 (2010) → full frame α7R II (2015) → security STARVIS (2015)</td></tr>
+<tr><td>Stacked (pixel + logic wafer)</td><td><b>Phones</b>: Sony Exmor RS announced 2012, Xperia Z (2013)</td><td>1-inch RX100 IV (2015) → full frame α9 (2017) → automotive IMX490 (2018) → industrial Pregius S (2020)</td></tr>
 <tr><td>Three-layer stack (+ DRAM)</td><td><b>Cameras</b>: RX100 IV / RX10 II (2015)</td><td>Phones: Xperia XZs / XZ Premium (2017, 960 fps slow motion)</td></tr>
 <tr><td>Cu-Cu hybrid bonding</td><td><b>Phones</b>: Sony IMX260, Galaxy S7 (2016)</td><td>Stacked sensors in cameras and cars</td></tr>
 <tr><td>Deep trench isolation (DTI)</td><td><b>Phones</b>: Samsung ISOCELL (2013)</td><td>Small pixels in every market</td></tr>
@@ -707,8 +707,8 @@ const STEPS=[
 <li><b>汽车（以及安防、工业）</b>：要在 −40 到 105–125 °C 下工作十几年，要看清隧道口和 LED 红绿灯，最在乎<b>动态范围、LED 闪烁、温度和功能安全</b>。车规认证（AEC-Q100、ISO 26262）和 3–5 年的开发周期，让它在工艺上通常最晚，但在 HDR 像素上最早。</li>
 </ul>
 <table><tr><th>技术</th><th>谁先用：首发产品（年份）</th><th>之后流向</th></tr>
-<tr><td>背照式 BSI</td><td><b>消费相机</b>：Sony Exmor R 2008 年发布，摄像机 HDR-XR520V（2009）</td><td>手机 iPhone 4（2010）→ 全画幅 α7R II（2015）→ 汽车</td></tr>
-<tr><td>堆栈式（像素层 + 逻辑层）</td><td><b>手机</b>：Sony Exmor RS 2012 年发布，Xperia Z（2013）</td><td>1 英寸 RX100 IV（2015）→ 全画幅 α9（2017）→ 汽车</td></tr>
+<tr><td>背照式 BSI</td><td><b>消费相机</b>：Sony Exmor R 2008 年发布，摄像机 HDR-XR520V（2009）</td><td>手机 iPhone 4（2010）→ 全画幅 α7R II（2015）→ 安防 STARVIS（2015）</td></tr>
+<tr><td>堆栈式（像素层 + 逻辑层）</td><td><b>手机</b>：Sony Exmor RS 2012 年发布，Xperia Z（2013）</td><td>1 英寸 RX100 IV（2015）→ 全画幅 α9（2017）→ 车载 IMX490（2018）→ 工业 Pregius S（2020）</td></tr>
 <tr><td>三层堆栈（加 DRAM）</td><td><b>相机</b>：RX100 IV / RX10 II（2015）</td><td>手机 Xperia XZs / XZ Premium（2017，960 fps 慢动作）</td></tr>
 <tr><td>Cu-Cu 混合键合</td><td><b>手机</b>：Sony IMX260，Galaxy S7（2016）</td><td>相机、汽车的堆栈传感器</td></tr>
 <tr><td>深沟槽隔离 DTI</td><td><b>手机</b>：Samsung ISOCELL（2013）</td><td>各市场的小像素</td></tr>
