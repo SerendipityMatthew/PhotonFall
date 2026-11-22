@@ -43,7 +43,7 @@ function animLof(time){const t=time%LT, n={PD:0,FD:0,CS:0}, txl=LS.TX(t);
 /* ---------- LOFIC 信号延伸模拟器 ---------- */
 function drawLoficSim(){const pd=+$('lofp').value*1000,k=+$('lofk').value,rn=+$('lofn').value,capFW=pd*k;    // pd in e⁻, cap = pd × k
   const gRatio=k;                                                                          // LCG CG ≈ HCG / k
-  const c=$('lofsig').getContext('2d'),W=330,H=220,L=42,B=28;                              // 不用 cx2（lofic.js 在 optics-extras.js 之前加载）
+  const c=hiDPI($('lofsig')),W=330,H=220,L=42,B=28;                              // 不用 cx2（lofic.js 在 optics-extras.js 之前加载）
   $('lofpo').value=(pd/1000).toFixed(0)+' ke⁻';$('lofko').value=k+'×';$('lofno').value=rn.toFixed(1)+' e⁻';
   const xMax=1e7,yMax=1e7;                                                                 // 7 decades each
   const px=v=>L+Math.log10(Math.max(v,1))/Math.log10(xMax)*(W-L-8), py=v=>H-B-Math.log10(Math.max(v,1))/Math.log10(yMax)*(H-B-26);
