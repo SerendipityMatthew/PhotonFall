@@ -11,6 +11,31 @@ function hiDPI(c){
   if(c.width!==Math.round(lw*k)){c.width=Math.round(lw*k);c.height=Math.round(lh*k);}
   g.setTransform(k,0,0,k,0,0);return g;
 }
+/* 粗光线：WebGL 原生线永远只有 1 个设备像素，4K 上细得看不见，改用 three.js 的 LineSegments2 画。
+   原 LineSegments 留着当数据源：不再写颜色（colorWrite=false），只借它的 onBeforeRender 触发同步，可见性和位置子对象自动跟随。
+   r128 的 LineMaterial 开逐顶点颜色时画不出来，所以按颜色分桶，每种颜色一个子对象（每组光线只有几种颜色）。
+   线宽（CSS 像素）= w × 界面放大倍数（根字号 / 16）。CDN 没加载到就保持原来的细线。 */
+const _fatSize=new THREE.Vector2(), _fatCol=new THREE.Color();
+function fatLines(src,w=1.3){
+  if(!THREE.LineSegments2)return src;
+  const m0=src.material, kids=new Map();let lastP=null,ver=-1;
+  m0.colorWrite=false;m0.depthWrite=false;
+  const kid=hex=>{let k=kids.get(hex);if(!k){k=new THREE.LineSegments2(new THREE.LineSegmentsGeometry(),
+    new THREE.LineMaterial({color:hex,transparent:true,opacity:m0.opacity,depthWrite:false}));k.frustumCulled=false;src.add(k);kids.set(hex,k);}return k;};
+  src.onBeforeRender=r=>{
+    const p=src.geometry.attributes.position,c=src.geometry.attributes.color;
+    if(p&&(p!==lastP||p.version!==ver)){lastP=p;ver=p.version;   // 有的代码原地改数组，有的换新 attribute，两种都认
+      const b=new Map();
+      for(let i=0;i+5<p.array.length;i+=6){const hex=c?_fatCol.fromArray(c.array,i).getHex():m0.color.getHex();
+        if(!b.has(hex))b.set(hex,[]);b.get(hex).push(...p.array.subarray(i,i+6));}
+      kids.forEach(k=>k.visible=false);
+      b.forEach((arr,hex)=>{const k=kid(hex);k.geometry.setPositions(arr);k.visible=true;});
+    }
+    const lw=w*(parseFloat(getComputedStyle(document.documentElement).fontSize)/16||1);r.getSize(_fatSize);
+    kids.forEach(k=>{k.material.linewidth=lw;k.material.resolution.copy(_fatSize);});
+  };
+  return src;
+}
 const PAL={paper:'#f7f3ea',ink:'#2a2622',dim:'#6b6359',grid:'#ddd3c2',accent:'#c8502d',r:'#ef5a5f',g:'#48c26a',b:'#5a95ff',cyan:'#007295',amber:'#9a6200',well:'#1c2a40',elec:'#4fd8e8'};
 
 /* ---------- 场景图片（景物、传感器上的像、ISP 演示共用） ---------- */

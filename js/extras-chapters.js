@@ -7,8 +7,8 @@ const COAT_X=[-2.4,-1.4,-.4,.6,1.6,2.6];
 COAT_X.forEach((x,i)=>{const g=add(coat,new THREE.CylinderGeometry(1.4,1.4,.08,32),std(0x6a8aff,{transparent:true,opacity:.22,depthWrite:false}),x,0,0);g.rotation.z=Math.PI/2;});
 add(coat,new THREE.BoxGeometry(.08,2.4,2.4),std(0x2a3142),3.6,0,0);
 label(coat,'强光入射',V(-3.8,0,0));label(coat,'镜片（6 面）',V(0,1.8,0));label(coat,'传感器',V(3.9,0,0));label(coat,'鬼影 = 对称光斑',V(2.2,1.6,0));
-const coatMain=new THREE.LineSegments(new THREE.BufferGeometry().setAttribute('position',new THREE.Float32BufferAttribute([-3.8,0,0,3.6,0,0],3)),new THREE.LineBasicMaterial({color:0xffe27a,transparent:true,opacity:.9}));coat.add(coatMain);
-const coatGhostRays=new THREE.LineSegments(new THREE.BufferGeometry(),new THREE.LineBasicMaterial({color:0xffe27a,transparent:true,opacity:.6}));coat.add(coatGhostRays);
+const coatMain=new THREE.LineSegments(new THREE.BufferGeometry().setAttribute('position',new THREE.Float32BufferAttribute([-3.8,0,0,3.6,0,0],3)),new THREE.LineBasicMaterial({color:0xffe27a,transparent:true,opacity:.9}));coat.add(fatLines(coatMain,1.8));
+const coatGhostRays=new THREE.LineSegments(new THREE.BufferGeometry(),new THREE.LineBasicMaterial({color:0xffe27a,transparent:true,opacity:.6}));coat.add(fatLines(coatGhostRays));
 {const p=[];for(let i=0;i<COAT_X.length-1;i++){const a=COAT_X[i],b=COAT_X[i+1];p.push(b,0,0,a,.25,0,a,.25,0,3.6,.5+i*.08,0);}coatGhostRays.geometry.setAttribute('position',new THREE.Float32BufferAttribute(p,3));}
 const flareQ=add(coat,new THREE.PlaneGeometry(2.4,2.4),basic(0xffe27a,{transparent:true,opacity:0,depthWrite:false}),3.58,0,0);flareQ.rotation.y=Math.PI/2;
 const ghostSpots=new THREE.InstancedMesh(new THREE.CircleGeometry(.14,16),basic(0xffe27a,{transparent:true,opacity:.95,depthWrite:false}),8);ghostSpots.rotation.y=Math.PI/2;ghostSpots.position.x=3.57;coat.add(ghostSpots);

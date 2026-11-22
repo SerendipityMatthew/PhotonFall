@@ -72,7 +72,7 @@ const pdaf=new THREE.Group();pdaf.visible=false;scene.add(pdaf);
  label(pdaf,'一个微透镜',V(-2.1,2.5,0));label(pdaf,'左 PD',V(-.66,1.45,.95));label(pdaf,'右 PD',V(.66,1.45,.95));}
 const PDR=[-1.5,-1,-.5,.5,1,1.5].map(x=>({pts:[V(x,6.5,0),V(x*.25,2.5,0),V(x<0?.66:-.66,1.82,0)],c:x<0?0xffa94d:0xb48cff}));
 {const p=[],cl=[];PDR.forEach(r=>{const c=new THREE.Color(r.c);[[0,1],[1,2]].forEach(([a,b])=>{p.push(...r.pts[a].toArray(),...r.pts[b].toArray());cl.push(...c.toArray(),...c.toArray());});});
- const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(p,3));g.setAttribute('color',new THREE.Float32BufferAttribute(cl,3));pdaf.add(new THREE.LineSegments(g,new THREE.LineBasicMaterial({vertexColors:true,transparent:true,opacity:.55})));}
+ const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(p,3));g.setAttribute('color',new THREE.Float32BufferAttribute(cl,3));pdaf.add(fatLines(new THREE.LineSegments(g,new THREE.LineBasicMaterial({vertexColors:true,transparent:true,opacity:.55}))));}
 const pdph=new THREE.InstancedMesh(new THREE.SphereGeometry(.06,8,6),basic(0xffffff),PDR.length*3);pdaf.add(pdph);PDR.forEach((r,i)=>{for(let k=0;k<3;k++)pdph.setColorAt(i*3+k,new THREE.Color(r.c));});
 function animPdaf(t){PDR.forEach((r,i)=>{for(let k=0;k<3;k++){const q=((t*.35+k/3+i*.13)%1)*2,s=Math.min(1,q|0);M.position.lerpVectors(r.pts[s],r.pts[s+1],q-s);M.scale.setScalar(1);M.updateMatrix();pdph.setMatrixAt(i*3+k,M.matrix);}});pdph.instanceMatrix.needsUpdate=true;}
 function drawPdaf(){const d=+$('pdd').value,c=cx2('pdc'),Wc=330,Hc=150,n=48,sh=d*7,bl=.6+Math.abs(d)*4,T=x=>.12+.7*.5*(Math.tanh((x-18)/bl*1.2)-Math.tanh((x-30)/bl*1.2));
