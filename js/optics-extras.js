@@ -1,6 +1,6 @@
 /* 通用工具、衍射、像差、传感器前的玻璃、相位对焦、防抖 */
 /* ---------- 扩展：通用工具 ---------- */
-const PANIM={}, cx2=id=>$(id).getContext('2d');
+const PANIM={}, cx2=id=>{const c=$(id);return c.classList.contains('pc')&&!('raw' in c.dataset)?hiDPI(c):c.getContext('2d');};
 const gauss=()=>{let u=0;for(let i=0;i<6;i++)u+=Math.random();return (u-3)*Math.SQRT2;};   // ponytail: 6 个均匀数近似正态
 const FONT='11px ui-monospace,Menlo,monospace';
 

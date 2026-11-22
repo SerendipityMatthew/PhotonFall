@@ -2,6 +2,15 @@
 const $=id=>document.getElementById(id), V=(x,y,z)=>new THREE.Vector3(x,y,z);
 
 /* ---------- 调色板（与 css/style.css :root 变量同值，硬编码避免运行时读 CSS） ---------- */
+/* 小图高清：画布像素 = 逻辑尺寸（HTML 里的 width/height）× 设备像素比 × 界面放大倍数（根字号 / 16），
+   坐标系仍按逻辑尺寸画。不看 clientWidth，所以藏起来时先画好的小图显示出来也是高清。像素图（data-raw）不走这里。 */
+function hiDPI(c){
+  const g=c.getContext('2d'),lw=+(c.dataset.lw||=c.width),lh=+(c.dataset.lh||=c.height);
+  const ui=parseFloat(getComputedStyle(document.documentElement).fontSize)/16||1;
+  const k=Math.max(1,Math.min(3,Math.round((devicePixelRatio||1)*ui*1.25*4)/4));   // 1.25：留给放大查看
+  if(c.width!==Math.round(lw*k)){c.width=Math.round(lw*k);c.height=Math.round(lh*k);}
+  g.setTransform(k,0,0,k,0,0);return g;
+}
 const PAL={paper:'#f7f3ea',ink:'#2a2622',dim:'#6b6359',grid:'#ddd3c2',accent:'#c8502d',r:'#ef5a5f',g:'#48c26a',b:'#5a95ff',cyan:'#007295',amber:'#9a6200',well:'#1c2a40',elec:'#4fd8e8'};
 
 /* ---------- 场景图片（景物、传感器上的像、ISP 演示共用） ---------- */
