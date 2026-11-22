@@ -24,8 +24,10 @@ header .sp{flex:1}
 .eye{margin:0 0 0.8rem;font:600 0.8rem/1 var(--mono);letter-spacing:.22em;text-transform:uppercase;color:var(--accent)}
 h1{margin:0;font:800 clamp(2.27rem,5vw,7rem)/1.08 var(--sans);letter-spacing:-.02em;background:linear-gradient(100deg,#ffe9c7,#f0a487 40%,#a9d4ff 80%);-webkit-background-clip:text;background-clip:text;color:transparent}
 .sub{max-width:41.3rem;margin:1.2rem auto 0;color:var(--dim)}
-.stats{display:flex;flex-wrap:wrap;justify-content:center;gap:0.667rem;margin:2rem 0 0;padding:0;list-style:none}
-.stats button{min-width:8.8rem;border:1.5px solid var(--c);border-radius:0.933rem;background:rgba(22,32,51,.6);color:var(--ink);padding:0.8rem 0.933rem;cursor:pointer;font:inherit;transition:opacity .2s,transform .2s,background .2s}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0.667rem;max-width:48rem;margin:2rem auto 0;padding:0;list-style:none}
+.stats li{display:flex}
+@media (max-width:560px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.stats button{width:100%;border:1.5px solid var(--c);border-radius:0.933rem;background:rgba(22,32,51,.6);color:var(--ink);padding:0.8rem 0.933rem;cursor:pointer;font:inherit;transition:opacity .2s,transform .2s,background .2s}
 .stats button:hover{transform:translateY(-2px)}
 .stats button[aria-pressed=false]{opacity:.35}
 .stats b{display:block;font:800 2rem/1 var(--mono);color:var(--c)}
