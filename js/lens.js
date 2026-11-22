@@ -32,12 +32,12 @@ const ballX=t=>.25*Math.sin(t*4.2), ballV=t=>.25*4.2*Math.cos(t*4.2);       // �
 const std=(color,o={})=>new THREE.MeshStandardMaterial({color,roughness:.8,...o});
 function add(g,geo,mat,x,y,z){const m=new THREE.Mesh(geo,mat);m.position.set(x,y,z);g.add(m);return m;}
 
-const sun=new THREE.DirectionalLight(0xfff0cc,1.25);sun.position.copy(SUN);sun.target.position.set(-18,0,0);sun.castShadow=true;
+const sun=new THREE.DirectionalLight(0xfff0cc,1.25);sun.position.copy(SUN);sun.target.position.set(-18,0,0);sun.castShadow=true;sun.shadow.mapSize.setScalar(BIG_SCREEN?4096:2048);sun.shadow.bias=-.0005;
 Object.assign(sun.shadow.camera,{left:-16,right:16,top:12,bottom:-12,far:60});macro.add(sun,sun.target);
 add(macro,new THREE.SphereGeometry(.7,24,16),basic(0xffd66b),SUN.x,SUN.y,SUN.z);
 const ground=add(macro,new THREE.PlaneGeometry(50,30),std(0x18222f,{roughness:1}),-12,-.75,0);ground.rotation.x=-Math.PI/2;ground.receiveShadow=true;
-const srcCv=mkCanvas(384,256);drawScene(srcCv.getContext('2d'),384,256);
-const backdrop=add(macro,new THREE.PlaneGeometry(6.4*K,4.27*K),std(0xffffff,{map:new THREE.CanvasTexture(srcCv)}),sx(8)-.4,0,0);backdrop.rotation.y=Math.PI/2;
+const srcCv=mkCanvas(1536,1024);drawScene(srcCv.getContext('2d'),1536,1024);   // 背景画：4K 下铺满半个屏幕也不糊
+const backdrop=add(macro,new THREE.PlaneGeometry(6.4*K,4.27*K),std(0xffffff,{map:Object.assign(new THREE.CanvasTexture(srcCv),{anisotropy:MAX_ANISO})}),sx(8)-.4,0,0);backdrop.rotation.y=Math.PI/2;
 LIGHTS.forEach(l=>add(macro,new THREE.SphereGeometry(.13,12,8),basic(new THREE.Color(l.c)),sx(8),.4*K,l.X*K));
 {const x=sx(3);add(macro,new THREE.CylinderGeometry(.3,.33,.75,20),std(0xe8823a),x,-.22,0).castShadow=true;add(macro,new THREE.SphereGeometry(.24,20,14),std(0xf2d3b1),x,.36,0).castShadow=true;add(macro,new THREE.BoxGeometry(.9,.15,.9),std(0x39455a),x,-.67,0);}
 const ball3=add(macro,new THREE.SphereGeometry(.09,14,10),std(0x4c8dff),sx(3),-.3,0);
@@ -101,7 +101,7 @@ const lensMount=add(macro,new THREE.TorusGeometry(1.1,.08,10,36),std(0x0e1115,{m
 add(macro,new THREE.SphereGeometry(.06,10,8),std(0xd9483b),-.69,-1.15,0);                               // 卡口对齐红点
 label(macro,'取景器凸起',V(.43,2.5,-1.1));label(macro,'手柄',V(.43,.1,3.35));
 label(macro,'快门按钮',V(.43,2.5,2.6));label(macro,'模式转盘',V(.43,2.3,1.45));label(macro,'镜头卡口',V(-.73,1.4,0));
-const vf=$('vf'), senTex=new THREE.CanvasTexture(vf), senMat=basic(0xffffff,{map:senTex,side:THREE.DoubleSide});
+const vf=$('vf'), senTex=Object.assign(new THREE.CanvasTexture(vf),{anisotropy:MAX_ANISO}), senMat=basic(0xffffff,{map:senTex,side:THREE.DoubleSide});
 const senG=new THREE.Group();senG.rotation.x=Math.PI;macro.add(senG);                                   // 绕光轴转 180° = 倒立的像
 add(senG,new THREE.BoxGeometry(.06,1.1,1.6),std(0x0a0d12),.04,0,0);
 const senImg=add(senG,new THREE.PlaneGeometry(1.44,.96),senMat,0,0,0);senImg.rotation.y=-Math.PI/2;senImg.scale.x=-1;

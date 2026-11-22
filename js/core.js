@@ -24,7 +24,9 @@ const mkCanvas=(w,h)=>Object.assign(document.createElement('canvas'),{width:w,he
 
 /* ---------- three 基础 ---------- */
 const view=$('view'), renderer=new THREE.WebGLRenderer({antialias:true});
-renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.shadowMap.enabled=true;renderer.setClearColor(0x0d1420);
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.setClearColor(0x0d1420);
+/* 大屏高清：物理像素 ≥ 2560 宽时用 4096 阴影贴图；贴图开满各向异性过滤，斜看不糊 */
+const BIG_SCREEN=screen.width*(devicePixelRatio||1)>=2560, MAX_ANISO=renderer.capabilities.getMaxAnisotropy();
 view.prepend(renderer.domElement);
 /* iOS Safari / Android Chrome 偶发 context lost；preventDefault 允许 three.js 自动恢复 */
 renderer.domElement.addEventListener('webglcontextlost',e=>{e.preventDefault();console.warn('[PhotonFall] WebGL context lost — browser 将尝试恢复');});
