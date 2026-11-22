@@ -63,6 +63,7 @@ h1{margin:0;font:800 clamp(2.27rem,5vw,7rem)/1.08 var(--sans);letter-spacing:-.0
 .card .to a:hover{background:var(--cc);color:#0d1420}
 .it.off{display:none}
 .it.flash .card{box-shadow:0 0 0 2px var(--c),0 0.667rem 2rem rgba(0,0,0,.25)}
+.refs{margin-top:1.2rem;text-align:left}.refs summary{cursor:pointer;text-align:center}.refs ol{columns:2 22rem;font-size:.8rem;line-height:1.5}.refs a{color:var(--dim)}
 footer{max-width:80vw;margin:0 auto;padding:0 1.07rem 4rem;text-align:center;font-size:0.867rem;color:var(--dim)}
 
 @media (max-width:720px){
@@ -77,16 +78,16 @@ footer{max-width:80vw;margin:0 auto;padding:0 1.07rem 4rem;text-align:center;fon
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.card{transition:none;opacity:1;transform:none}}
 </style>
 </head>
-<body>
+<body data-tl="cmos">
 <div id="bar" aria-hidden="true"></div>
 <header>
   <a href="index.html#/" id="home">⌂ PhotonFall</a>
-  <a href="index.html#/step/21" id="step21"></a>
+  <a href="index.html#/step/21" id="steplink"></a>
   <span class="sp"></span>
   <button type="button" id="lang"></button>
 </header>
 <section class="hero">
-  <p class="eye">CMOS Image Sensor · 2000–2026</p>
+  <p class="eye" id="eyebrow">CMOS Image Sensor · 2000–2026</p>
   <h1 id="h1"></h1>
   <p class="sub" id="sub"></p>
   <ul class="stats" id="stats"></ul>
@@ -97,7 +98,8 @@ footer{max-width:80vw;margin:0 auto;padding:0 1.07rem 4rem;text-align:center;fon
 <footer id="foot"></footer>
 
 <script src="js/i18n.js"></script>
+<script src="js/tl-core.js"></script>
 <script src="js/cmostl.js"></script>
-<script src="js/cmos-timeline-page.js"></script>
+<script src="js/tl-page.js"></script>
 </body>
 </html>

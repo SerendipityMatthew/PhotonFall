@@ -6,11 +6,11 @@ const LANDING = !location.hash || location.hash === '#' || location.hash === '#/
 const LTXT = {
   zh: {eyebrow: '交互式 3D 成像科学讲解', tag: '跟着一颗光子，<br>走完从景物到照片的全过程。',
        sub: '镜头怎么聚光，像素怎么把光变成电，电路怎么把电变成数字，ISP 怎么算出颜色。每一步都看得见、点得动。',
-       go: '开始旅程', quiz: '🎯 测验', tl: '🕰 时间轴', cmt: '📈 CMOS 技术谁先用', lang: 'EN',
+       go: '开始旅程', quiz: '🎯 测验', tl: '🕰 时间轴', cmt: '📈 CMOS 技术谁先用', ltl: '🔭 镜头技术演化', lang: 'EN',
        stats: ['步', '章', '道测验题', '支真实镜头'], ch: '直接跳到某一章', hint: '光子穿过镜头，只有滤色片颜色对得上的像素才会亮'},
   en: {eyebrow: 'Interactive 3D imaging science', tag: 'Follow one photon<br>from the scene to the photo.',
        sub: 'How a lens gathers light, how a pixel turns light into charge, how circuits turn charge into numbers, and how the ISP computes color. Every step is visible and clickable.',
-       go: 'Start the journey', quiz: '🎯 Quiz', tl: '🕰 Timeline', cmt: '📈 CMOS firsts timeline', lang: '中',
+       go: 'Start the journey', quiz: '🎯 Quiz', tl: '🕰 Timeline', cmt: '📈 CMOS firsts timeline', ltl: '🔭 Lens tech timeline', lang: '中',
        stats: ['steps', 'chapters', 'quiz questions', 'real lenses'], ch: 'Jump to a chapter', hint: 'Photons pass the lens; a pixel lights only when its color filter matches'},
 };
 
@@ -30,6 +30,7 @@ function renderLanding() {
       <button type="button" data-go="quiz">${T.quiz}</button>
       <button type="button" data-go="timeline">${T.tl}</button>
       <a href="cmos-timeline.html">${T.cmt}</a>
+      <a href="lens-timeline.html">${T.ltl}</a>
       <button type="button" data-go="lang" aria-label="${en ? 'Switch language: 中文' : '切换语言：English'}">${T.lang}</button>
     </div>
     <ul class="lp-stats">${nums.map((n, i) => `<li><b>${n}</b><span>${T.stats[i]}</span></li>`).join('')}</ul>
