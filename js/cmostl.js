@@ -1,5 +1,5 @@
-/* 第 21 步抽屉里的「CMOS 技术首发行业时间线」：四条泳道（手机 / 安防·汽车 / 工业 / 相机），
-   实心 = 这项技术最先在这个行业量产，空心 → = 之后传到这个行业。数据核对来源见第 21 步硬核区。 */
+/* CMOS 技术首发时间线的数据：第 21 步抽屉小图和 cmos-timeline.html 共用，渲染在 js/tl-core.js / js/tl-page.js。
+   四条泳道：手机 / 安防·汽车 / 工业 / 相机。数据核对来源见第 21 步硬核区。 */
 
 const CMT_LANES = [
   {k: 'phone', zh: '手机', en: 'Phones'},
@@ -83,15 +83,18 @@ const CMT_DESC = {
   twolayer: ['光电二极管和像素晶体管分到两层，满阱约翻倍。', 'Photodiode and pixel transistors on separate layers, roughly doubling full well.'],
 };
 
-function renderCmosTl() {
-  const el = document.getElementById('cmostl'), en = getLang() === 'en';
-  if (!el) return;
-  const years = [...new Set(CMT.map(r => r[0]))].sort((a, b) => a - b);
-  const cnt = k => CMT.filter(r => r[1] === k && r[4] === 1).length;
-  el.innerHTML = `<p class="cap">${en ? 'Which industry shipped each CMOS technology first. Solid = first in this industry; hollow → = spread here later; ◆ = later milestone in the same industry.' : '每项 CMOS 技术最先在哪个行业量产。实心 = 首发；空心 → = 之后传到这个行业；◆ = 同一行业后来的里程碑。'} <a href="cmos-timeline.html" target="_blank" rel="noopener">${en ? 'Full-page timeline ↗' : '全屏时间线 ↗'}</a></p>
-    <div class="cmt" role="table" aria-label="${en ? 'CMOS technology first-adopter timeline' : 'CMOS 技术首发行业时间线'}">
-      <div class="cmt-row cmt-head" role="row"><span role="columnheader"></span>${CMT_LANES.map(l => `<span role="columnheader" class="cmt-${l.k}">${en ? l.en : l.zh}<small>${cnt(l.k)} ${en ? 'firsts' : '项首发'}</small></span>`).join('')}</div>
-      ${years.map(y => `<div class="cmt-row" role="row"><b role="rowheader">${y}</b>${CMT_LANES.map(l => `<span role="cell">${CMT.filter(r => r[0] === y && r[1] === l.k).map(r => `<i class="cmt-chip cmt-${l.k}${r[4] === 1 ? ' first' : ''}">${['→ ', '', '◆ '][r[4]]}${en ? r[3] : r[2]}</i>`).join('')}</span>`).join('')}</div>`).join('')}
-    </div>`;
-}
-renderCmosTl();
+TIMELINES.cmos = {
+  lanes: CMT_LANES, rows: CMT, desc: CMT_DESC, el: 'cmostl', page: 'cmos-timeline.html',
+  step: {n: 21, zh: '第 21 步：整颗传感器', en: 'Step 21: The whole sensor'},
+  text: {
+    zh: {title: 'CMOS 技术时间线', eyebrow: 'CMOS Image Sensor · 2000–2026', h1: '谁先用上了这项技术？',
+         sub: 'CMOS 图像传感器的每项关键技术，最先在手机、安防/汽车、工业还是相机上量产，又是怎么流到其他行业的。',
+         panelCap: '每项 CMOS 技术最先在哪个行业量产。',
+         foot: '「首发」指第一次进入量产产品，不是第一次发表论文。年份和产品来自厂商新闻稿与拆解报告，来源列在主站第 21 步的硬核区；DR-Pix 年份为估计。'},
+    en: {title: 'CMOS Technology Timeline', eyebrow: 'CMOS Image Sensor · 2000–2026', h1: 'Who shipped it first?',
+         sub: 'Every key CMOS image sensor technology: did it ship first in phones, security/automotive, industrial or cameras, and how did it spread to the rest?',
+         panelCap: 'Which industry shipped each CMOS technology first.',
+         foot: '"First" means first in a shipping product, not first paper. Years and products come from vendor press releases and teardown reports, listed in Step 21 of the main site; the DR-Pix year is approximate.'},
+  },
+};
+renderTlPanel('cmos');

@@ -816,7 +816,7 @@ body:has(#drawer:not([hidden])) #topbar{right:calc(var(--drawer-w) + var(--sidet
 @media (prefers-reduced-motion:reduce){#landing{transition:none}.lp-cta .lp-go{animation:none}}
 
 /* ---------- 第 21 步：CMOS 技术首发行业时间线 ---------- */
-#cmostl{--c-phone:#5a95ff;--c-auto:#e0565b;--c-ind:#2e9e6a;--c-cam:#c88a1e}
+.cmt,#cmostl,#lenstl{--c-phone:#5a95ff;--c-auto:#e0565b;--c-ind:#2e9e6a;--c-cam:#c88a1e}
 .cmt{display:grid;gap:2px;font:0.75rem/1.35 var(--sans)}
 .cmt-row{display:grid;grid-template-columns:2.375rem repeat(4,minmax(0,1fr));gap:0.25rem;align-items:start;padding:3px 0;border-top:1px dashed var(--line)}
 .cmt-row>b{font:700 0.75rem/1.6 var(--mono);color:var(--ink-dim)}
