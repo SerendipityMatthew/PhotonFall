@@ -3,9 +3,22 @@
    数据行：[年份, 行业, 中文, English, 1 首发 / 0 传入 / 2 同行业里程碑, 技术编号]。 */
 const TIMELINES = {};
 
+/* 规整：同一技术第二次进入同一个行业，不算「传入」，改成「里程碑」，免得「之后传到」里出现两个同行业。 */
+function tlNormalize(rows) {
+  const seen = {};
+  const rank = {1: 0, 0: 1, 2: 2};   // 同年先首发，再传入，最后里程碑
+  [...rows].sort((a, b) => a[0] - b[0] || rank[a[4]] - rank[b[4]]).forEach(r => {
+    const s = seen[r[5]] ||= new Set();
+    if (r[4] === 0 && s.has(r[1])) r[4] = 2;
+    s.add(r[1]);
+  });
+  return rows;
+}
+
 function renderTlPanel(key) {
   const D = TIMELINES[key], el = D && document.getElementById(D.el);
   if (!el) return;
+  tlNormalize(D.rows);
   const en = typeof getLang === 'function' && getLang() === 'en', t = D.text[en ? 'en' : 'zh'];
   const years = [...new Set(D.rows.map(r => r[0]))].sort((a, b) => a - b);
   const cnt = k => D.rows.filter(r => r[1] === k && r[4] === 1).length;
