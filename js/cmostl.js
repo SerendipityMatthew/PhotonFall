@@ -10,6 +10,7 @@ const CMT_LANES = [
 /* [年份, 行业, 中文, English, 1 首发 / 0 传入 / 2 同行业里程碑, 技术编号（同一技术首发和流向共用，独立时间线页用来串起来）] */
 const CMT = [
   [2000, 'cam', 'CMOS 进单反 · Canon EOS D30', 'CMOS in a DSLR · Canon EOS D30', 1, 'dslr'],
+  [2005, 'auto', '全局快门 CMOS · Micron MT9V022（TrueSNAP）', 'Global shutter CMOS · Micron MT9V022 (TrueSNAP)', 1, 'gs'],
   [2009, 'cam', '背照式 BSI · Sony 摄像机', 'BSI · Sony camcorder', 1, 'bsi'],
   [2010, 'cam', '片上相位对焦 · Fujifilm F300EXR', 'On-sensor PDAF · Fujifilm F300EXR', 1, 'pdaf'],
   [2010, 'phone', 'BSI · iPhone 4', 'BSI · iPhone 4', 0, 'bsi'],
@@ -17,7 +18,7 @@ const CMT = [
   [2012, 'cam', '1 英寸大底 · RX100', '1-inch sensor · RX100', 1, 'inch'],
   [2013, 'phone', '堆栈式 · Xperia Z', 'Stacked · Xperia Z', 1, 'stack'],
   [2013, 'phone', '深沟槽隔离 DTI · ISOCELL', 'Deep trench isolation · ISOCELL', 1, 'dti'],
-  [2013, 'ind', '全局快门 · Sony Pregius', 'Global shutter · Sony Pregius', 1, 'gs'],
+  [2013, 'ind', '全局快门 · Sony Pregius', 'Global shutter · Sony Pregius', 0, 'gs'],
   [2013, 'cam', '全像素双核对焦 · Canon 70D', 'Dual Pixel AF · Canon 70D', 1, 'dpaf'],
   [2014, 'phone', 'SPAD 测距 · LG G3 激光对焦（ST FlightSense）', 'SPAD ranging · LG G3 laser AF (ST FlightSense)', 1, 'spad'],
   [2014, 'phone', '片上相位对焦 · iPhone 6', 'On-sensor PDAF · iPhone 6', 0, 'pdaf'],
@@ -31,6 +32,8 @@ const CMT = [
   [2017, 'phone', '三层堆栈 · Xperia XZs', '3-layer stack · Xperia XZs', 0, 'dram'],
   [2018, 'phone', '四合一 Quad Bayer · P20 Pro', 'Quad Bayer · P20 Pro', 1, 'quad'],
   [2020, 'phone', 'SPAD LiDAR · iPhone 12 Pro', 'SPAD LiDAR · iPhone 12 Pro', 2, 'spad'],
+  [2020, 'ind', '堆栈背照全局快门 · Sony Pregius S', 'Stacked BSI global shutter · Sony Pregius S', 2, 'gs'],
+  [2020, 'cam', '全局快门电影机 · RED Komodo 6K', 'Global-shutter cinema camera · RED Komodo 6K', 0, 'gs'],
   [2020, 'ind', '片上 AI 视觉传感器 · IMX500', 'On-sensor AI vision sensor · IMX500', 1, 'ai'],
   [2020, 'ind', 'InGaAs 短波红外 + Cu-Cu · IMX990', 'InGaAs SWIR + Cu-Cu · IMX990', 1, 'swir'],
   [2021, 'ind', '事件传感器 · IMX636', 'Event sensor · IMX636', 1, 'event'],
@@ -40,8 +43,9 @@ const CMT = [
   [2023, 'phone', '双层晶体管像素 · Xperia 1 V', 'Two-layer transistor pixel · Xperia 1 V', 1, 'twolayer'],
   [2022, 'phone', '超构透镜 metalens · ST ToF 模组（Metalenz）', 'Metalens · ST ToF module (Metalenz)', 1, 'meta'],
   [2023, 'auto', 'SPAD 监控相机 · Canon MS-500', 'SPAD surveillance camera · Canon MS-500', 0, 'spad'],
-  [2023, 'cam', '全局快门全画幅 · α9 III', 'Full-frame global shutter · α9 III', 0, 'gs'],
+  [2023, 'cam', '全局快门全画幅 · α9 III', 'Full-frame global shutter · α9 III', 2, 'gs'],
   [2024, 'phone', 'LOFIC · OV50K40', 'LOFIC · OV50K40', 0, 'lofic'],
+  [2026, 'phone', 'LOFIC · Sony LYTIA L910', 'LOFIC · Sony LYTIA L910', 2, 'lofic'],
   [2024, 'phone', '偏振超构表面人脸解锁 · Polar ID 采用三星 ISOCELL Vizion 931（发布）', 'Polarization metasurface face unlock · Polar ID with Samsung ISOCELL Vizion 931 (announced)', 2, 'meta'],
 ];
 
@@ -54,7 +58,7 @@ const CMT_DESC = {
   inch: ['把 1 英寸大底塞进小机身，画质跳一个台阶。', 'A 1-inch sensor in a small body, a step up in image quality.'],
   stack: ['像素层和逻辑电路层分成两片晶圆叠起来，像素面积和电路都更大。', 'Pixel layer and logic on separate stacked wafers: more room for both.'],
   dti: ['像素之间挖深沟隔开，小像素不再串色。', 'Deep trenches between pixels stop crosstalk in small pixels.'],
-  gs: ['每个像素自带存储节点，整帧同一瞬间曝光，不再果冻。', 'Every pixel has its own storage node; the whole frame exposes at once, no jello.'],
+  gs: ['每个像素自带存储节点，整帧同一瞬间曝光，不再果冻。最早用在车载和机器视觉，2020 年进电影机，2023 年进全画幅相机。', 'Every pixel has its own storage node; the whole frame exposes at once, no jello. First in automotive and machine vision, then cinema cameras (2020) and full-frame cameras (2023).'],
   dpaf: ['每个像素一分为二，全画面都能相位对焦。', 'Every pixel split in two, so the whole frame can phase-detect focus.'],
   dram: ['像素、逻辑之外再叠一层 DRAM 缓存，读出快到 960 fps。', 'A DRAM layer stacked under pixel and logic, enabling 960 fps readout.'],
   cucu: ['两片晶圆的每个连接点直接铜对铜键合，取代 TSV。', 'Direct copper-to-copper bonds join the wafers, replacing TSVs.'],
@@ -65,7 +69,7 @@ const CMT_DESC = {
   ai: ['传感器下层直接放 AI 处理器，只输出识别结果。', 'An AI processor in the sensor stack outputs results instead of images.'],
   swir: ['InGaAs 感光层和硅读出电路铜铜键合，看见短波红外。', 'InGaAs photodiodes Cu-Cu bonded to silicon readout to see short-wave infrared.'],
   event: ['像素只在亮度变化时输出事件，没有帧的概念。', 'Pixels output events only when brightness changes; no frames at all.'],
-  lofic: ['溢出的电子存进像素旁的电容，单次曝光就有超高动态范围。', 'Overflow electrons go into an in-pixel capacitor for single-exposure HDR.'],
+  lofic: ['溢出的电子存进像素旁的电容，单次曝光就有超高动态范围。原理由东北大学 Sugawa 组 2005 年在 ISSCC 提出，2023 年才先在车载量产。', 'Overflow electrons go into an in-pixel capacitor for single-exposure HDR. Proposed by Sugawa\'s Tohoku group at ISSCC 2005; first mass-produced in cars in 2023.'],
   twolayer: ['光电二极管和像素晶体管分到两层，满阱约翻倍。', 'Photodiode and pixel transistors on separate layers, roughly doubling full well.'],
 };
 
