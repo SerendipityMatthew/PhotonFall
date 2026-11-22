@@ -7,7 +7,7 @@ const CMT_LANES = [
   {k: 'ind', zh: '工业', en: 'Industrial'},
   {k: 'cam', zh: '相机', en: 'Cameras'},
 ];
-/* [年份, 行业, 中文, English, 首发?, 技术编号（同一技术首发和流向共用，独立时间线页用来串起来）] */
+/* [年份, 行业, 中文, English, 1 首发 / 0 传入 / 2 同行业里程碑, 技术编号（同一技术首发和流向共用，独立时间线页用来串起来）] */
 const CMT = [
   [2000, 'cam', 'CMOS 进单反 · Canon EOS D30', 'CMOS in a DSLR · Canon EOS D30', 1, 'dslr'],
   [2009, 'cam', '背照式 BSI · Sony 摄像机', 'BSI · Sony camcorder', 1, 'bsi'],
@@ -19,6 +19,7 @@ const CMT = [
   [2013, 'phone', '深沟槽隔离 DTI · ISOCELL', 'Deep trench isolation · ISOCELL', 1, 'dti'],
   [2013, 'ind', '全局快门 · Sony Pregius', 'Global shutter · Sony Pregius', 1, 'gs'],
   [2013, 'cam', '全像素双核对焦 · Canon 70D', 'Dual Pixel AF · Canon 70D', 1, 'dpaf'],
+  [2014, 'phone', 'SPAD 测距 · LG G3 激光对焦（ST FlightSense）', 'SPAD ranging · LG G3 laser AF (ST FlightSense)', 1, 'spad'],
   [2014, 'phone', '片上相位对焦 · iPhone 6', 'On-sensor PDAF · iPhone 6', 0, 'pdaf'],
   [2014, 'phone', '1 英寸 · Panasonic CM1', '1-inch · Panasonic CM1', 0, 'inch'],
   [2015, 'cam', '三层堆栈 + DRAM · RX100 IV', '3-layer stack + DRAM · RX100 IV', 1, 'dram'],
@@ -29,7 +30,7 @@ const CMT = [
   [2017, 'cam', '堆栈全画幅 · α9', 'Full-frame stacked · α9', 0, 'stack'],
   [2017, 'phone', '三层堆栈 · Xperia XZs', '3-layer stack · Xperia XZs', 0, 'dram'],
   [2018, 'phone', '四合一 Quad Bayer · P20 Pro', 'Quad Bayer · P20 Pro', 1, 'quad'],
-  [2020, 'phone', 'SPAD LiDAR · iPhone 12 Pro', 'SPAD LiDAR · iPhone 12 Pro', 1, 'spad'],
+  [2020, 'phone', 'SPAD LiDAR · iPhone 12 Pro', 'SPAD LiDAR · iPhone 12 Pro', 2, 'spad'],
   [2020, 'ind', '片上 AI 视觉传感器 · IMX500', 'On-sensor AI vision sensor · IMX500', 1, 'ai'],
   [2020, 'ind', 'InGaAs 短波红外 + Cu-Cu · IMX990', 'InGaAs SWIR + Cu-Cu · IMX990', 1, 'swir'],
   [2021, 'ind', '事件传感器 · IMX636', 'Event sensor · IMX636', 1, 'event'],
@@ -37,8 +38,11 @@ const CMT = [
   [2022, 'auto', 'SPAD 车载 LiDAR · IMX459', 'SPAD automotive LiDAR · IMX459', 0, 'spad'],
   [2023, 'auto', 'LOFIC 单次曝光 HDR · OX08D10', 'LOFIC single-exposure HDR · OX08D10', 1, 'lofic'],
   [2023, 'phone', '双层晶体管像素 · Xperia 1 V', 'Two-layer transistor pixel · Xperia 1 V', 1, 'twolayer'],
+  [2022, 'phone', '超构透镜 metalens · ST ToF 模组（Metalenz）', 'Metalens · ST ToF module (Metalenz)', 1, 'meta'],
+  [2023, 'auto', 'SPAD 监控相机 · Canon MS-500', 'SPAD surveillance camera · Canon MS-500', 0, 'spad'],
   [2023, 'cam', '全局快门全画幅 · α9 III', 'Full-frame global shutter · α9 III', 0, 'gs'],
   [2024, 'phone', 'LOFIC · OV50K40', 'LOFIC · OV50K40', 0, 'lofic'],
+  [2024, 'phone', '偏振超构表面人脸解锁 · Polar ID 采用三星 ISOCELL Vizion 931（发布）', 'Polarization metasurface face unlock · Polar ID with Samsung ISOCELL Vizion 931 (announced)', 2, 'meta'],
 ];
 
 /* 每项技术一句话说明（独立时间线页 cmos-timeline.html 用） */
@@ -56,7 +60,8 @@ const CMT_DESC = {
   cucu: ['两片晶圆的每个连接点直接铜对铜键合，取代 TSV。', 'Direct copper-to-copper bonds join the wafers, replacing TSVs.'],
   lfm: ['分裂像素 + HDR，拍 LED 红绿灯和车灯不再闪烁。', 'Split pixel plus HDR: LED traffic lights and headlights no longer flicker.'],
   quad: ['四个同色小像素一组，暗处合并、亮处拆开。', 'Four same-colour small pixels per group: binned in the dark, split in bright light.'],
-  spad: ['单光子雪崩二极管测光的飞行时间，直接得到距离。', 'Single-photon avalanche diodes time light directly to get distance.'],
+  spad: ['单光子雪崩二极管测光的飞行时间，直接得到距离；先做手机激光对焦，再到 LiDAR、车载和夜视监控。', 'Single-photon avalanche diodes time light to get distance: phone laser AF first, then LiDAR, cars and night surveillance.'],
+  meta: ['一层纳米柱靠相位聚焦，取代多片小镜片；先量产在单波长红外 ToF 模组里。', 'A single layer of nanopillars focuses by phase, replacing several small lenses; first shipped in single-wavelength IR ToF modules.'],
   ai: ['传感器下层直接放 AI 处理器，只输出识别结果。', 'An AI processor in the sensor stack outputs results instead of images.'],
   swir: ['InGaAs 感光层和硅读出电路铜铜键合，看见短波红外。', 'InGaAs photodiodes Cu-Cu bonded to silicon readout to see short-wave infrared.'],
   event: ['像素只在亮度变化时输出事件，没有帧的概念。', 'Pixels output events only when brightness changes; no frames at all.'],
@@ -67,12 +72,12 @@ const CMT_DESC = {
 function renderCmosTl() {
   const el = document.getElementById('cmostl'), en = getLang() === 'en';
   if (!el) return;
-  const years = [...new Set(CMT.map(r => r[0]))];
-  const cnt = k => CMT.filter(r => r[1] === k && r[4]).length;
-  el.innerHTML = `<p class="cap">${en ? 'Which industry shipped each CMOS technology first. Solid = first in this industry; hollow → = spread here later.' : '每项 CMOS 技术最先在哪个行业量产。实心 = 首发；空心 → = 之后传到这个行业。'} <a href="cmos-timeline.html" target="_blank" rel="noopener">${en ? 'Full-page timeline ↗' : '全屏时间线 ↗'}</a></p>
+  const years = [...new Set(CMT.map(r => r[0]))].sort((a, b) => a - b);
+  const cnt = k => CMT.filter(r => r[1] === k && r[4] === 1).length;
+  el.innerHTML = `<p class="cap">${en ? 'Which industry shipped each CMOS technology first. Solid = first in this industry; hollow → = spread here later; ◆ = later milestone in the same industry.' : '每项 CMOS 技术最先在哪个行业量产。实心 = 首发；空心 → = 之后传到这个行业；◆ = 同一行业后来的里程碑。'} <a href="cmos-timeline.html" target="_blank" rel="noopener">${en ? 'Full-page timeline ↗' : '全屏时间线 ↗'}</a></p>
     <div class="cmt" role="table" aria-label="${en ? 'CMOS technology first-adopter timeline' : 'CMOS 技术首发行业时间线'}">
       <div class="cmt-row cmt-head" role="row"><span role="columnheader"></span>${CMT_LANES.map(l => `<span role="columnheader" class="cmt-${l.k}">${en ? l.en : l.zh}<small>${cnt(l.k)} ${en ? 'firsts' : '项首发'}</small></span>`).join('')}</div>
-      ${years.map(y => `<div class="cmt-row" role="row"><b role="rowheader">${y}</b>${CMT_LANES.map(l => `<span role="cell">${CMT.filter(r => r[0] === y && r[1] === l.k).map(r => `<i class="cmt-chip cmt-${l.k}${r[4] ? ' first' : ''}">${r[4] ? '' : '→ '}${en ? r[3] : r[2]}</i>`).join('')}</span>`).join('')}</div>`).join('')}
+      ${years.map(y => `<div class="cmt-row" role="row"><b role="rowheader">${y}</b>${CMT_LANES.map(l => `<span role="cell">${CMT.filter(r => r[0] === y && r[1] === l.k).map(r => `<i class="cmt-chip cmt-${l.k}${r[4] === 1 ? ' first' : ''}">${['→ ', '', '◆ '][r[4]]}${en ? r[3] : r[2]}</i>`).join('')}</span>`).join('')}</div>`).join('')}
     </div>`;
 }
 renderCmosTl();
