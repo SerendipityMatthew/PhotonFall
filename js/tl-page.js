@@ -1,6 +1,6 @@
 /* 独立全屏时间线页（cmos-timeline.html、lens-timeline.html 共用）：<body data-tl="cmos|lens"> 选主题，
    数据由 js/cmostl.js / js/lenstl.js 登记到 TIMELINES（js/tl-core.js）。语言跟主站共用 localStorage。 */
-const D = TIMELINES[document.body.dataset.tl], ROWS = D.rows, LANES = D.lanes, DESC = D.desc;
+const D = TIMELINES[document.body.dataset.tl], ROWS = tlNormalize(D.rows), LANES = D.lanes, DESC = D.desc;
 const T = {
   zh: {hint: '点上面的行业可以只看它', solid: '首发', hollow: '之后传入', ms: '里程碑', first: '首发', flw: '传入', to: '之后传到', from: '首发于',
        firsts: '项首发', home: '⌂ 回首页', lang: 'EN'},
@@ -9,7 +9,7 @@ const T = {
 };
 const on = new Set(LANES.map(l => l.k));
 const lane = k => LANES.find(l => l.k === k);
-const id = r => `${r[5]}-${r[1]}-${r[0]}`;
+const id = r => `${r[5]}-${r[1]}-${r[0]}` + (ROWS.filter(x => x[5] === r[5] && x[1] === r[1] && x[0] === r[0]).indexOf(r) || '');   // 同技术同行业同年的第二张卡加 -1
 
 function render() {
   const en = getLang() === 'en', t = {...T[en ? 'en' : 'zh'], ...D.text[en ? 'en' : 'zh']}, L = l => en ? l.en : l.zh;
@@ -27,7 +27,8 @@ function render() {
     for (const r of ROWS.filter(r => r[0] === y)) {
       const [name, prod] = (en ? r[3] : r[2]).split(' · '), l = lane(r[1]), first = r[4] === 1, ms = r[4] === 2;
       const rel = ROWS.filter(x => x[5] === r[5] && x !== r && (first ? x[4] !== 1 : x[4] === 1));
-      const links = rel.map(x => `<a href="#${id(x)}" style="--cc:var(--${x[1]})">${L(lane(x[1]))} ${x[0]}</a>`).join('');
+      const links = rel.filter((x, i) => rel.findIndex(y => y[1] === x[1] && y[0] === x[0]) === i)   // 同行业同年只留第一个
+        .map(x => `<a href="#${id(x)}" style="--cc:var(--${x[1]})">${L(lane(x[1]))} ${x[0]}</a>`).join('');
       html += `<li class="it ${side++ % 2 ? 'r' : ''} ${first ? 'first' : ''}" id="${id(r)}" data-k="${r[1]}" style="--c:var(--${r[1]})"><div class="card">
         <span class="tag"><em>${L(l)}</em><em class="${first ? '' : 'flw'}">${first ? t.first : ms ? '◆ ' + t.ms : '→ ' + t.flw}</em></span>
         <h3>${name}</h3><p class="prod">${prod || ''}</p>
