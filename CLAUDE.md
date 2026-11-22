@@ -10,7 +10,7 @@
 
 ## 验证
 
-- 每次改 `js/steps.js`、`js/evolution.js`、`js/route.js`、`js/layout.js` 之后跑 `node tests/check.js`，9 项都要过。
+- 每次改 `js/steps.js`、`js/evolution.js`、`js/route.js`、`js/layout.js` 之后跑 `node tests/check.js`，10 项都要过。
 - 改了 3D 场景或 UI 之后，起本地 server（见 `.claude/launch.json`）在浏览器里真打开确认。
 - 浏览器 HTTP 缓存会咬人，改完 JS 没生效就换端口再起。
 

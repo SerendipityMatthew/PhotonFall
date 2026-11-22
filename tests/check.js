@@ -155,6 +155,17 @@ check('layout: locText', () => {
   assert.strictEqual(ctx.locText(36, S, C), '6 周边 · 第 10/10 步');
   assert.strictEqual(ctx.locShort(16, S, C), '3 像素 · 2/3');
 });
+check('html: no inline scripts (CSP)', () => {
+  const fs = require('fs'), path = require('path'), root = path.join(__dirname, '..');
+  for (const f of fs.readdirSync(root).filter(f => f.endsWith('.html'))) {
+    const html = fs.readFileSync(path.join(root, f), 'utf8');
+    for (const m of html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/g)) {
+      if (/type=["']application\/ld\+json/.test(m[1])) continue;   // JSON-LD 不执行，CSP 不管
+      assert.ok(!m[2].trim(), `${f}: inline <script> is blocked by the CSP in _headers; move it to a js/ file`);
+    }
+  }
+});
+
 check('layout: fig', () => {
   const want = {1:'vffig',2:'vffig',3:'vffig',4:'pdc',5:'vffig',6:'vffig',7:'vffig',8:'reflc',9:'vffig',10:'ibc',12:'spec',16:'pot',17:'pot',22:'snr',23:'dnwrap',24:'adcc',25:'shc',26:'i8fig'};
   ctx.STEPS.forEach((s, i) => assert.strictEqual(s.fig, want[i], `step ${i} fig`));
