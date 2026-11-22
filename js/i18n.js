@@ -104,6 +104,7 @@ function applyLang() {
   if (typeof renderLensDb === 'function') renderLensDb();
   if (typeof syncMotorBtns === 'function') syncMotorBtns();
   if (typeof renderLanding === 'function') renderLanding();
+  if (typeof renderCmosTl === 'function') renderCmosTl();
   /* 当前若在 quiz 视图，重渲染 */
   const qv = document.getElementById('quizview');
   if (qv && !qv.hidden) {
