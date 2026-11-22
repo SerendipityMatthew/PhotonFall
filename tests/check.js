@@ -158,7 +158,7 @@ check('layout: locText', () => {
 check('layout: fig', () => {
   const want = {1:'vffig',2:'vffig',3:'vffig',4:'pdc',5:'vffig',6:'vffig',7:'vffig',8:'reflc',9:'vffig',10:'ibc',12:'spec',16:'pot',17:'pot',22:'snr',23:'dnwrap',24:'adcc',25:'shc',26:'i8fig'};
   ctx.STEPS.forEach((s, i) => assert.strictEqual(s.fig, want[i], `step ${i} fig`));
-  assert.strictEqual(ctx.CARD_CTL.length, 21);
+  assert.strictEqual(ctx.CARD_CTL.length, 22);
 });
 
 // ---------------------------------------------------------------------------

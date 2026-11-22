@@ -30,6 +30,8 @@ const I18N = {
     motorHint: '点上面「对到前景 / 主体 / 背景灯」或拖「对焦距离」，看马达怎么把对焦组推过去；默认是当前镜头用的马达。',
     motXD: 'XD 线性', motDLM: '双线性', motDDSSM: 'DDSSM 超声', motAuto: '自动来回',
     motAria: '对焦马达模拟：马达结构剖面和对焦组位置随时间变化',
+    spadHint: 'SPAD 像素放慢 2.5 百万倍：绿点是被计到的光子，空心是死时间里丢掉的。把光调强，看计数怎么饱和。',
+    spadRate: '入射光子', spadAria: 'SPAD 模拟：光子到达、节点电压、死时间，以及计数率随入射率饱和的曲线',
   },
   en: {
     menu: 'Menu', timeline: 'Timeline', labels: 'Labels', help: 'Help',
@@ -60,6 +62,8 @@ const I18N = {
     motorHint: 'Click "Focus on foreground / subject / background lights" above, or drag the focus slider, to watch the motor push the focus group. Defaults to the current lens\'s motor.',
     motXD: 'XD linear', motDLM: 'Double linear', motDDSSM: 'DDSSM piezo', motAuto: 'Auto back-and-forth',
     motAria: 'Focus motor simulator: motor cross-section and focus-group position over time',
+    spadHint: 'A SPAD pixel slowed 2.5 million times: green dots are counted photons, hollow ones arrived during dead time and were lost. Turn the light up to watch counting saturate.',
+    spadRate: 'Incident photons', spadAria: 'SPAD simulator: photon arrivals, node voltage, dead time, and count rate saturating with incident rate',
   },
 };
 
