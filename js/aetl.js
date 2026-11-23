@@ -55,8 +55,9 @@ TIMELINES.ae = {
     [2017, "phone", "AI 场景识别定曝光 · Huawei Mate 10", "AI scene recognition for exposure · Huawei Mate 10", 0, "scene"],
     [2018, "cam", "无反双原生 ISO · Panasonic GH5S", "Dual native ISO in mirrorless · Panasonic GH5S", 2, "dcg"],
     [2019, "auto", "HDR 与 LFM 同时 140dB（约） · OmniVision OX03C10", "HDR plus LFM at 140 dB (approx.) · OmniVision OX03C10", 2, "lfm"],
+    [2019, "phone", "手机双转换增益 Smart-ISO · Samsung ISOCELL GW1（Redmi Note 8 Pro）", "Phone dual conversion gain Smart-ISO · Samsung ISOCELL GW1 (Redmi Note 8 Pro)", 0, "dcg"],
     [2020, "cam", "全画幅电子可变 ND · Sony FX6", "Full-frame electronic variable ND · Sony FX6", 2, "vnd"],
-    [2021, "phone", "手机双转换增益 · Samsung ISOCELL GN2（Xiaomi Mi 11 Ultra）", "Phone dual conversion gain · Samsung ISOCELL GN2 (Xiaomi Mi 11 Ultra)", 0, "dcg"],
+    [2021, "phone", "同帧双转换增益 · Samsung ISOCELL GN2（Xiaomi Mi 11 Ultra）", "Same-frame dual conversion gain · Samsung ISOCELL GN2 (Xiaomi Mi 11 Ultra)", 2, "dcg"],
     [2021, "phone", "频闪传感器（约） · Google Pixel 6 Pro", "Flicker sensor (approx.) · Google Pixel 6 Pro", 0, "flicker"],
   ],
   desc: {

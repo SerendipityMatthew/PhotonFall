@@ -825,7 +825,7 @@ body:has(#drawer:not([hidden])) #topbar{right:calc(var(--drawer-w) + var(--sidet
 .cmt-head span{font-weight:700;text-align:center;padding:0.25rem 2px;border-radius:0.375rem;color:#fff}
 .cmt-head small{display:block;font-weight:400;font-size:0.625rem;opacity:.9}
 .cmt-head .cmt-phone{background:var(--c-phone)}.cmt-head .cmt-auto{background:var(--c-auto)}.cmt-head .cmt-ind{background:var(--c-ind)}.cmt-head .cmt-cam{background:var(--c-cam)}
-.cmt-chip{display:block;font-style:normal;padding:3px 0.3125rem;border-radius:0.3125rem;border:1.5px solid var(--cc);color:var(--ink);background:var(--card);word-break:break-word}
+.cmt-chip{display:block;text-decoration:none;font-style:normal;padding:3px 0.3125rem;border-radius:0.3125rem;border:1.5px solid var(--cc);color:var(--ink);background:var(--card);word-break:break-word}
 .cmt-chip.first{background:var(--cc);border-color:var(--cc);color:#fff;font-weight:600}
 .cmt-chip.cmt-phone{--cc:var(--c-phone)}.cmt-chip.cmt-auto{--cc:var(--c-auto)}.cmt-chip.cmt-ind{--cc:var(--c-ind)}.cmt-chip.cmt-cam{--cc:var(--c-cam)}
 

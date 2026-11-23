@@ -607,11 +607,11 @@ const STEPS=[
 <tr><td>Deep trench isolation (DTI)</td><td><b>Phones</b>: Samsung ISOCELL (2013)</td><td>Small pixels in every market</td></tr>
 <tr><td>On-sensor phase-detect pixels</td><td><b>Cameras</b>: Fujifilm F300EXR (2010)</td><td>Phones: iPhone 6 Focus Pixels (2014)</td></tr>
 <tr><td>Dual Pixel AF</td><td><b>Cameras</b>: Canon EOS 70D (2013)</td><td>Phones: Galaxy S7 (2016)</td></tr>
-<tr><td>Quad Bayer</td><td><b>Phones</b>: Huawei P20 Pro (2018)</td><td>Mostly stayed in phones</td></tr>
+<tr><td>Quad Bayer</td><td><b>Security</b>: Sony IMX294 (2017)</td><td>Phones: Huawei P20 Pro (2018) → drones: DJI Mini 3 Pro (2022)</td></tr>
 <tr><td>1-inch sensor</td><td><b>Cameras</b>: Sony RX100 (2012)</td><td>Phones: Panasonic CM1 (2014), Xiaomi 12S Ultra (2022)</td></tr>
 <tr><td>HDR + LED flicker mitigation pixel</td><td><b>Cars</b>: Sony IMX390 (2017, 120 dB)</td><td>Security, later into phones as LOFIC</td></tr>
 <tr><td>LOFIC single-exposure HDR</td><td><b>Cars</b>: OmniVision OX08D10 (2023, TheiaCel)</td><td>Phones: OV50K40 (2024) → Sony LYTIA L910 (2026)</td></tr>
-<tr><td>Dual conversion gain (DCG)</td><td><b>Security / cars</b>: Aptina DR-Pix (around 2010–2012)</td><td>Cameras' "dual native ISO" → phones: Samsung GN2 (2021)</td></tr>
+<tr><td>Dual conversion gain (DCG)</td><td><b>Security / cars</b>: Aptina DR-Pix (around 2010–2012)</td><td>Cameras: Nikon 1 (2011) → "dual native ISO" → phones: Samsung GW1 (2019)</td></tr>
 <tr><td>Global shutter</td><td><b>Automotive / industrial</b>: Micron MT9V022 (2005, TrueSNAP)</td><td>Industrial Sony Pregius (2013) → cinema RED Komodo 6K (2020) → full-frame α9 III (2023)</td></tr>
 <tr><td>Two-layer transistor pixel</td><td><b>Phones</b>: Sony Exmor T, Xperia 1 V (2023)</td><td>Not widely spread yet</td></tr>
 <tr><td>SPAD dToF ranging</td><td><b>Phones</b>: Proximity / laser-AF modules (mid-2010s), iPhone 12 Pro LiDAR (2020)</td><td>Cars: IMX459 (2022)</td></tr>
@@ -714,11 +714,11 @@ const STEPS=[
 <tr><td>深沟槽隔离 DTI</td><td><b>手机</b>：Samsung ISOCELL（2013）</td><td>各市场的小像素</td></tr>
 <tr><td>片上相位对焦像素</td><td><b>相机</b>：Fujifilm F300EXR（2010）</td><td>手机 iPhone 6 Focus Pixels（2014）</td></tr>
 <tr><td>全像素双核对焦</td><td><b>相机</b>：Canon EOS 70D（2013）</td><td>手机 Galaxy S7（2016）</td></tr>
-<tr><td>四合一 Quad Bayer</td><td><b>手机</b>：Huawei P20 Pro（2018）</td><td>基本留在手机</td></tr>
+<tr><td>四合一 Quad Bayer</td><td><b>安防</b>：Sony IMX294（2017）</td><td>手机 Huawei P20 Pro（2018）→ 无人机 DJI Mini 3 Pro（2022）</td></tr>
 <tr><td>1 英寸大底</td><td><b>相机</b>：Sony RX100（2012）</td><td>手机 Panasonic CM1（2014）、小米 12S Ultra（2022）</td></tr>
 <tr><td>HDR + LED 防闪烁像素</td><td><b>汽车</b>：Sony IMX390（2017，120 dB）</td><td>安防，之后以 LOFIC 形式进手机</td></tr>
 <tr><td>LOFIC 单次曝光 HDR</td><td><b>汽车</b>：OmniVision OX08D10（2023，TheiaCel）</td><td>手机 OV50K40（2024）→ Sony LYTIA L910（2026）</td></tr>
-<tr><td>双转换增益 DCG</td><td><b>安防 / 汽车</b>：Aptina DR-Pix（约 2010–2012）</td><td>相机「双原生 ISO」→ 手机 Samsung GN2（2021）</td></tr>
+<tr><td>双转换增益 DCG</td><td><b>安防 / 汽车</b>：Aptina DR-Pix（约 2010–2012）</td><td>相机 Nikon 1（2011）→「双原生 ISO」→ 手机 Samsung GW1（2019）</td></tr>
 <tr><td>全局快门</td><td><b>汽车 / 工业</b>：Micron MT9V022（2005，TrueSNAP）</td><td>工业 Sony Pregius（2013）→ 电影机 RED Komodo 6K（2020）→ 全画幅相机 α9 III（2023）</td></tr>
 <tr><td>双层晶体管像素</td><td><b>手机</b>：Sony Exmor T，Xperia 1 V（2023）</td><td>尚未大规模扩散</td></tr>
 <tr><td>SPAD dToF 测距</td><td><b>手机</b>：手机接近 / 激光对焦模组（2010 年代中期），iPhone 12 Pro LiDAR（2020）</td><td>汽车 IMX459（2022）</td></tr>
