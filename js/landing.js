@@ -6,11 +6,11 @@ const LANDING = !location.hash || location.hash === '#' || location.hash === '#/
 const LTXT = {
   zh: {eyebrow: '交互式 3D 成像科学讲解', tag: '跟着一颗光子，<br>走完从景物到照片的全过程。',
        sub: '镜头怎么聚光，像素怎么把光变成电，电路怎么把电变成数字，ISP 怎么算出颜色。每一步都看得见、点得动。',
-       go: '开始旅程', quiz: '🎯 测验', tl: '🕰 时间轴', tls: '技术演化时间线', tlx: ['📈 CMOS', '🔭 镜头', '🧠 ISP', '💾 存储', '🖥 显示', '🎬 视频', '🪄 计算摄影', '🎨 人眼与色彩', '📉 噪声'], lang: 'EN',
+       go: '开始旅程', quiz: '🎯 测验', tl: '🕰 时间轴', tls: '技术演化时间线', tlx: ['📈 CMOS', '🔭 镜头', '🧠 ISP', '💾 存储', '🖥 显示', '🎬 视频', '🪄 计算摄影', '🎨 人眼与色彩', '📉 噪声', '⏱ 快门'], lang: 'EN',
        stats: ['步', '章', '道测验题', '支真实镜头'], ch: '直接跳到某一章', hint: '光子穿过镜头，只有滤色片颜色对得上的像素才会亮'},
   en: {eyebrow: 'Interactive 3D imaging science', tag: 'Follow one photon<br>from the scene to the photo.',
        sub: 'How a lens gathers light, how a pixel turns light into charge, how circuits turn charge into numbers, and how the ISP computes color. Every step is visible and clickable.',
-       go: 'Start the journey', quiz: '🎯 Quiz', tl: '🕰 Timeline', tls: 'Technology timelines', tlx: ['📈 CMOS', '🔭 Lens', '🧠 ISP', '💾 Storage', '🖥 Display', '🎬 Video', '🪄 Computational', '🎨 Vision & color', '📉 Noise'], lang: '中',
+       go: 'Start the journey', quiz: '🎯 Quiz', tl: '🕰 Timeline', tls: 'Technology timelines', tlx: ['📈 CMOS', '🔭 Lens', '🧠 ISP', '💾 Storage', '🖥 Display', '🎬 Video', '🪄 Computational', '🎨 Vision & color', '📉 Noise', '⏱ Shutter'], lang: '中',
        stats: ['steps', 'chapters', 'quiz questions', 'real lenses'], ch: 'Jump to a chapter', hint: 'Photons pass the lens; a pixel lights only when its color filter matches'},
 };
 
@@ -31,7 +31,7 @@ function renderLanding() {
       <button type="button" data-go="timeline">${T.tl}</button>
       <button type="button" data-go="lang" aria-label="${en ? 'Switch language: 中文' : '切换语言：English'}">${T.lang}</button>
     </div>
-    <nav class="lp-tls" aria-label="${T.tls}"><span>${T.tls}</span>${['cmos', 'lens', 'isp', 'storage', 'display', 'video', 'comp', 'color', 'noise'].map((f, i) => `<a href="${f}-timeline.html">${T.tlx[i]}</a>`).join('')}</nav>
+    <nav class="lp-tls" aria-label="${T.tls}"><span>${T.tls}</span>${['cmos', 'lens', 'isp', 'storage', 'display', 'video', 'comp', 'color', 'noise', 'shutter'].map((f, i) => `<a href="${f}-timeline.html">${T.tlx[i]}</a>`).join('')}</nav>
     <ul class="lp-stats">${nums.map((n, i) => `<li><b>${n}</b><span>${T.stats[i]}</span></li>`).join('')}</ul>
     <nav class="lp-ch" aria-label="${T.ch}">${CHAPTERS.map((c, i) => `<button type="button" data-go="step:${first[i]}"><i>${String(i).padStart(2, '0')}</i>${en ? c.nameEn : c.name}</button>`).join('')}</nav>
     <p class="lp-hint">${T.hint}</p>`;
