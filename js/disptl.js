@@ -1,6 +1,6 @@
 /* 显示技术首发时间线的数据：第 31 步抽屉小图和 display-timeline.html 共用，渲染在 js/tl-core.js / js/tl-page.js。
    行：[年份, 行业, 中文, English, 1 首发 / 0 传入 / 2 同行业里程碑, 技术编号]。「首发」= 第一次进入量产 / 商用产品。
-   资料由子代理联网核对后整理（来源见 refs）；只找到间接来源的年份标了「约」。HUD 只算民用车载（飞机 HUD 更早，不在这四个行业里）。 */
+   资料由子代理联网核对后整理（来源见 refs）；只找到间接来源的年份标了「约」。HUD 只算民用车载（飞机 HUD 更早，不在这四个行业里）。P3 首发和人眼与色彩时间线一致，记为 1999 年 DLP Cinema 数字影院放映。 */
 TIMELINES.disp = {
   lanes: [
     {k: 'phone', zh: '手机', en: 'Phones'},
@@ -19,6 +19,7 @@ TIMELINES.disp = {
     [1995, "cam", "TFT 彩色液晶 · Casio QV-10 首款带背屏数码相机", "TFT color LCD · Casio QV-10, first digital camera with rear LCD", 2, "tft"],
     [1996, "ind", "IPS 广视角 · Hitachi 13.3 英寸 Super TFT 显示器", "IPS wide viewing angle · Hitachi 13.3-inch Super TFT monitor", 1, "ips"],
     [1997, "auto", "OLED · Pioneer 车载 FM 文字广播接收机", "OLED · Pioneer in-car FM teletext receiver", 1, "oled"],
+    [1999, "ind", "P3 色域 · TI DLP Cinema 数字影院放映（约）", "P3 gamut · TI DLP Cinema digital projection (approx.)", 1, "p3"],
     [2000, "phone", "TFT 彩色液晶 · Sharp J-SH05 6.5 万色手机", "TFT color LCD · Sharp J-SH05 65k-color phone", 0, "tft"],
     [2002, "phone", "OLED 外屏 · Fujitsu F504i（约）", "OLED sub-display · Fujitsu F504i (approx.)", 0, "oled"],
     [2003, "cam", "AMOLED · Kodak EasyShare LS633", "AMOLED · Kodak EasyShare LS633", 0, "oled"],
@@ -41,7 +42,7 @@ TIMELINES.disp = {
     [2013, "ind", "量子点 · Sony BRAVIA Triluminos 电视", "Quantum dot · Sony BRAVIA Triluminos TV", 1, "qd"],
     [2013, "phone", "柔性 OLED · Samsung Galaxy Round", "Flexible OLED · Samsung Galaxy Round", 1, "flex"],
     [2014, "ind", "柔性 OLED · Samsung Gear Fit 手环", "Flexible OLED · Samsung Gear Fit band", 0, "flex"],
-    [2015, "ind", "DCI-P3 广色域 · iMac 5K（2015 年末）", "DCI-P3 wide gamut · iMac 5K (late 2015)", 1, "p3"],
+    [2015, "ind", "DCI-P3 广色域 · iMac 5K（2015 年末）", "DCI-P3 wide gamut · iMac 5K (late 2015)", 2, "p3"],
     [2015, "ind", "HDR 显示 · Vizio Reference Series（Dolby Vision）", "HDR display · Vizio Reference Series (Dolby Vision)", 1, "hdr"],
     [2015, "phone", "120 Hz 高刷 · Sharp AQUOS ZETA SH-01H", "120 Hz refresh · Sharp AQUOS ZETA SH-01H", 0, "hrr"],
     [2016, "phone", "DCI-P3 广色域 · iPhone 7", "DCI-P3 wide gamut · iPhone 7", 0, "p3"],
