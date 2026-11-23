@@ -21,7 +21,7 @@ const CMT = [
   [2013, 'ind', '全局快门 · Sony Pregius', 'Global shutter · Sony Pregius', 0, 'gs'],
   [2013, 'cam', '全像素双核对焦 · Canon 70D', 'Dual Pixel AF · Canon 70D', 1, 'dpaf'],
   [2014, 'phone', 'SPAD 测距 · LG G3 激光对焦（ST FlightSense）', 'SPAD ranging · LG G3 laser AF (ST FlightSense)', 1, 'spad'],
-  [2014, 'phone', '片上相位对焦 · iPhone 6', 'On-sensor PDAF · iPhone 6', 0, 'pdaf'],
+  [2014, 'phone', '片上相位对焦 · Galaxy S5 / iPhone 6', 'On-sensor PDAF · Galaxy S5 / iPhone 6', 0, 'pdaf'],
   [2014, 'phone', '1 英寸 · Panasonic CM1', '1-inch · Panasonic CM1', 0, 'inch'],
   [2015, 'cam', '三层堆栈 + DRAM · RX100 IV', '3-layer stack + DRAM · RX100 IV', 1, 'dram'],
   [2015, 'cam', 'BSI 全画幅 · α7R II', 'Full-frame BSI · α7R II', 2, 'bsi'],
