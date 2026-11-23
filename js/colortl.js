@@ -17,7 +17,7 @@ TIMELINES.color = {
     [1998, "ind", "sRGB 默认色彩空间 · Windows 98 ICM 2.0", "sRGB as default color space · Windows 98 ICM 2.0", 1, "srgb"],
     [1998, "ind", "Adobe RGB (1998) · Photoshop 5.0", "Adobe RGB (1998) · Photoshop 5.0", 1, "argb"],
     [1998, "cam", "sRGB 标准色彩空间 · Exif 2.1 / DCF 数码相机（约）", "sRGB standard color space · Exif 2.1 / DCF cameras (approx.)", 0, "srgb"],
-    [1999, "ind", "P3 色域数字放映 · TI DLP Cinema（星战前传一）（约）", "P3-gamut digital projection · TI DLP Cinema (Star Wars Episode I) (approx.)", 1, "p3"],
+    [2005, "ind", "DCI-P3 色域 · DCI 数字影院规范 v1.0", "DCI-P3 gamut · DCI Digital Cinema System Spec v1.0", 1, "p3"],
     [2000, "phone", "Bayer 彩色 CMOS · Sharp J-SH04", "Bayer color CMOS · Sharp J-SH04", 0, "cfa"],
     [2000, "phone", "自动白平衡 · Sharp J-SH04（约）", "Auto white balance · Sharp J-SH04 (approx.)", 0, "awb"],
     [2001, "cam", "Adobe RGB 可选色彩空间 · Nikon D1X", "Selectable Adobe RGB · Nikon D1X", 0, "argb"],
