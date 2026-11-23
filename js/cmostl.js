@@ -14,7 +14,7 @@ const CMT = [
   [2009, 'cam', '背照式 BSI · Sony 摄像机', 'BSI · Sony camcorder', 1, 'bsi'],
   [2010, 'cam', '片上相位对焦 · Fujifilm F300EXR', 'On-sensor PDAF · Fujifilm F300EXR', 1, 'pdaf'],
   [2010, 'phone', 'BSI · iPhone 4', 'BSI · iPhone 4', 0, 'bsi'],
-  [2011, 'auto', '双转换增益 DCG · Aptina DR-Pix（约）', 'Dual conversion gain · Aptina DR-Pix (approx.)', 1, 'dcg'],
+  [2010, 'auto', '双转换增益 DCG · Aptina DR-Pix（约）', 'Dual conversion gain · Aptina DR-Pix (approx.)', 1, 'dcg'],
   [2012, 'cam', '1 英寸大底 · RX100', '1-inch sensor · RX100', 1, 'inch'],
   [2013, 'phone', '堆栈式 · Xperia Z', 'Stacked · Xperia Z', 1, 'stack'],
   [2013, 'phone', '深沟槽隔离 DTI · ISOCELL', 'Deep trench isolation · ISOCELL', 1, 'dti'],
