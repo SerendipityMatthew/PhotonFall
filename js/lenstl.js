@@ -11,13 +11,14 @@ TIMELINES.lens = {
   rows: [
     [1880, "cam", "虹膜式可变光圈（约） · 摄影镜头量产光圈", "Iris diaphragm (approx.) · mass-produced photographic lenses", 1, "iris"],
     [1886, "ind", "复消色差物镜（萤石/特种玻璃） · 蔡司 Abbe Apochromat 显微镜物镜", "Apochromatic objective (fluorite/special glass) · Zeiss Abbe Apochromat microscope objective", 1, "lowd"],
-    [1924, "ind", "180 度鱼眼 · Hill Sky Lens 云层相机", "180-degree fisheye · Hill Sky Lens cloud camera", 1, "fish"],
+    [1923, "ind", "180 度鱼眼 · Hill Sky Lens 云层相机", "180-degree fisheye · Hill Sky Lens cloud camera", 1, "fish"],
     [1932, "cam", "电影变焦镜头 · Bell & Howell Cooke Varo 40-120mm", "Cine zoom lens · Bell & Howell Cooke Varo 40-120mm", 1, "zoom"],
     [1937, "ind", "单层增透镀膜（约） · 蔡司 T 镀膜军用光学", "Single-layer AR coating (approx.) · Zeiss T-coated military optics", 1, "coat"],
-    [1939, "cam", "单层增透镀膜 · 蔡司镀膜镜头公开上市", "Single-layer AR coating · Zeiss coated lenses on public market", 0, "coat"],
+    [1939, "cam", "单层增透镀膜 · 蔡司镀膜镜头公开上市（约）", "Single-layer AR coating · Zeiss coated lenses on public market (approx.)", 0, "coat"],
     [1959, "cam", "35mm 静态相机变焦 · Voigtländer Zoomar 36-82mm", "35mm still-camera zoom · Voigtländer Zoomar 36-82mm", 2, "zoom"],
     [1962, "cam", "35mm 量产鱼眼 · Fisheye-Nikkor 8mm f/8", "Mass-produced 35mm fisheye · Fisheye-Nikkor 8mm f/8", 0, "fish"],
-    [1966, "cam", "手工研磨非球面 · Leica Noctilux 50mm f/1.2", "Hand-ground aspherical elements · Leica Noctilux 50mm f/1.2", 1, "asph"],
+    [1956, "cam", "量产非球面镜片 · Elgeet Golden Navitar 12mm f/1.2（16mm 电影镜头）", "Mass-produced aspherical element · Elgeet Golden Navitar 12mm f/1.2 (16mm cine)", 1, "asph"],
+    [1966, "cam", "35mm 量产非球面 · Leica Noctilux 50mm f/1.2", "First 35mm still lens with aspherics · Leica Noctilux 50mm f/1.2", 2, "asph"],
     [1969, "cam", "合成萤石镜片 · Canon FL-F 300mm f/5.6", "Synthetic fluorite elements · Canon FL-F 300mm f/5.6", 0, "lowd"],
     [1971, "cam", "多层镀膜 · Pentax SMC Takumar", "Multi-layer coating · Pentax Super-Multi-Coated Takumar", 2, "coat"],
     [1972, "cam", "ED 超低色散玻璃 · Nikkor-H 300mm f/2.8", "ED extra-low-dispersion glass · Nikkor-H 300mm f/2.8", 2, "lowd"],
@@ -50,7 +51,7 @@ TIMELINES.lens = {
     [2016, "ind", "液体镜头自动对焦读码器 · Microscan MicroHAWK", "Liquid-lens autofocus barcode reader · Microscan MicroHAWK", 2, "liquid"],
     [2016, "phone", "135 度超广角副摄 · LG G5", "135-degree ultra-wide camera · LG G5", 0, "fish"],
     [2017, "phone", "衍射点阵投射 DOE · iPhone X Face ID", "Diffractive dot projector · iPhone X Face ID", 0, "diff"],
-    [2017, "cam", "自动对焦切趾镜头 · Sony FE 100mm F2.8 STF GM", "Autofocus apodization lens · Sony FE 100mm F2.8 STF GM", 2, "apod"],
+    [2017, "cam", "全画幅自动对焦切趾镜头 · Sony FE 100mm F2.8 STF GM", "Full-frame autofocus apodization lens · Sony FE 100mm F2.8 STF GM", 2, "apod"],
     [2018, "phone", "双光圈 f/1.5 与 f/2.4 · Samsung Galaxy S9", "Dual aperture f/1.5 and f/2.4 · Samsung Galaxy S9", 2, "iris"],
     [2019, "phone", "潜望式 5 倍长焦 · Huawei P30 Pro", "Periscope 5x telephoto · Huawei P30 Pro", 2, "fold"],
     [2019, "ind", "晶圆级医用微型相机 · OmniVision OVM6948", "Wafer-level medical micro camera · OmniVision OVM6948", 0, "wlo"],
@@ -348,7 +349,7 @@ TIMELINES.lens = {
           "u": "https://ethw.org/Milestones:Camcorder_with_Image_Stabilization,_1988"
       }
   ],
-  el: 'lenstl', page: 'lens-timeline.html',
+  el: 'lenstl', page: 'lens-timeline.html', histSrc: 'js/hist-lens.js',
   step: {n: 7, zh: '第 7 步：镜头里的每片镜片', en: 'Step 7: Every element in the lens'},
   text: {
     zh: {title: '镜头技术时间线', eyebrow: 'Lens & Optics · 1880s–2024', h1: '镜头里的技术，谁先用上？',
