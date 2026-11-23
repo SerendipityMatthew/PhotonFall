@@ -25,7 +25,7 @@ function renderTlPanel(key) {
   el.innerHTML = `<p class="cap">${t.panelCap} ${en ? 'Solid = first in this industry; hollow → = spread here later; ◆ = later milestone in the same industry.' : '实心 = 首发；空心 → = 之后传到这个行业；◆ = 同一行业后来的里程碑。'} <a href="${D.page}" target="_blank" rel="noopener">${en ? 'Full-page timeline ↗' : '全屏时间线 ↗'}</a></p>
     <div class="cmt" role="table" aria-label="${t.title}">
       <div class="cmt-row cmt-head" role="row"><span role="columnheader"></span>${D.lanes.map(l => `<span role="columnheader" class="cmt-${l.k}">${en ? l.en : l.zh}<small>${cnt(l.k)} ${en ? 'firsts' : '项首发'}</small></span>`).join('')}</div>
-      ${years.map(y => `<div class="cmt-row" role="row"><b role="rowheader">${y}</b>${D.lanes.map(l => `<span role="cell">${D.rows.filter(r => r[0] === y && r[1] === l.k).map(r => `<i class="cmt-chip cmt-${l.k}${r[4] === 1 ? ' first' : ''}">${['→ ', '', '◆ '][r[4]]}${en ? r[3] : r[2]}</i>`).join('')}</span>`).join('')}</div>`).join('')}
+      ${years.map(y => `<div class="cmt-row" role="row"><b role="rowheader">${y}</b>${D.lanes.map(l => `<span role="cell">${D.rows.filter(r => r[0] === y && r[1] === l.k).map(r => `<a href="${D.page}#h=${r[5]}" class="cmt-chip cmt-${l.k}${r[4] === 1 ? ' first' : ''}">${['→ ', '', '◆ '][r[4]]}${en ? r[3] : r[2]}</a>`).join('')}</span>`).join('')}</div>`).join('')}
     </div>`;
 }
 function renderTlPanels() { Object.keys(TIMELINES).forEach(renderTlPanel); }
