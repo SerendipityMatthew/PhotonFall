@@ -1,6 +1,6 @@
 /* 人眼与色彩技术首发时间线的数据：第 30 步抽屉小图和 color-timeline.html 共用，渲染在 js/tl-core.js / js/tl-page.js。
    行：[年份, 行业, 中文, English, 1 首发 / 0 传入 / 2 同行业里程碑, 技术编号]。「首发」= 第一款实现它的商用产品，不是标准或论文发表的年份。
-   HDR / HLG / PQ / P3 的年份和显示、视频编码时间线一致。资料由子代理联网核对后整理（来源见 refs）；只找到间接来源的年份标了「约」。 */
+   HDR / HLG / PQ / P3 的年份和显示、视频编码时间线一致；色温传感器首发和白平衡时间线一致，是 2003 年 Nikon D2H 的独立环境光传感器。资料由子代理联网核对后整理（来源见 refs）；只找到间接来源的年份标了「约」。 */
 TIMELINES.color = {
   lanes: [
     {k: 'phone', zh: '手机', en: 'Phones'},
@@ -22,6 +22,7 @@ TIMELINES.color = {
     [2000, "phone", "自动白平衡 · Sharp J-SH04（约）", "Auto white balance · Sharp J-SH04 (approx.)", 0, "awb"],
     [2001, "cam", "Adobe RGB 可选色彩空间 · Nikon D1X", "Selectable Adobe RGB · Nikon D1X", 0, "argb"],
     [2003, "cam", "胶片色彩模式 · Fujifilm FinePix F700（Chrome）", "Film-look color mode · Fujifilm FinePix F700 (Chrome)", 1, "film"],
+    [2003, "cam", "独立色温传感器 · Nikon D2H", "Separate ambient color sensor · Nikon D2H", 1, "cct"],
     [2004, "ind", "近 100% Adobe RGB 显示器 · Eizo ColorEdge CG220", "Near-100% Adobe RGB monitor · Eizo ColorEdge CG220", 2, "argb"],
     [2006, "auto", "日夜切换（可移除 IR-cut） · JVC TK-C1430E（约）", "Day/night with removable IR-cut · JVC TK-C1430E (approx.)", 0, "dn"],
     [2009, "ind", "夜间自动暖色温 · f.lux", "Automatic warm night color · f.lux", 1, "night"],
@@ -44,7 +45,7 @@ TIMELINES.color = {
     [2017, "ind", "颜色滤镜 · Windows 10 Fall Creators Update", "Color filters · Windows 10 Fall Creators Update", 0, "cvd"],
     [2017, "phone", "色彩管理 · Android 8.0 Oreo", "Color management · Android 8.0 Oreo", 2, "cms"],
     [2017, "ind", "夜间模式 Night light · Windows 10 Creators Update", "Night light · Windows 10 Creators Update", 2, "night"],
-    [2018, "phone", "色温传感器 · Huawei P20 / P20 Pro", "Color temperature sensor · Huawei P20 / P20 Pro", 1, "cct"],
+    [2018, "phone", "色温传感器 · Huawei P20 / P20 Pro", "Color temperature sensor · Huawei P20 / P20 Pro", 0, "cct"],
     [2018, "ind", "HLG 广播 · NHK BS4K / 8K", "HLG broadcast · NHK BS4K / 8K", 0, "hlg"],
     [2018, "ind", "True Tone · MacBook Pro 2018", "True Tone · MacBook Pro 2018", 2, "tone"],
     [2018, "phone", "学习型白平衡 · Google Pixel 3 Night Sight", "Learning-based AWB · Google Pixel 3 Night Sight", 2, "awb"],
