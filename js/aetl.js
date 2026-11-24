@@ -40,7 +40,7 @@ TIMELINES.ae = {
     [2007, "cam", "场景识别系统 · Nikon D300", "Scene Recognition System · Nikon D300", 2, "scene"],
     [2008, "phone", "人脸识别优先 · Sony Ericsson C902", "Face-priority capture · Sony Ericsson C902", 0, "face"],
     [2008, "cam", "机内波形监视（约） · Panasonic AG-HMC150", "In-camera waveform (approx.) · Panasonic AG-HMC150", 0, "waveform"],
-    [2009, "cam", "机内 HDR 合成 · Pentax K-7", "In-camera HDR merge · Pentax K-7", 1, "hdr"],
+    [2009, "cam", "机内 HDR 合成 · Ricoh CX1 / Pentax K-7（首台单反）", "In-camera HDR merge · Ricoh CX1 / Pentax K-7 (first DSLR)", 1, "hdr"],
     [2009, "phone", "触屏点按测光 · iPhone 3GS", "Tap-to-meter on touchscreen · iPhone 3GS", 0, "spot"],
     [2010, "auto", "双转换增益 · Aptina DR-Pix（约）", "Dual conversion gain · Aptina DR-Pix (approx.)", 1, "dcg"],
     [2010, "phone", "HDR 拍照 · iPhone 4", "HDR photo · iPhone 4", 0, "hdr"],
