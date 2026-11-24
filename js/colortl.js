@@ -11,7 +11,7 @@ TIMELINES.color = {
   rows: [
     [1982, "cam", "自动白平衡 · JVC KY-1900（约）", "Auto white balance · JVC KY-1900 (approx.)", 1, "awb"],
     [1986, "cam", "全自动白平衡 · Canon VM-E1N", "Fully automatic white balance · Canon VM-E1N", 2, "awb"],
-    [1986, "cam", "外置 AWB 色温传感器（约） · Panasonic NV-M5 摄像机", "External AWB color sensor (approx.) · Panasonic NV-M5 camcorder", 1, "cct"],
+    [1986, "cam", "外置 AWB 色温传感器 · Panasonic NV-M5 摄像机（约）", "External AWB color sensor · Panasonic NV-M5 camcorder (approx.)", 1, "cct"],
     [1992, "cam", "Bayer 彩色滤镜阵列 · Kodak DCS 200", "Bayer color filter array · Kodak DCS 200", 1, "cfa"],
     [1993, "ind", "系统级色彩管理 · Apple ColorSync 1.0", "System-level color management · Apple ColorSync 1.0", 1, "cms"],
     [1995, "ind", "ICM 1.0 色彩管理 · Windows 95", "ICM 1.0 color management · Windows 95", 2, "cms"],
