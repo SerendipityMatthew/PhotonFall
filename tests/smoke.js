@@ -1,4 +1,4 @@
-/* 冒烟测试 — 浏览器端手动跑，不接 CI，不在 `node tests/check.js` 的 9 项里。
+/* 冒烟测试 — 浏览器端手动跑，不接 CI，不在 `node tests/check.js` 的 10 项里。
  * 大改（步骤增减、路由、面板机制、骨架）后在 DevTools 里 await smoke()，期望 {ok:true, fails:[]}。
  * 运行方法见 README「测试」节。不跑不阻塞合并；但注意部分断言含硬编码 step 索引，步数变动后需同步维护。 */
 async function smoke() {
@@ -153,7 +153,7 @@ async function smoke() {
   await wait(100); const s0 = curStage();
   tourT = 7.5; await wait(150);
   expect(s0 !== '' && curStage() !== s0, `[tour] highlighted stage changes (${s0} → ${curStage()})`);
-  expect(visLabel('FE 50-150mm F2 GM').el.classList.contains('hl'), '[tour] lens label highlighted in lens stage');
+  expect(visLabel(lensName()).el.classList.contains('hl'), '[tour] lens label highlighted in lens stage');
   expect(!drawerOpen && $('drawer').hidden, '[tour] 详细抽屉 stays closed');
   // 每段的标注整段都在（不只是开头 1.6 秒）；太阳不在第 0 步入门句里，只靠导览显示
   showAllLabels = false; $('tourbtn').click(); await wait(1900);

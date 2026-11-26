@@ -258,11 +258,11 @@ TIMELINES.color = {
   el: 'colortl', page: 'color-timeline.html', histSrc: 'js/hist-color.js',
   step: {n: 30, zh: '第 30 步：颜色空间、色深与色彩管理', en: 'Step 30: Color spaces, bit depth & color management'},
   text: {
-    zh: {title: '人眼与色彩技术时间线', eyebrow: 'Vision & Color · 1982–2023', h1: '让颜色对得上人眼，谁先做到？',
+    zh: {title: '人眼与色彩技术时间线', eyebrow: 'Vision & Color · 1982–2025', h1: '让颜色对得上人眼，谁先做到？',
          sub: '拜耳滤色片、自动白平衡、色彩管理、sRGB、Adobe RGB、P3、胶片模拟、昼夜切换、护眼模式、色盲辅助、PQ / HLG、原彩显示、色温传感器、HDR 增益图、肤色还原……每项围绕人眼的色彩技术最先出现在相机、手机、电视电脑还是安防车载里，又是怎么流到其他行业的。',
          panelCap: '每项围绕人眼的色彩技术最先在哪个行业量产。',
          foot: '「首发」指第一款实现它的商用产品，不是标准或论文发表的年份。HDR / HLG / PQ / P3 的年份和其他时间线一致；只找到间接来源的年份标了「约」。'},
-    en: {title: 'Vision & Color Timeline', eyebrow: 'Vision & Color · 1982–2023', h1: 'Matching color to the human eye: who did it first?',
+    en: {title: 'Vision & Color Timeline', eyebrow: 'Vision & Color · 1982–2025', h1: 'Matching color to the human eye: who did it first?',
          sub: 'Bayer filters, auto white balance, color management, sRGB, Adobe RGB, P3, film simulation, day/night switching, blue-light reduction, color-blindness filters, PQ / HLG, True Tone, color-temperature sensors, HDR gain maps, skin-tone rendering: did each human-vision color technology ship first in cameras, phones, TVs/PCs or security/automotive, and how did it spread?',
          panelCap: 'Which industry shipped each human-vision color technology first.',
          foot: '"First" means the first commercial product implementing it, not the year a standard or paper appeared. HDR / HLG / PQ / P3 years match the other timelines; years backed only by indirect sources are marked "approx."'},

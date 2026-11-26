@@ -281,11 +281,11 @@ TIMELINES.ae = {
   el: 'aetl', page: 'exposure-timeline.html', histSrc: 'js/hist-ae.js',
   step: {n: 9, zh: '第 9 步：快门、ISO 与拍照', en: 'Step 9: Shutter, ISO & taking the shot'},
   text: {
-    zh: {title: '曝光技术时间线', eyebrow: 'Exposure · 1932–2021', h1: '照片该多亮，谁先自动算出来？',
+    zh: {title: '曝光技术时间线', eyebrow: 'Exposure · 1931–2021', h1: '照片该多亮，谁先自动算出来？',
          sub: '测光表、自动曝光、程序曝光、TTL 测光、光圈优先、点测光、闪光灯 TTL、背光补偿、矩阵测光、包围曝光、场景识别、波形图、斑马纹、直方图、人脸优先曝光、宽动态、多帧 HDR、双转换增益、防频闪、LED 防闪烁、电子可变 ND……每项曝光技术最先出现在相机、手机、广播工业还是安防车载里，又是怎么流到其他行业的。',
          panelCap: '每项曝光技术最先在哪个行业量产。',
          foot: '「首发」指第一次进入商用产品，不是专利年份。和 ISP / 噪声 / 快门时间线重合的条目年份一致；只找到间接来源的年份标了「约」。'},
-    en: {title: 'Exposure Technology Timeline', eyebrow: 'Exposure · 1932–2021', h1: 'How bright should it be: who automated it first?',
+    en: {title: 'Exposure Technology Timeline', eyebrow: 'Exposure · 1931–2021', h1: 'How bright should it be: who automated it first?',
          sub: 'Light meters, auto exposure, program AE, TTL metering, aperture priority, spot metering, TTL flash, backlight compensation, matrix metering, bracketing, scene recognition, waveforms, zebras, histograms, face-priority AE, WDR, multi-frame HDR, dual conversion gain, anti-flicker, LED flicker mitigation, electronic variable ND: did each ship first in cameras, phones, broadcast/industry or security/automotive, and how did it spread?',
          panelCap: 'Which industry shipped each exposure technology first.',
          foot: '"First" means first in a commercial product, not the patent year. Items overlapping the ISP / noise / shutter timelines match their years; years backed only by indirect sources are marked "approx."'},

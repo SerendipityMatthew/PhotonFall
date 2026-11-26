@@ -226,11 +226,11 @@ TIMELINES.comp = {
   el: 'comptl', page: 'comp-timeline.html', histSrc: 'js/hist-comp.js',
   step: {n: 35, zh: '第 35 步：计算摄影 · 多帧融合', en: 'Step 35: Computational photography · multi-frame fusion'},
   text: {
-    zh: {title: '计算摄影技术时间线', eyebrow: 'Computational Photography · 1995–2025', h1: '一张照片拍多次，谁先这么做？',
+    zh: {title: '计算摄影技术时间线', eyebrow: 'Computational Photography · 1994–2025', h1: '一张照片拍多次，谁先这么做？',
          sub: '多帧 HDR、夜景、星空、全景、360° 拼接、像素位移、景深合成、光场重对焦、人像虚化、多摄融合、长曝光模拟、语义调色、AI 消除、AI 降噪、AI 放大、照片三维重建、内容来源凭证……每项计算摄影技术最先出现在电脑软件、相机、手机还是车载安防里，又是怎么流到其他行业的。',
          panelCap: '每项计算摄影技术最先在哪个行业量产。',
          foot: '「首发」指第一次进入商用产品（含电脑软件），不是第一次发表论文。与 ISP 时间线重合的条目年份一致；只找到间接来源的年份标了「约」。'},
-    en: {title: 'Computational Photography Timeline', eyebrow: 'Computational Photography · 1995–2025', h1: 'A photo is more than one exposure: who did it first?',
+    en: {title: 'Computational Photography Timeline', eyebrow: 'Computational Photography · 1994–2025', h1: 'A photo is more than one exposure: who did it first?',
          sub: 'Multi-frame HDR, night mode, astro, panoramas, 360° stitching, pixel shift, focus stacking, light-field refocus, portrait bokeh, multi-camera fusion, simulated long exposure, semantic tone mapping, AI removal, AI denoise, AI upscaling, photogrammetry, content credentials: did each technique ship first in PC software, cameras, phones or cars/security, and how did it spread?',
          panelCap: 'Which industry shipped each computational-photography technique first.',
          foot: '"First" means first in a commercial product (including PC software), not first paper. Overlapping items match the ISP timeline; years backed only by indirect sources are marked "approx."'},

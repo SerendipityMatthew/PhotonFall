@@ -247,11 +247,11 @@ TIMELINES.wb = {
   el: 'wbtl', page: 'wb-timeline.html', histSrc: 'js/hist-wb.js',
   step: {n: 26, zh: '第 26 步：ISP 把 RAW 变成照片', en: 'Step 26: ISP turns RAW into a photo'},
   text: {
-    zh: {title: '白平衡技术时间线', eyebrow: 'White Balance · 1974–2024', h1: '把白色拍成白色，谁先做到？',
+    zh: {title: '白平衡技术时间线', eyebrow: 'White Balance · 1973–2024', h1: '把白色拍成白色，谁先做到？',
          sub: '一键白平衡、自动白平衡、显示器色温预设、白平衡预设、自定义白平衡、RAW 后期调白平衡、开尔文色温、白平衡包围、白平衡偏移、独立色温传感器、水下白平衡、双色温闪光灯、白色优先 / 氛围优先、原彩显示、RCCB 车载滤色片、肤色还原……每项白平衡技术最先出现在相机、手机、广播显示还是安防车载里，又是怎么流到其他行业的。',
          panelCap: '每项白平衡技术最先在哪个行业量产。',
          foot: '「首发」指第一次进入商用产品，不是专利年份。和人眼与色彩 / ISP 时间线重合的条目年份一致；只找到间接来源的年份标了「约」。'},
-    en: {title: 'White Balance Timeline', eyebrow: 'White Balance · 1974–2024', h1: 'Making white look white: who did it first?',
+    en: {title: 'White Balance Timeline', eyebrow: 'White Balance · 1973–2024', h1: 'Making white look white: who did it first?',
          sub: 'One-push WB, auto WB, display color-temperature presets, WB presets, custom WB, adjusting WB in RAW, Kelvin settings, WB bracketing, WB shift, separate ambient color sensors, underwater WB, dual-tone flash, white/ambience priority, True Tone, RCCB automotive filters, skin-tone rendering: did each ship first in cameras, phones, broadcast/displays or security/automotive, and how did it spread?',
          panelCap: 'Which industry shipped each white-balance technology first.',
          foot: '"First" means first in a commercial product, not the patent year. Items overlapping the vision & color / ISP timelines match their years; years backed only by indirect sources are marked "approx."'},

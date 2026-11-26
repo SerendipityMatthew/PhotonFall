@@ -94,7 +94,8 @@ const CSS_DEF=[['sRGB',[.64,.33],[.3,.6],[.15,.06],0xffc45c,0],['Display P3',[.6
  cs.add(new THREE.Line(geo,new THREE.LineBasicMaterial({color:0xaaaaaa,transparent:true,opacity:.6})));}
 /* 坐标轴 */
 {const axG=new THREE.Group();cs.add(axG);axG.add(new THREE.Line(new THREE.BufferGeometry().setAttribute('position',new THREE.Float32BufferAttribute([-3,0,-3,3,0,-3,-3,0,-3,-3,0,3],3)),new THREE.LineBasicMaterial({color:0x667788})));
-  label(cs,'x',V(3.3,0,-3));label(cs,'y',V(-3,0,3.3));}
+  label(cs,'x',V(3.3,0,-3));label(cs,'y',V(-3,0,3.3));
+  label(cs,'光谱轨迹（人眼可见色）',V(.71,.1,1.8));}   // 马蹄形顶端（约 535 nm），第 28 步「人眼」指向这里
 CSS_DEF.forEach(([name,r,gC,b,hex,zOff])=>{const pts=[r,gC,b,r];const geo=new THREE.BufferGeometry().setAttribute('position',new THREE.Float32BufferAttribute(pts.flatMap(([x,y])=>[x*6-3,zOff,y*6-3]),3));
   cs.add(new THREE.Line(geo,new THREE.LineBasicMaterial({color:hex,linewidth:2})));
   const cx=(r[0]+gC[0]+b[0])/3,cy=(r[1]+gC[1]+b[1])/3;label(cs,name,V(cx*6-3,zOff+.1,cy*6-3));});
