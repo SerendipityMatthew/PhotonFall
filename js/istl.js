@@ -60,7 +60,7 @@ TIMELINES.is = {
     [2019, "cam", "手持高像素合成 · Olympus OM-D E-M1X", "Handheld high-res shot · Olympus OM-D E-M1X", 2, "pixshift"],
     [2020, "phone", "传感器位移进手机 · iPhone 12 Pro Max", "Sensor-shift reaches phones · iPhone 12 Pro Max", 0, "ibis"],
     [2020, "phone", "双滚珠微云台（±3°） · vivo X50 Pro", "Dual-ball micro-gimbal (±3°) · vivo X50 Pro", 2, "module"],
-    [2020, "auto", "行车记录仪电子防抖（约） · Nextbase 622GW", "Dash-cam EIS (approx.) · Nextbase 622GW", 2, "eis"],
+    [2020, "auto", "行车记录仪电子防抖 · Nextbase 622GW", "Dash-cam EIS · Nextbase 622GW", 2, "eis"],
     [2020, "cam", "单镜头机内地平线校正 · GoPro HERO9 Black", "Single-lens in-camera horizon leveling · GoPro HERO9 Black", 2, "horizon"],
     [2021, "cam", "开源陀螺仪防抖 · Gyroflow", "Open-source gyro stabilization · Gyroflow", 2, "gyropost"],
     [2022, "phone", "运动模式 · iPhone 14 Action mode", "Action mode · iPhone 14", 2, "eis"],

@@ -1460,8 +1460,8 @@ TIMELINES.isp.hist = {
    [
     2015,
     "ver",
-    "去雾进入摄影后期：Adobe Lightroom CC 2015.1 与 Camera Raw 于 2015 年 6 月加入 Dehaze 滑块，可去雾也可加雾，算法从安防 ISP 扩展到大众修图。",
-    "Dehazing reached photo editing: Adobe added a Dehaze slider to Lightroom CC 2015.1 and Camera Raw in June 2015, able to remove or add haze, taking the algorithm from security ISPs to mainstream editing.",
+    "去雾进入摄影后期：Adobe Lightroom 与 Camera Raw 于 2015 年 6 月加入 Dehaze 滑块，可去雾也可加雾，算法从安防 ISP 扩展到大众修图。",
+    "Dehazing reached photo editing: Adobe added a Dehaze slider to Lightroom and Camera Raw in June 2015, able to remove or add haze, taking the algorithm from security ISPs to mainstream editing.",
     [
      7
     ]

@@ -41,7 +41,7 @@ TIMELINES.lens = {
     [2008, "cam", "亚波长结构镀膜 SWC · Canon EF 24mm f/1.4L II", "Subwavelength Structure Coating · Canon EF 24mm f/1.4L II", 2, "nano"],
     [2008, "phone", "手机可变光圈 · Motorola ZN5", "Variable aperture in a phone · Motorola ZN5", 0, "iris"],
     [2008, "auto", "360 度半球监控 · Mobotix Q22", "360-degree hemispheric surveillance · Mobotix Q22", 2, "fish"],
-    [2009, "phone", "晶圆级光学模组（约） · OmniVision CameraCube", "Wafer-level optics module (approx.) · OmniVision CameraCube", 1, "wlo"],
+    [2009, "phone", "晶圆级光学模组 · OmniVision CameraCube", "Wafer-level optics module · OmniVision CameraCube", 1, "wlo"],
     [2009, "ind", "纳米结晶镀膜 · Nikon Lambda S 显微镜物镜", "Nano Crystal Coat · Nikon Lambda S microscope objectives", 0, "nano"],
     [2011, "phone", "五片式塑料非球面镜组 · iPhone 4S", "Five-element plastic aspheric lens · iPhone 4S", 0, "asph"],
     [2012, "phone", "手机光学防抖 · Nokia Lumia 920", "Optical stabilization in a phone · Nokia Lumia 920", 0, "ois"],

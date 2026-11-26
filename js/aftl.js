@@ -14,7 +14,7 @@ TIMELINES.af = {
     [1977, "cam", "自动对焦相机 · Konica C35 AF（Honeywell Visitronic）", "Autofocus camera · Konica C35 AF (Honeywell Visitronic)", 1, "af"],
     [1978, "cam", "超声波测距对焦 · Polaroid SX-70 Sonar OneStep", "Ultrasonic sonar AF · Polaroid SX-70 Sonar OneStep", 1, "sonar"],
     [1979, "cam", "主动红外对焦 · Canon AF35M（Autoboy）", "Active infrared AF · Canon AF35M (Autoboy / Sure Shot)", 1, "iraf"],
-    [1980, "ind", "超声波测距（约） · Polaroid Ultrasonic Ranging 开发套件（机器人测距）", "Ultrasonic ranging (approx.) · Polaroid Ultrasonic Ranging kit (robotics)", 0, "sonar"],
+    [1980, "ind", "超声波测距 · Polaroid Ultrasonic Ranging 开发套件（机器人测距）", "Ultrasonic ranging · Polaroid Ultrasonic Ranging kit (robotics)", 0, "sonar"],
     [1981, "cam", "TTL 反差对焦 · Pentax ME F", "TTL contrast-detect AF · Pentax ME F", 1, "cdaf"],
     [1981, "cam", "镜内对焦马达 · Canon New FD 35-70mm f/4 AF", "In-lens focus motor · Canon New FD 35-70mm f/4 AF", 1, "motor"],
     [1981, "cam", "镜内对焦马达 + TTL · SMC Pentax AF 35–70mm（配 ME F）", "In-lens motor + TTL · SMC Pentax AF 35–70mm (with ME F)", 2, "motor"],
