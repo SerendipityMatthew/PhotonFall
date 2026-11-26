@@ -186,6 +186,8 @@ check('timelines: rows and histories', () => {
     });
     for (const key of keys) {
       assert.strictEqual(D.rows.filter(r => r[5] === key && r[4] === 1).length, 1, `${k}/${key} needs exactly one first-launch row`);
+      const first = D.rows.find(r => r[5] === key && r[4] === 1);
+      assert.ok(D.rows.every(r => r[5] !== key || r[0] >= first[0]), `${k}/${key} has a row earlier than its first launch (${first[0]})`);
       assert.ok(D.desc[key] && D.desc[key][0] && D.desc[key][1], `${k}/${key} desc`);
       const h = H[key];
       assert.ok(h && h.stages.length >= 3 && h.refs.length, `${k}/${key} history`);

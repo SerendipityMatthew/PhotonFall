@@ -1777,8 +1777,8 @@ TIMELINES.comp.hist = {
    [
     2021,
     "mass",
-    "2021 年 10 月 26 日 Adobe MAX 上，Lightroom 与 Lightroom Classic 重做蒙版面板，加入 AI 的 Select Subject 和 Select Sky，一键生成主体/天空蒙版再做局部调整。",
-    "At Adobe MAX on 26 October 2021, Lightroom and Lightroom Classic got a redesigned Masking panel with AI Select Subject and Select Sky, creating subject and sky masks in one click for local edits.",
+    "2021 年 10 月 26 日 Adobe MAX 上，Lightroom 重做蒙版面板，加入 AI 的 Select Subject 和 Select Sky，一键生成主体/天空蒙版再做局部调整。",
+    "At Adobe MAX on 26 October 2021, Lightroom got a redesigned Masking panel with AI Select Subject and Select Sky, creating subject and sky masks in one click for local edits.",
     [
      7
     ]
@@ -1895,8 +1895,8 @@ TIMELINES.comp.hist = {
    [
     2023,
     "mass",
-    "2023 年 4 月 Adobe 在 Camera Raw 15.3、Lightroom 6.3、Lightroom Classic 12.3 推出 AI Denoise，支持 Bayer 和 X-Trans RAW。模型由 Michaël Gharbi 和 Bo Sun 开发，训练用的人工噪声按真实相机的噪声特性生成。",
-    "In April 2023 Adobe shipped AI Denoise in Camera Raw 15.3, Lightroom 6.3 and Lightroom Classic 12.3 for Bayer and X-Trans RAWs; the models were developed by Michaël Gharbi and Bo Sun and trained on synthetic noise modeled on real camera noise profiles.",
+    "2023 年 4 月 Adobe 在 Camera Raw 15.3 和 Lightroom 6.3 推出 AI Denoise，支持 Bayer 和 X-Trans RAW。模型由 Michaël Gharbi 和 Bo Sun 开发，训练用的人工噪声按真实相机的噪声特性生成。",
+    "In April 2023 Adobe shipped AI Denoise in Camera Raw 15.3 and Lightroom 6.3 for Bayer and X-Trans RAWs; the models were developed by Michaël Gharbi and Bo Sun and trained on synthetic noise modeled on real camera noise profiles.",
     [
      6
     ]
