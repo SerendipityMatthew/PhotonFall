@@ -74,8 +74,8 @@ function go(i) {
   const _en = typeof getLang === 'function' && getLang() === 'en';
   const _t = (_en && s.tEn) ? s.tEn : s.t;
   const seoDesc = _en
-    ? `PhotonFall Step ${i}: ${_t} (37-step interactive 3D explainer)`
-    : `PhotonFall 第 ${i} 步：${_t}（共 37 步可交互 3D 讲解）`;
+    ? `PhotonFall Step ${i}: ${_t} (${STEPS.length}-step interactive 3D explainer)`
+    : `PhotonFall 第 ${i} 步：${_t}（共 ${STEPS.length} 步可交互 3D 讲解）`;
   document.title = _en
     ? `PhotonFall · Step ${i}: ${_t}`
     : `PhotonFall · 第 ${i} 步：${_t}`;
@@ -100,6 +100,7 @@ function go(i) {
   if ((s.pn || []).includes('pdafwrap')) drawPdaf();
   if ((s.pn || []).includes('snrwrap')) drawSnr();
   if ((s.pn || []).includes('reflwrap')) drawRefl();
+  fxStep(s);
 
   /* 镜位 */
   goal.p.set(...s.cam);
