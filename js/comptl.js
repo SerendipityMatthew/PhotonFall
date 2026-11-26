@@ -12,9 +12,9 @@ TIMELINES.comp = {
   rows: [
     [1994, "ind", "近景摄影测量软件 · Eos Systems PhotoModeler", "Close-range photogrammetry software · Eos Systems PhotoModeler", 1, "pgm"],
     [1995, "ind", "全景拼接浏览 · Apple QuickTime VR", "Panorama stitching viewer · Apple QuickTime VR", 1, "pano"],
-    [1997, "ind", "景深合成软件（约） · Synoptics Montage / Auto-Montage", "Focus-stacking software (approx.) · Synoptics Montage / Auto-Montage", 1, "fstack"],
+    [1997, "ind", "景深合成软件 · Synoptics Montage / Auto-Montage", "Focus-stacking software · Synoptics Montage / Auto-Montage", 1, "fstack"],
     [1998, "cam", "传感器位移多拍 · Sinar Multishot 数字后背", "Sensor-shift multi-shot · Sinar Multishot digital back", 1, "msr"],
-    [2001, "ind", "多曝光 HDR 合成（约） · USC ICT HDRShop", "Multi-exposure HDR merge (approx.) · USC ICT HDRShop", 1, "hdr"],
+    [2001, "ind", "多曝光 HDR 合成 · USC ICT HDRShop", "Multi-exposure HDR merge · USC ICT HDRShop", 1, "hdr"],
     [2002, "ind", "星空叠加 · Registax", "Astro stacking · Registax", 1, "astro"],
     [2003, "ind", "景深合成软件 · Helicon Focus", "Focus-stacking software · Helicon Focus", 2, "fstack"],
     [2003, "ind", "多曝光 HDR 合成 · HDRsoft Photomatix", "Multi-exposure HDR merge · HDRsoft Photomatix", 2, "hdr"],
