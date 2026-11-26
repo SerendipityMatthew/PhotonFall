@@ -202,11 +202,18 @@ function renderQuizIndex() {
   el.querySelector('.qz-back').onclick = () => navigate({view:'step', n: step || 0});
 }
 
+/* 选项打乱显示，免得靠位置猜答案；全是从小到大的数字时保持原顺序（读起来更顺） */
+function optOrder(opts) {
+  const n = opts.map(o => parseFloat(o.replace(/^[^\d.-]+/, '')));
+  return n.every((v, i) => !isNaN(v) && (i === 0 || v > n[i - 1])) ? opts.map((_, i) => i) : shuffle(opts.map((_, i) => i));
+}
+
 function startQuiz(catId) {
   const indices = QUIZ.map((q, i) => q.cat === catId ? i : -1).filter(i => i >= 0);
   quizState = {
     cat: catId,
     qs: shuffle(indices),
+    ord: Object.fromEntries(indices.map(i => [i, optOrder(QUIZ[i].opts)])),   // 每题选项的显示顺序，切语言也不变
     idx: 0,
     selected: null,
     checked: false,
@@ -234,9 +241,9 @@ function renderQuizQuestion() {
       </div>
       <div class="qz-q">${qText}</div>
       <div class="qz-opts">
-        ${opts.map((o, i) => `<button type="button" class="qz-opt" data-i="${i}">
-          <span class="qz-opt-letter">${String.fromCharCode(65 + i)}</span>
-          <span class="qz-opt-text">${o}</span>
+        ${quizState.ord[quizState.qs[quizState.idx]].map((i, k) => `<button type="button" class="qz-opt" data-i="${i}">
+          <span class="qz-opt-letter">${String.fromCharCode(65 + k)}</span>
+          <span class="qz-opt-text">${opts[i]}</span>
         </button>`).join('')}
       </div>
       <div class="qz-fb" hidden></div>
