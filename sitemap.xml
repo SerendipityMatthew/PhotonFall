@@ -2,6 +2,21 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://photonfall.pages.dev/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
   <url><loc>https://photonfall.pages.dev/#/timeline</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://photonfall.pages.dev/af-timeline.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://photonfall.pages.dev/cmos-timeline.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://photonfall.pages.dev/color-timeline.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://photonfall.pages.dev/comp-timeline.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://photonfall.pages.dev/display-timeline.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://photonfall.pages.dev/exposure-timeline.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://photonfall.pages.dev/isp-timeline.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://photonfall.pages.dev/lens-timeline.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://photonfall.pages.dev/noise-timeline.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://photonfall.pages.dev/shutter-timeline.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://photonfall.pages.dev/stabilization-timeline.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://photonfall.pages.dev/storage-timeline.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://photonfall.pages.dev/video-timeline.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://photonfall.pages.dev/wb-timeline.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://photonfall.pages.dev/#/quiz</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
   <url><loc>https://photonfall.pages.dev/#/step/0</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://photonfall.pages.dev/#/step/1</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://photonfall.pages.dev/#/step/2</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>

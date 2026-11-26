@@ -2,6 +2,7 @@
    i18n.js 的 applyLang() 切语言时遍历 .lb 刷新 textContent。 */
 
 const LABEL_EN = {
+  '光谱轨迹（人眼可见色）': 'Spectral locus (colors the eye can see)',
   'Cb / Cr 色度（1/4 分辨率）': 'Cb / Cr chroma (1/4 res)',
   'GOP 约 15~30 帧': 'GOP ~15-30 frames',
   'HDR 输出': 'HDR output',
