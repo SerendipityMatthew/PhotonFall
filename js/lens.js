@@ -207,6 +207,7 @@ const canBlur='filter' in sg;
 function drawVF(t){const f=st.f, cx=W/2, cy=HH/2, pd=st.pd||0, ppm=d=>pd?img(85,3)/3*PX*(3+pd)/(d+pd):img(f,d)/d*PX, /*pd≠0：透视演示，主体按 85mm 大小画 */ 
   fx=st.fx||'', coc=k=>{if(pd){const sm=st.s*1e3,vs=img(f,st.s),d=OBJ[k].d+pd,vd=img(f,d),sp=3+pd;   /* 透视演示：按挪动后的距离算弥散圆，再按画面放大比例换算 */
     return f/st.N*Math.abs(vs-vd)/vd*(img(85,3)/3)/(img(f,sp)/sp);}
+    if(fx==='stack'&&st.stackDone)return 0;   /* 景深合成扫完：每层都取最清楚的一张 */
     return fx==='portrait'&&k!==1?Math.max(st.coc[k],[1.8,0,2.6][k]):st.coc[k];}, /*人像模式：算法把前景背景虚化 */ 
   ink=c=>fx==='sil'?'#08090c':c, bl=k=>canBlur?`blur(${(coc(k)*PX/2.4).toFixed(2)}px)`:'none';
   sg.globalCompositeOperation='source-over';sg.filter='none';sg.fillStyle='#000';sg.fillRect(0,0,W,HH);

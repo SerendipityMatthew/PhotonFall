@@ -151,6 +151,7 @@ function frame() {
     }
     shutter.position.y += ((open ? 1.3 : 0) - shutter.position.y) * .35;
     ball3.position.z = ballX(t) * K;
+    fxFrame(t, dt);
     drawVF(t);
     if (dark) { vg.fillStyle = '#000'; vg.fillRect(0, 0, W, HH); }
     senTex.needsUpdate = true;
