@@ -168,6 +168,38 @@ check('html: no inline scripts (CSP)', () => {
   }
 });
 
+check('timelines: rows and histories', () => {
+  /* 14 条技术时间线 + 发展史：每个技术恰好一个首发、有简介和发展史；行按年份排；发展史阶段合法、来源序号不越界 */
+  const c = vm.createContext({window: {}, document: {getElementById: () => null, querySelector: () => null}});
+  const tlFiles = fs.readdirSync(path.join(root, 'js')).filter(f => /tl\.js$/.test(f) && f !== 'tl-core.js');
+  vm.runInContext([fs.readFileSync(path.join(root, 'js/tl-core.js'), 'utf8'), ...tlFiles.map(f => fs.readFileSync(path.join(root, 'js', f), 'utf8'))].join('\n') + ';this.T = TIMELINES', c);
+  const T = c.T, STAGES = ['idea', 'paper', 'proto', 'corp', 'mass', 'ver', 'rival', 'end'];
+  assert.strictEqual(Object.keys(T).length, 14, 'timeline count');
+  for (const [k, D] of Object.entries(T)) {
+    assert.ok(fs.existsSync(path.join(root, D.page)), `${k} page ${D.page}`);
+    assert.ok(D.histSrc && fs.existsSync(path.join(root, D.histSrc)), `${k} histSrc`);
+    vm.runInContext(fs.readFileSync(path.join(root, D.histSrc), 'utf8'), c);
+    const keys = [...new Set(D.rows.map(r => r[5]))], H = D.hist;
+    D.rows.forEach((r, i) => {
+      assert.ok(Number.isInteger(r[0]) && ['phone', 'auto', 'ind', 'cam'].includes(r[1]) && [0, 1, 2].includes(r[4]), `${k} row ${i} shape`);
+      assert.ok(i === 0 || r[0] >= D.rows[i - 1][0], `${k} row ${i} out of year order (${r[0]})`);
+    });
+    for (const key of keys) {
+      assert.strictEqual(D.rows.filter(r => r[5] === key && r[4] === 1).length, 1, `${k}/${key} needs exactly one first-launch row`);
+      assert.ok(D.desc[key] && D.desc[key][0] && D.desc[key][1], `${k}/${key} desc`);
+      const h = H[key];
+      assert.ok(h && h.stages.length >= 3 && h.refs.length, `${k}/${key} history`);
+      h.stages.forEach((st, i) => {
+        assert.ok(Number.isInteger(st[0]) && STAGES.includes(st[1]) && st[2] && st[3], `${k}/${key} stage ${i}`);
+        assert.ok(i === 0 || st[0] >= h.stages[i - 1][0], `${k}/${key} stage ${i} out of year order`);
+        assert.ok((st[4] || []).every(n => Number.isInteger(n) && n >= 0 && n < h.refs.length), `${k}/${key} stage ${i} ref index`);
+      });
+      for (const f of ['now', 'replaced']) assert.ok(!h[f] || (h[f].length === 2 && h[f][0] && h[f][1]), `${k}/${key} ${f}`);
+      assert.ok(h.refs.every(r => r.t && /^https?:\/\//.test(r.u)), `${k}/${key} refs`);
+    }
+    for (const key of Object.keys(H)) assert.ok(keys.includes(key), `${k}: history ${key} has no rows`);
+  }
+});
 check('layout: fig', () => {
   const want = {1:'vffig',2:'vffig',3:'vffig',4:'pdc',5:'vffig',6:'vffig',7:'vffig',8:'reflc',9:'vffig',10:'ibc',12:'spec',16:'pot',17:'pot',22:'snr',23:'dnwrap',24:'adcc',25:'shc',26:'i8fig',37:'vffig',38:'vffig',39:'vffig',40:'vffig',41:'vffig'};
   ctx.STEPS.forEach((s, i) => assert.strictEqual(s.fig, want[i], `step ${i} fig`));
