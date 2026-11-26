@@ -42,7 +42,7 @@ python3 -m http.server 8000
 ### 测试
 
 ```bash
-# 静态检查（Node.js，零依赖）：路由、步骤结构、演进数据、CSP、小图布局，共 10 项
+# 静态检查（Node.js，零依赖）：路由、步骤结构、演进数据、CSP、小图布局、14 条技术时间线和发展史数据，共 11 项
 node tests/check.js
 
 # 物理公式与标准曲线（光谱、色域、HDR 曲线），共 13 项
@@ -100,7 +100,7 @@ js/tl-page.js           独立时间线页渲染、发展史弹窗（#h= 深度�
 js/*tl.js               14 条技术时间线数据：行、简介、来源（cmostl、lenstl、isptl、stortl、disptl、vidtl、comptl、colortl、noisetl、shuttertl、istl、aftl、aetl、wbtl）
 js/hist-*.js            14 个主题的发展史数据，时间线页按需加载（主站不加载）
 *-timeline.html         14 个独立时间线页
-tests/check.js          Node 静态检查（10 项，零依赖）
+tests/check.js          Node 静态检查（11 项，零依赖）
 tests/physics.js        物理公式与标准曲线检查（13 项）
 tests/smoke.js          浏览器冒烟测试（在页面上下文中 await smoke()）
 ```

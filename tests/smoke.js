@@ -1,4 +1,4 @@
-/* 冒烟测试 — 浏览器端手动跑，不接 CI，不在 `node tests/check.js` 的 10 项里。
+/* 冒烟测试 — 浏览器端手动跑，不接 CI，不在 `node tests/check.js` 的 11 项里。
  * 大改（步骤增减、路由、面板机制、骨架）后在 DevTools 里 await smoke()，期望 {ok:true, fails:[]}。
  * 运行方法见 README「测试」节。不跑不阻塞合并；但注意部分断言含硬编码 step 索引，步数变动后需同步维护。 */
 async function smoke() {

@@ -32,9 +32,9 @@ const CMT = [
   [2017, 'auto', 'LED 防闪烁 + HDR · IMX390', 'LED flicker mitigation + HDR · IMX390', 1, 'lfm'],
   [2017, 'cam', '堆栈全画幅 · α9', 'Full-frame stacked · α9', 2, 'stack'],
   [2017, 'auto', '四合一 Quad Bayer · Sony IMX294 安防传感器', 'Quad Bayer · Sony IMX294 security sensor', 1, 'quad'],
-  [2018, 'auto', '堆栈式进车载 · Sony IMX490', 'Stacked in automotive · Sony IMX490', 0, 'stack'],
   [2017, 'phone', '三层堆栈 · Xperia XZs', '3-layer stack · Xperia XZs', 0, 'dram'],
   [2017, 'auto', 'DTI + 厚硅近红外 · OmniVision Nyxel（OS05A20）', 'DTI + thick-silicon NIR · OmniVision Nyxel (OS05A20)', 0, 'dti'],
+  [2018, 'auto', '堆栈式进车载 · Sony IMX490', 'Stacked in automotive · Sony IMX490', 0, 'stack'],
   [2018, 'phone', '四合一 Quad Bayer · P20 Pro', 'Quad Bayer · P20 Pro', 0, 'quad'],
   [2018, 'phone', '改进 DTI 隔离材料 · Samsung ISOCELL Plus', 'Improved DTI isolation material · Samsung ISOCELL Plus', 2, 'dti'],
   [2018, 'ind', '事件传感器 · Prophesee Gen3 VGA', 'Event sensor · Prophesee Gen3 VGA', 1, 'event'],
@@ -52,14 +52,14 @@ const CMT = [
   [2022, 'phone', '十六合一 2 亿像素 · ISOCELL HP1（Moto Edge 30 Ultra）', '16-in-1 200 MP · ISOCELL HP1 (Moto Edge 30 Ultra)', 2, 'quad'],
   [2022, 'cam', '四合一进无人机 · DJI Mini 3 Pro（4800 万合并成 1200 万）', 'Pixel binning in drones · DJI Mini 3 Pro (48 MP binned to 12 MP)', 0, 'quad'],
   [2022, 'auto', 'SPAD 车载 LiDAR · IMX459', 'SPAD automotive LiDAR · IMX459', 0, 'spad'],
+  [2022, 'phone', '超构透镜 metalens · ST ToF 模组（Metalenz）', 'Metalens · ST ToF module (Metalenz)', 1, 'meta'],
   [2023, 'auto', 'LOFIC 单次曝光 HDR · OX08D10', 'LOFIC single-exposure HDR · OX08D10', 1, 'lofic'],
   [2023, 'phone', '双层晶体管像素 · Xperia 1 V', 'Two-layer transistor pixel · Xperia 1 V', 1, 'twolayer'],
-  [2022, 'phone', '超构透镜 metalens · ST ToF 模组（Metalenz）', 'Metalens · ST ToF module (Metalenz)', 1, 'meta'],
   [2023, 'auto', 'SPAD 监控相机 · Canon MS-500', 'SPAD surveillance camera · Canon MS-500', 0, 'spad'],
   [2023, 'cam', '全局快门全画幅 · α9 III', 'Full-frame global shutter · α9 III', 2, 'gs'],
   [2024, 'phone', 'LOFIC · OV50K40', 'LOFIC · OV50K40', 0, 'lofic'],
-  [2026, 'phone', 'LOFIC · Sony LYTIA L910', 'LOFIC · Sony LYTIA L910', 2, 'lofic'],
   [2024, 'phone', '偏振超构表面人脸解锁 · Polar ID 采用三星 ISOCELL Vizion 931（发布）', 'Polarization metasurface face unlock · Polar ID with Samsung ISOCELL Vizion 931 (announced)', 2, 'meta'],
+  [2026, 'phone', 'LOFIC · Sony LYTIA L910', 'LOFIC · Sony LYTIA L910', 2, 'lofic'],
 ];
 
 /* 每项技术一句话说明（独立时间线页 cmos-timeline.html 用） */
