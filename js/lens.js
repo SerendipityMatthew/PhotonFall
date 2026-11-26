@@ -173,7 +173,7 @@ function rebuild(){
   rayGeo.attributes.position.needsUpdate=true;
   {const h=12*8/img(f,8)*K, w=h*1.5, x=sx(8)-.3, c=[[h,w],[h,-w],[-h,-w],[-h,w]], a=frustum.geometry.attributes.position.array;let i=0;
    c.forEach(([y,zz],n)=>{a.set([xL,0,0,x,y,zz],i);i+=6;const q=c[(n+1)%4];a.set([x,y,zz,x,q[0],q[1]],i);i+=6;});frustum.geometry.attributes.position.needsUpdate=true;}
-  const ev=st.ev=Math.log2(t*250*iso/100*4/(N*N));st.gain=Math.min(5,Math.max(.03,2**(ev/2.2)));
+  const ev=st.ev=Math.log2(t*250*iso/100*4/(N*N))-(st.dark||0); /*st.dark：拍摄效果章夜景 / 星轨的场景暗多少档 */ st.gain=Math.min(5,Math.max(.03,2**(ev/2.2)));
   const H=f*f/(N*.03)+f, sm=s*1000, near=sm*(H-f)/(H+sm-2*f), far=sm<H?sm*(H-f)/(H-sm):Infinity, fm=x=>isFinite(x)?(x/1000).toFixed(2)+' m':'∞';
   $('zoo').value=f+' mm';$('foo').value=s>=29.9?'30 m（近似 ∞）':s.toFixed(2)+' m';$('apo').value='f/'+N;$('sho').value=TN[+$('sh').value]+' s';$('isoo').value=iso;
   $('hud').textContent=`对角视角 ${(2*Math.atan(21.63/vs)*180/Math.PI).toFixed(1)}°　入瞳直径 ${(f/N).toFixed(1)} mm
@@ -204,21 +204,25 @@ document.querySelectorAll('[data-s]').forEach(b=>b.onclick=()=>{st.s=+b.dataset.
 const W=360,HH=240,PX=10, sc=mkCanvas(W,HH), sg=sc.getContext('2d'), vg=vf.getContext('2d'), noise=mkCanvas(W*2,HH*2);
 {const n=noise.getContext('2d'), d=n.createImageData(W*2,HH*2);for(let i=0;i<d.data.length;i+=4){d.data[i]=d.data[i+1]=d.data[i+2]=Math.random()*255;d.data[i+3]=255;}n.putImageData(d,0,0);}
 const canBlur='filter' in sg;
-function drawVF(t){const f=st.f, cx=W/2, cy=HH/2, ppm=d=>img(f,d)/d*PX, bl=k=>canBlur?`blur(${(st.coc[k]*PX/2.4).toFixed(2)}px)`:'none';
+function drawVF(t){const f=st.f, cx=W/2, cy=HH/2, pd=st.pd||0, ppm=d=>pd?img(85,3)/3*PX*(3+pd)/(d+pd):img(f,d)/d*PX, /*pd≠0：透视演示，主体按 85mm 大小画 */ 
+  fx=st.fx||'', coc=k=>{if(pd){const sm=st.s*1e3,vs=img(f,st.s),d=OBJ[k].d+pd,vd=img(f,d),sp=3+pd;   /* 透视演示：按挪动后的距离算弥散圆，再按画面放大比例换算 */
+    return f/st.N*Math.abs(vs-vd)/vd*(img(85,3)/3)/(img(f,sp)/sp);}
+    return fx==='portrait'&&k!==1?Math.max(st.coc[k],[1.8,0,2.6][k]):st.coc[k];}, /*人像模式：算法把前景背景虚化 */ 
+  ink=c=>fx==='sil'?'#08090c':c, bl=k=>canBlur?`blur(${(coc(k)*PX/2.4).toFixed(2)}px)`:'none';
   sg.globalCompositeOperation='source-over';sg.filter='none';sg.fillStyle='#000';sg.fillRect(0,0,W,HH);
   let p=ppm(8);sg.filter=bl(2);sg.drawImage(srcCv,cx-3.2*p,cy-2.135*p,6.4*p,4.27*p);sg.filter='none';
-  sg.globalCompositeOperation='lighter';const r=Math.max(1.6,st.coc[2]*PX/2);sg.globalAlpha=Math.min(1,Math.max(.22,14/(r*r)));
+  sg.globalCompositeOperation='lighter';const r=Math.max(1.6,coc(2)*PX/2);sg.globalAlpha=Math.min(1,Math.max(.22,14/(r*r)));
   LIGHTS.forEach(l=>{const lx=cx+l.X*p,ly=cy-.4*p,dx=lx-cx,dy=ly-cy,dl=Math.hypot(dx,dy)||1,cut=Math.min(1,Math.max(0,1-(st.N-2)/3.6))*Math.min(1,dl/Math.hypot(cx,cy))*1.3;sg.save();
     if(cut>.02){sg.beginPath();sg.arc(lx-dx/dl*r*cut,ly-dy/dl*r*cut,r*1.02,0,7);sg.clip();}   // 猫眼：镜筒挡掉边缘光斑的外侧
     sg.fillStyle=l.c;sg.beginPath();for(let i=0;i<LENS.b;i++){const a=i/LENS.b*6.2832+.3;sg.lineTo(lx+r*Math.cos(a),ly+r*Math.sin(a));}sg.fill();
     if(st.ab&&r>5){sg.strokeStyle='rgba(255,255,255,.35)';sg.lineWidth=1;[.35,.6,.82].forEach(k=>{sg.beginPath();sg.arc(lx,ly,r*k,0,7);sg.stroke();});}sg.restore();});
   sg.globalAlpha=1;sg.globalCompositeOperation='source-over';
-  p=ppm(3);sg.filter=bl(1);sg.fillStyle='#39455a';sg.fillRect(cx-.15*p,cy+.2*p,.3*p,.05*p);sg.fillStyle='#e8823a';sg.fillRect(cx-.1*p,cy-.05*p,.2*p,.25*p);
-  sg.fillStyle='#f2d3b1';sg.beginPath();sg.arc(cx,cy-.12*p,.08*p,0,7);sg.fill();
-  const bx=cx+ballX(t)*p, L=Math.abs(ballV(t))*st.t*p, br=.03*p;sg.strokeStyle='#4c8dff';sg.lineCap='round';sg.lineWidth=2*br;sg.globalAlpha=Math.min(1,2*br/(2*br+L));
+  p=ppm(3);sg.filter=bl(1);sg.fillStyle=ink('#39455a');sg.fillRect(cx-.15*p,cy+.2*p,.3*p,.05*p);sg.fillStyle=ink('#e8823a');sg.fillRect(cx-.1*p,cy-.05*p,.2*p,.25*p);
+  sg.fillStyle=ink('#f2d3b1');sg.beginPath();sg.arc(cx,cy-.12*p,.08*p,0,7);sg.fill();
+  const bx=cx+ballX(t)*p, L=fx==='pan'?0:Math.abs(ballV(t))*st.t*p, br=.03*p;sg.strokeStyle=ink('#4c8dff'); /*追焦：相机跟着小球，小球是清楚的 */ sg.lineCap='round';sg.lineWidth=2*br;sg.globalAlpha=Math.min(1,2*br/(2*br+L));
   sg.beginPath();sg.moveTo(bx-L/2,cy+.1*p);sg.lineTo(bx+L/2+.01,cy+.1*p);sg.stroke();sg.globalAlpha=1;
-  p=ppm(1.2);sg.filter=bl(0);sg.fillStyle='#3fa55a';[[0,0],[.04,-.05],[-.035,-.035],[.005,-.08]].forEach(([a,b])=>{sg.beginPath();sg.arc(cx+(-.1+a)*p,cy+(.08+b)*p,.057*p,0,7);sg.fill();});sg.filter='none';
+  p=ppm(1.2);sg.filter=bl(0);sg.fillStyle=ink('#3fa55a');[[0,0],[.04,-.05],[-.035,-.035],[.005,-.08]].forEach(([a,b])=>{sg.beginPath();sg.arc(cx+(-.1+a)*p,cy+(.08+b)*p,.057*p,0,7);sg.fill();});sg.filter='none';
   vg.globalCompositeOperation='source-over';vg.globalAlpha=1;vg.filter=canBlur?`brightness(${st.gain.toFixed(3)})`:'none';vg.drawImage(sc,0,0);vg.filter='none';
-  vg.globalCompositeOperation='overlay';vg.globalAlpha=Math.min(.75,.035*Math.sqrt(st.iso/100)*2);vg.drawImage(noise,-Math.random()*W,-Math.random()*HH);vg.globalAlpha=1;vg.globalCompositeOperation='source-over';if(st.ab)applyAb();}
+  vg.globalCompositeOperation='overlay';vg.globalAlpha=Math.min(.75,.035*Math.sqrt(st.iso/100)*2)*(st.nf||1); /*st.nf：多帧合成后噪声降到 1/√N */ vg.drawImage(noise,-Math.random()*W,-Math.random()*HH);vg.globalAlpha=1;vg.globalCompositeOperation='source-over';if(st.ab)applyAb();}
 let shot=null;                                                                // 拍照动画：关 → 开 t → 关 → 开
 $('shoot').onclick=()=>{if(!shot)shot={t:0,open:.3+Math.min(1.2,st.t*4.8),done:false};};

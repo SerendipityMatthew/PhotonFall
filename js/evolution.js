@@ -39,7 +39,7 @@ const EVO=[
  driver:'新闻和家庭用户想在室内弱光下不用闪光灯也能拍。',
  industry:'“ISO 越高越粗糙”成了常识，也是后来数码噪声的老祖宗。',
  story:'胶片上的银盐颗粒越大，越容易被光“点亮”，感光度就越高，但画面也越粗。1982 年柯达发布 Kodacolor VR 1000，用扁平的“T 颗粒”乳剂，把彩色负片做到 ISO 1000，颗粒仍然可以接受。数码相机后来的 ISO 和噪声，讲的是同一笔交换。来源：柯达资料、Christian Science Monitor（1982）、Wikipedia「Kodacolor」。',
- steps:[9,15,22],
+ steps:[9,15,22,39],
  draw(c,w,h){const u=evoBg(c,w,h);let s=7;const rnd=()=>(s=(s*16807)%2147483647)/2147483647;
   [[.27,.012,'ISO 100'],[.73,.035,'ISO 1000']].forEach(([cx,r,t])=>{c.strokeRect(w*cx-u*.2,h*.15,u*.4,h*.55);c.fillStyle=EVO_INK;
    for(let i=0;i<60;i++){c.beginPath();c.arc(w*cx-u*.18+rnd()*u*.36,h*.17+rnd()*h*.51,u*r*(.5+rnd()),0,7);c.fill();}
@@ -139,7 +139,7 @@ const EVO=[
  driver:'数码相机越做越小、像素越来越高，手抖更容易糊。',
  industry:'防抖从“买镜头送功能”变成机身标配，后来无反几乎都带。',
  story:'1995 年佳能推出 EF 75-300mm IS，是第一支带光学防抖的单反镜头（尼康 1994 年先在一台胶片小相机上用了防抖）。2003 年美能达 DiMAGE A1 改为移动 CCD 来抵消抖动，2004 年的 Maxxum 7D 把它带进了数码单反。来源：Canon Camera Museum、DPReview、Konica Minolta 新闻稿（2004）。',
- steps:[10],
+ steps:[10,38],
  draw(c,w,h){const u=evoBg(c,w,h);c.fillStyle=EVO_ACC;c.fillRect(w/2-u*.18,h/2-u*.13,u*.36,u*.26);
   evoArrow(c,w/2-u*.22,h/2,w/2-u*.42,h/2);evoArrow(c,w/2+u*.22,h/2,w/2+u*.42,h/2);evoArrow(c,w/2,h/2-u*.17,w/2,h/2-u*.37);evoArrow(c,w/2,h/2+u*.17,w/2,h/2+u*.37);}},
 
@@ -149,7 +149,7 @@ const EVO=[
  driver:'数码传感器像素越来越密，又会把光反射回镜头，鬼影比胶片时代更明显。',
  industry:'“光学 + 机内数字校正”成为常规做法，高端镜头的卖点从焦段变成画质。',
  story:'尼康 1972 年为札幌冬奥会做的 300mm f/2.8 首次用上超低色散（ED）玻璃。2004 年 9 月发布的 AF-S VR 300mm f/2.8G 是第一支用“纳米结晶涂层”的尼克尔镜头：最外层是含纳米晶粒的超低折射率层，反射大幅降低。来源：尼康「NIKKOR 千夜一夜」第 11 话、Nikon USA 新闻稿（2004）、尼康技术故事。',
- steps:[6,7,8],
+ steps:[6,7,8,37],
  draw(c,w,h){const u=evoBg(c,w,h);c.beginPath();c.ellipse(w/2,h/2,u*.08,u*.34,0,0,7);c.stroke();
   c.beginPath();c.moveTo(w*.08,h*.35);c.lineTo(w*.92,h*.35);c.moveTo(w*.08,h*.65);c.lineTo(w*.92,h*.65);c.stroke();
   c.strokeStyle=EVO_ACC;c.setLineDash([u*.03,u*.03]);c.beginPath();c.moveTo(w/2-u*.08,h*.35);c.lineTo(w*.15,h*.12);c.stroke();c.setLineDash([]);
@@ -181,7 +181,7 @@ const EVO=[
  driver:'社交网络让“随手拍、马上发”比画质更重要。',
  industry:'卡片机市场几乎消失，相机厂转向高端，传感器厂的大客户变成手机厂。',
  story:'据日本相机影像器材工业协会（CIPA）统计，数码相机出货量在 2010 年达到约 1.21 亿台的顶峰，同年 iPhone 4 发布；此后卡片机一路下滑，到 2023 年全行业出货量比顶峰少了九成多。手机厂把钱砸向传感器和算法，补上小镜头的短板。来源：CIPA 统计、Statista、Digital Trends。',
- steps:[35],
+ steps:[35,41],
  draw(c,w,h){evoBars(c,w,h,[1,.9,.62,.35,.2,.08],['2010','','','','','2023'],0);}},
 
 {id:'stacked',year:2012,era:'bsi',lane:'sensor',title:'堆栈式传感器',
@@ -231,7 +231,7 @@ const EVO=[
  driver:'手机太薄放不下变焦镜组，用户又想拍远处和背景虚化。',
  industry:'手机背面变成“镜头矩阵”，光学模组厂和算法团队一起变重要。',
  story:'2016 年 9 月 iPhone 7 Plus 用一颗广角加一颗 2 倍长焦，随后推出靠双摄测距的人像模式。2019 年 3 月华为 P30 Pro 把镜头横着放、用棱镜把光拐 90 度，做出 5 倍潜望式长焦。来源：Apple Newsroom（2016）、Laser Focus World（2019）、GSMArena。',
- steps:[2,5,35],
+ steps:[2,5,35,37,40,41],
  draw(c,w,h){const u=evoBg(c,w,h);c.strokeRect(w/2-u*.25,h/2-u*.42,u*.5,u*.84);
   [['0.5×',-.22],['1×',0],['5×',.22]].forEach(([t,dy],i)=>{c.strokeStyle=i===2?EVO_ACC:EVO_INK;c.beginPath();c.arc(w/2-u*.06,h/2+dy*u*1.4,u*.09,0,7);c.stroke();
    c.save();c.textAlign='left';c.font=Math.round(Math.max(7,u/14))+'px sans-serif';evoText(c,t,w/2+u*.06,h/2+dy*u*1.4,i===2?EVO_ACC:EVO_INK);c.restore();});}},
@@ -251,7 +251,7 @@ const EVO=[
  driver:'手机传感器小、镜头小，单张照片在暗处噪声太大。',
  industry:'手机拍照的竞争从硬件转向算法，图像处理芯片和 AI 加速器成了卖点。',
  story:'谷歌 2013 年起在 Nexus 手机上用 HDR+ 连拍合成提升宽容度，2018 年 11 月在 Pixel 上推出 Night Sight（夜视）：按下快门后连拍多张偏暗但不糊的照片，对齐合并后再用学习算法校正白平衡。各家手机随后都有了夜景模式。来源：Google AI Blog（2014、2018）、Engadget、The Next Web。',
- steps:[26,29,35],
+ steps:[26,29,35,39,41],
  draw(c,w,h){const u=evoBg(c,w,h);for(let i=0;i<3;i++){c.fillStyle=i===2?'#fff':'#e6dccb';c.fillRect(w*.08+i*u*.06,h*.2+i*u*.06,u*.35,u*.35);c.strokeRect(w*.08+i*u*.06,h*.2+i*u*.06,u*.35,u*.35);}
   evoArrow(c,w*.52,h/2,w*.64,h/2,EVO_ACC);c.fillStyle=EVO_ACC;c.fillRect(w*.92-u*.3,h/2-u*.15,u*.3,u*.3);}},
 
@@ -271,7 +271,7 @@ const EVO=[
  driver:'体育、野生动物和独立视频创作者需要相机自己判断该对哪里。',
  industry:'相机里开始配专门的 AI 处理单元，对焦能力成了软件和算力的比拼。',
  story:'2022 年 10 月，索尼 α7R V 加入专门的 AI 处理单元，用深度学习识别人的脸、眼和身体姿态，也能识别动物、鸟、昆虫和车辆。佳能、尼康等同期也在用深度学习训练主体识别。来源：Sony 新闻稿（2022）、Imaging Resource、CineD。',
- steps:[3,4,36],
+ steps:[3,4,36,41],
  draw(c,w,h){const u=evoBg(c,w,h);c.beginPath();c.arc(w/2,h/2,u*.22,0,7);c.stroke();c.beginPath();c.arc(w/2-u*.08,h/2-u*.04,u*.03,0,7);c.arc(w/2+u*.08,h/2-u*.04,u*.03,0,7);c.fill();
   c.strokeStyle=EVO_ACC;c.lineWidth*=2;c.strokeRect(w/2-u*.16,h/2-u*.11,u*.32,u*.14);}},
 
@@ -292,7 +292,7 @@ const EVO=[
  driver:'体育和新闻摄影要拍极快的动作，还想彻底摆脱机械快门。',
  industry:'“取消机械快门”从口号变成现实，堆栈式的电路层是它能做出来的关键。',
  story:'2023 年 11 月 7 日，索尼发布 α9 III，称是第一台全画幅全局快门相机：2460 万像素，每秒最高 120 张，闪光同步可以到 1/80000 秒。代价是基础感光度从 ISO 250 起。来源：PetaPixel（2023）、Rangefinder、Sony 新闻稿。',
- steps:[25,27],
+ steps:[25,27,38],
  draw(c,w,h){const u=evoBg(c,w,h);c.strokeStyle=EVO_INK;for(let i=0;i<4;i++){c.beginPath();c.moveTo(w*.1+i*u*.08,h*.75);c.lineTo(w*.2+i*u*.08,h*.25);c.stroke();}
   c.strokeStyle=EVO_ACC;for(let i=0;i<4;i++){c.beginPath();c.moveTo(w*.62+i*u*.08,h*.75);c.lineTo(w*.62+i*u*.08,h*.25);c.stroke();}
   evoText(c,'卷帘',w*.25,h*.88);evoText(c,'全局',w*.73,h*.88,EVO_ACC);}},
