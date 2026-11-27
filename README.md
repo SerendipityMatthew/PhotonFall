@@ -27,7 +27,7 @@
 
 ## 运行
 
-不需要构建，直接用浏览器打开 `index.html` 就行。three.js r128 从 CDN 加载，所以需要联网。
+不需要构建，直接用浏览器打开 `index.html` 就行。three.js r128 和用到的几个扩展（OrbitControls、LineSegments2 等）放在 `js/vendor/three/`，本地加载，不依赖 CDN，断网也能跑；CSP 只允许本站脚本。
 
 也可以起一个本地静态服务器：
 
