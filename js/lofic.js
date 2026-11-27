@@ -39,3 +39,34 @@ function animLof(time){const t=time%LT, n={PD:0,FD:0,CS:0}, txl=LS.TX(t);
   const pa=t>=6.6&&t<7.4?(t-6.6)/.8:t>=9.1&&t<9.9?(t-9.1)/.8:t>=11.2&&t<12.3?(t-11.2)/1.1:-1;pulse.visible=pa>=0&&pa<1;
   if(pulse.visible){const q=pa*3, i=Math.min(2,q|0);pulse.position.lerpVectors(PPATH[i],PPATH[i+1],q-i);pulse.material.color.setHex(t<7.5?0xffc45c:0x4fd8e8);}
   drawPotL(t,n);drawTimingL(t);const ph=LPH.find(p=>t<p[0])[1];if($('txs').textContent!==ph)$('txs').textContent=ph;}
+
+/* ---------- LOFIC 信号延伸模拟器 ---------- */
+function drawLoficSim(){const pd=+$('lofp').value*1000,k=+$('lofk').value,rn=+$('lofn').value,capFW=pd*k;    // pd in e⁻, cap = pd × k
+  const gRatio=k;                                                                          // LCG CG ≈ HCG / k
+  const c=hiDPI($('lofsig')),W=330,H=220,L=42,B=28;                              // 不用 cx2（lofic.js 在 optics-extras.js 之前加载）
+  $('lofpo').value=(pd/1000).toFixed(0)+' ke⁻';$('lofko').value=k+'×';$('lofno').value=rn.toFixed(1)+' e⁻';
+  const xMax=1e7,yMax=1e7;                                                                 // 7 decades each
+  const px=v=>L+Math.log10(Math.max(v,1))/Math.log10(xMax)*(W-L-8), py=v=>H-B-Math.log10(Math.max(v,1))/Math.log10(yMax)*(H-B-26);
+  const fnt='11px ui-monospace,Menlo,monospace';                                           // 不依赖 optics-extras.js 的 FONT
+  c.fillStyle=PAL.paper;c.fillRect(0,0,W,H);c.font=fnt;c.strokeStyle=PAL.grid;c.fillStyle=PAL.dim;c.lineWidth=1;
+  for(let e=0;e<=7;e++){const sx=px(10**e);c.beginPath();c.moveTo(sx,26);c.lineTo(sx,H-B);c.stroke();c.fillText(e?'10'+'⁰¹²³⁴⁵⁶⁷'[e]:'1',sx-8,H-B+13);}
+  for(let e=0;e<=7;e++){const sy=py(10**e);c.beginPath();c.moveTo(L,sy);c.lineTo(W-8,sy);c.stroke();c.fillText(e?'10'+'⁰¹²³⁴⁵⁶⁷'[e]:'1',4,sy+3);}
+  /* 无 LOFIC 曲线：线性到 PD 满阱，然后 clip（横平） */
+  c.strokeStyle=PAL.r;c.setLineDash([]);c.lineWidth=2;c.beginPath();
+  c.moveTo(px(1),py(1));c.lineTo(px(pd),py(pd));c.lineTo(px(xMax),py(pd));c.stroke();
+  /* LOFIC 曲线：线性到 PD 满阱，然后 LCG 段（斜率 1/gRatio）到 cap 满阱 */
+  c.strokeStyle=PAL.g;c.lineWidth=2.5;c.beginPath();
+  c.moveTo(px(1),py(1));c.lineTo(px(pd),py(pd));
+  /* LCG 段：场景再增 gRatio 倍对应到电子数 + capFW/gRatio */
+  const lcgEnd=pd*gRatio;                                                                  // 场景亮度到达 capFW 所需
+  c.lineTo(px(lcgEnd),py(capFW));c.lineTo(px(xMax),py(capFW));c.stroke();
+  /* PD 满阱和 cap 满阱横线 */
+  c.strokeStyle=PAL.dim;c.setLineDash([3,3]);c.beginPath();c.moveTo(L,py(pd));c.lineTo(W-8,py(pd));c.stroke();
+  c.beginPath();c.moveTo(L,py(capFW));c.lineTo(W-8,py(capFW));c.stroke();c.setLineDash([]);
+  c.fillStyle=PAL.paper;c.fillRect(0,0,W,22);c.fillRect(0,H-20,W,20);
+  c.font=fnt;c.fillStyle=PAL.ink;const drNo=20*Math.log10(pd/rn),drLo=20*Math.log10(capFW/rn);   // DR = FWC / 读噪
+  c.fillText(`PD ${(pd/1000).toFixed(0)}ke⁻　LOFIC 总 ${(capFW/1000).toFixed(0)}ke⁻`,4,14);
+  c.fillStyle=PAL.r;c.fillText(`无 LOFIC: DR ~ ${drNo.toFixed(0)} dB ≈ ${(drNo/6).toFixed(1)}档`,4,H-4);
+  c.fillStyle=PAL.g;c.fillText(`有 LOFIC: DR ~ ${drLo.toFixed(0)} dB ≈ ${(drLo/6).toFixed(1)}档`,170,H-4);}
+['lofp','lofk','lofn'].forEach(id=>$(id).oninput=drawLoficSim);
+drawLoficSim();

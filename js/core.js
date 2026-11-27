@@ -1,6 +1,43 @@
 /* 基础：DOM 取值、景物图、three.js 场景与相机 */
 const $=id=>document.getElementById(id), V=(x,y,z)=>new THREE.Vector3(x,y,z);
 
+/* ---------- 调色板（与 css/style.css :root 变量同值，硬编码避免运行时读 CSS） ---------- */
+/* 小图高清：画布像素 = 逻辑尺寸（HTML 里的 width/height）× 设备像素比 × 界面放大倍数（根字号 / 16），
+   坐标系仍按逻辑尺寸画。不看 clientWidth，所以藏起来时先画好的小图显示出来也是高清。像素图（data-raw）不走这里。 */
+function hiDPI(c){
+  const g=c.getContext('2d'),lw=+(c.dataset.lw||=c.width),lh=+(c.dataset.lh||=c.height);
+  const ui=parseFloat(getComputedStyle(document.documentElement).fontSize)/16||1;
+  const k=Math.max(1,Math.min(3,Math.round((devicePixelRatio||1)*ui*1.25*4)/4));   // 1.25：留给放大查看
+  if(c.width!==Math.round(lw*k)){c.width=Math.round(lw*k);c.height=Math.round(lh*k);}
+  g.setTransform(k,0,0,k,0,0);return g;
+}
+/* 粗光线：WebGL 原生线永远只有 1 个设备像素，4K 上细得看不见，改用 three.js 的 LineSegments2 画。
+   原 LineSegments 留着当数据源：不再写颜色（colorWrite=false），只借它的 onBeforeRender 触发同步，可见性和位置子对象自动跟随。
+   r128 的 LineMaterial 开逐顶点颜色时画不出来，所以按颜色分桶，每种颜色一个子对象（每组光线只有几种颜色）。
+   线宽（CSS 像素）= w × 界面放大倍数（根字号 / 16）。CDN 没加载到就保持原来的细线。 */
+const _fatSize=new THREE.Vector2(), _fatCol=new THREE.Color();
+function fatLines(src,w=1.3){
+  if(!THREE.LineSegments2)return src;
+  const m0=src.material, kids=new Map();let lastP=null,ver=-1;
+  m0.colorWrite=false;m0.depthWrite=false;
+  const kid=hex=>{let k=kids.get(hex);if(!k){k=new THREE.LineSegments2(new THREE.LineSegmentsGeometry(),
+    new THREE.LineMaterial({color:hex,transparent:true,opacity:m0.opacity,depthWrite:false}));k.frustumCulled=false;src.add(k);kids.set(hex,k);}return k;};
+  src.onBeforeRender=r=>{
+    const p=src.geometry.attributes.position,c=src.geometry.attributes.color;
+    if(p&&(p!==lastP||p.version!==ver)){lastP=p;ver=p.version;   // 有的代码原地改数组，有的换新 attribute，两种都认
+      const b=new Map();
+      for(let i=0;i+5<p.array.length;i+=6){const hex=c?_fatCol.fromArray(c.array,i).getHex():m0.color.getHex();
+        if(!b.has(hex))b.set(hex,[]);b.get(hex).push(...p.array.subarray(i,i+6));}
+      kids.forEach(k=>k.visible=false);
+      b.forEach((arr,hex)=>{const k=kid(hex);k.geometry.setPositions(arr);k.visible=true;});
+    }
+    const lw=w*(parseFloat(getComputedStyle(document.documentElement).fontSize)/16||1);r.getSize(_fatSize);
+    kids.forEach(k=>{k.material.linewidth=lw;k.material.resolution.copy(_fatSize);});
+  };
+  return src;
+}
+const PAL={paper:'#f7f3ea',ink:'#2a2622',dim:'#6b6359',grid:'#ddd3c2',accent:'#c8502d',r:'#ef5a5f',g:'#48c26a',b:'#5a95ff',cyan:'#007295',amber:'#9a6200',well:'#1c2a40',elec:'#4fd8e8'};
+
 /* ---------- 场景图片（景物、传感器上的像、ISP 演示共用） ---------- */
 function drawScene(c,w,h){const g=c.createLinearGradient(0,0,0,h);g.addColorStop(0,'#3d7fd9');g.addColorStop(.65,'#bfe0ff');c.fillStyle=g;c.fillRect(0,0,w,h);
   c.fillStyle='#ffe27a';c.beginPath();c.arc(w*.2,h*.22,h*.1,0,7);c.fill();
@@ -12,8 +49,13 @@ const mkCanvas=(w,h)=>Object.assign(document.createElement('canvas'),{width:w,he
 
 /* ---------- three 基础 ---------- */
 const view=$('view'), renderer=new THREE.WebGLRenderer({antialias:true});
-renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.shadowMap.enabled=true;renderer.setClearColor(0x0d1420);
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.setClearColor(0x0d1420);
+/* 大屏高清：物理像素 ≥ 2560 宽时用 4096 阴影贴图；贴图开满各向异性过滤，斜看不糊 */
+const BIG_SCREEN=screen.width*(devicePixelRatio||1)>=2560, MAX_ANISO=renderer.capabilities.getMaxAnisotropy();
 view.prepend(renderer.domElement);
+/* iOS Safari / Android Chrome 偶发 context lost；preventDefault 允许 three.js 自动恢复 */
+renderer.domElement.addEventListener('webglcontextlost',e=>{e.preventDefault();console.warn('[PhotonFall] WebGL context lost — browser 将尝试恢复');});
+renderer.domElement.addEventListener('webglcontextrestored',()=>{console.log('[PhotonFall] WebGL context restored');renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.setClearColor(0x0d1420);});
 const scene=new THREE.Scene(), cam=new THREE.PerspectiveCamera(45,1,.1,200), ctr=new THREE.OrbitControls(cam,renderer.domElement);
 ctr.enableDamping=true;let tween=true;ctr.addEventListener('start',()=>tween=false);
 /* 触控板：双指滑动只平移（上下左右都是），捏合才缩放；鼠标滚轮仍是缩放。
@@ -29,5 +71,5 @@ view.addEventListener('wheel',e=>{if(e.ctrlKey)return;                       // 
 new ResizeObserver(()=>{const w=view.clientWidth,h=view.clientHeight;renderer.setSize(w,h);cam.aspect=w/h;cam.updateProjectionMatrix()}).observe(view);
 scene.add(new THREE.AmbientLight(0x8899bb,.55));
 const macro=new THREE.Group(), micro=new THREE.Group(), tx=new THREE.Group();scene.add(macro,micro,tx);
-const labels=[];function label(g,text,v){const el=document.createElement('div');el.className='lb';el.textContent=text;view.appendChild(el);labels.push({g,el,v});return v;}
+const labels=[];function label(g,text,v){const el=document.createElement('div');el.className='lb';el.dataset.labelKey=text;const en=typeof getLang==='function'&&getLang()==='en';el.textContent=(en&&typeof LABEL_EN==='object'&&LABEL_EN[text])?LABEL_EN[text]:text;view.appendChild(el);labels.push({g,el,v});return v;}
 const basic=(color,o={})=>new THREE.MeshBasicMaterial({color,...o});

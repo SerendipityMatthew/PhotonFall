@@ -42,6 +42,9 @@ const COMP=[
  [['传感器','CMOS'],'CMOS 图像传感器','把光变成电信号的芯片。这里画的是全画幅，36 × 24 mm。'],
  [['主光线角'],'主光线角（CRA）','从镜头中心射到某个像素的光线和传感器法线的夹角，越往边缘越大。'],
  [['快门'],'快门','控制曝光时间的帘幕。无反相机平时开着给取景器供画面，按下时先关、再开 t 秒、再关读出。'],
+ [['前组'],'前组','镜头最前面、最大的几片镜片，先把光收进来。它的口径决定长焦端能开到多大光圈：150 mm、F2 需要约 75 mm 的入瞳。这里的分组是示意。'],
+ [['补偿组'],'补偿组','变焦时像面会前后跑，补偿组跟着做一段非线性的移动，把像面拉回传感器上，让变焦时焦点不丢。这里的分组是示意。'],
+ [['后组'],'后组','靠近传感器的最后几片，把光送到传感器上，控制光落到传感器上的角度，并把像面压平（校正场曲）。这里的分组是示意。'],
  [['变焦组'],'变焦组','镜头里随变焦前后移动的镜片组，改变整支镜头的等效焦距。'],
  [['对焦组'],'对焦组','镜头里随对焦移动的镜片组。这支镜头是内对焦，由线性马达推动，前组不动。'],
  [['主平面','光圈'],'等效主平面与光圈','把 19 片镜片等效成一片薄透镜时，光线偏折的位置。光圈是 11 片叶片围成的可变圆孔，决定进光量和景深。'],
@@ -58,13 +61,14 @@ const COMP=[
  [['LOFIC'],'LOFIC 像素','在普通像素上加一个开关和一个大电容，PD 装满后溢出的电子存进电容，一次曝光得到高动态范围。'],
 ];
 const compOf=t=>{for(const c of COMP)if(c[0].some(k=>t.includes(k)))return c;return null;};
-const card=document.createElement('div');card.id='card';card.hidden=true;view.appendChild(card);
+const card=document.createElement('div');card.id='compcard';card.hidden=true;view.appendChild(card);
 const showCard=(c,x,y)=>{card.innerHTML=`<b>${c[1]}</b><p>${c[2]}</p>`;card.hidden=false;const vw=view.clientWidth,vh=view.clientHeight;
   card.style.left=Math.min(Math.max(8,x+12),vw-card.offsetWidth-8)+'px';card.style.top=Math.min(Math.max(8,y+12),vh-card.offsetHeight-8)+'px';};
 labels.forEach(l=>{const c=compOf(l.el.textContent);if(!c)return;l.el.classList.add('lbc');l.el.tabIndex=0;l.el.title='点击看说明';
   const open=e=>{e.stopPropagation();const r=l.el.getBoundingClientRect(),v=view.getBoundingClientRect();showCard(c,r.left-v.left,r.bottom-v.top);};
   l.el.addEventListener('click',open);l.el.addEventListener('keydown',e=>{if(e.key==='Enter')open(e);});});
-view.addEventListener('pointerdown',e=>{if(!card.contains(e.target))card.hidden=true;});addEventListener('keydown',e=>{if(e.key==='Escape')card.hidden=true;});
+view.addEventListener('pointerdown',e=>{if(!card.contains(e.target))card.hidden=true;});
+/* Esc 由 card.js 的统一处理器关闭（#compcard 按 id 查找） */
 function listComps(){const on=o=>{for(;o;o=o.parent)if(!o.visible)return false;return true;}, seen=new Set(), rows=[];
   labels.forEach(l=>{if(!on(l.g))return;const c=compOf(l.el.textContent);if(c&&!seen.has(c[1])){seen.add(c[1]);rows.push(c);}});
   $('compn').textContent=rows.length;$('complist').innerHTML=rows.map(c=>`<dt>${c[1]}</dt><dd>${c[2]}</dd>`).join('');$('compwrap').hidden=!rows.length;card.hidden=true;}

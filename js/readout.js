@@ -1,35 +1,56 @@
 /* 噪声与信噪比、单斜率 ADC、卷帘与全局快门 */
 /* ---------- 噪声与信噪比 ---------- */
-function drawSnr(){const p=+$('np').value,rn=+$('nr').value,dk=+$('nd').value,FW=3500*p*p,c=cx2('snr'),Wc=330,Hc=200,L=40,B=26,X=v=>L+Math.log10(v)/6*(Wc-L-8),Y=v=>Hc-B-(Math.log10(v)+1)/4*(Hc-B-42);
+function drawSnr(){const p=+$('np').value,rn=+$('nr').value,dk=+$('nd').value,FW=3500*p*p,prnu=$('nprnu').checked?.01:0,bits=+$('nbits').value,adcVar=Math.pow(FW/(Math.pow(2,bits)*Math.sqrt(12)),2),c=cx2('snr'),Wc=330,Hc=200,L=40,B=26,X=v=>L+Math.log10(v)/6*(Wc-L-8),Y=v=>Hc-B-(Math.log10(v)+1)/4*(Hc-B-42);
   $('npo').value=p.toFixed(1)+' µm';$('nro').value=rn.toFixed(1)+' e⁻';$('ndo').value=dk+' e⁻';
-  c.clearRect(0,0,Wc,Hc);c.font=FONT;c.strokeStyle='rgba(147,160,184,.25)';c.fillStyle='#93a0b8';c.lineWidth=1;
+  c.fillStyle=PAL.paper;c.fillRect(0,0,Wc,Hc);c.font=FONT;c.strokeStyle=PAL.grid;c.fillStyle=PAL.dim;c.lineWidth=1;
   for(let e=0;e<=6;e++){c.beginPath();c.moveTo(X(10**e),42);c.lineTo(X(10**e),Hc-B);c.stroke();c.fillText(e?'10'+'⁰¹²³⁴⁵⁶'[e]:'1',X(10**e)-7,Hc-B+13);}
   for(let e=-1;e<=3;e++){c.beginPath();c.moveTo(L,Y(10**e));c.lineTo(Wc-8,Y(10**e));c.stroke();c.fillText(String(10**e),4,Y(10**e)+4);}
   c.fillText('收到的电子数 →',Wc-110,Hc-2);c.fillText('信噪比',4,Y(1000)-6);
   const line=(f,col,dash)=>{c.strokeStyle=col;c.setLineDash(dash||[]);c.lineWidth=2;c.beginPath();for(let i=0;i<=240;i++){const S=10**(i/240*6);if(S>FW)break;const v=f(S);if(v<.1)continue;c.lineTo(X(S),Y(Math.min(1000,v)));}c.stroke();c.setLineDash([]);};
-  line(S=>Math.sqrt(S),'#93a0b8',[4,4]);line(S=>S/Math.sqrt(S+rn*rn+dk),'#ffc45c');
-  c.strokeStyle='#ef5a5f';c.lineWidth=1;c.beginPath();c.moveTo(X(FW),42);c.lineTo(X(FW),Hc-B);c.stroke();c.fillStyle='#ef5a5f';c.fillText('满阱',X(FW)-28,54);
-  const dr=FW/Math.sqrt(rn*rn+dk);c.fillStyle='#e6ebf4';c.fillText(`满阱 ${Math.round(FW).toLocaleString()} e⁻　动态范围 ${(20*Math.log10(dr)).toFixed(0)} dB ≈ ${Math.log2(dr).toFixed(1)} 档`,4,13);
-  c.fillStyle='#ffc45c';c.fillText('实线：实际信噪比',4,28);c.fillStyle='#93a0b8';c.fillText('虚线：只有散粒噪声的理想情况',120,28);
+  line(S=>Math.sqrt(S),PAL.dim,[4,4]);line(S=>S/Math.sqrt(S+rn*rn+dk+prnu*prnu*S*S+adcVar),PAL.amber);
+  c.strokeStyle=PAL.r;c.lineWidth=1;c.beginPath();c.moveTo(X(FW),42);c.lineTo(X(FW),Hc-B);c.stroke();c.fillStyle=PAL.r;c.fillText('满阱',X(FW)-28,54);
+  const dr=FW/Math.sqrt(rn*rn+dk+adcVar);c.fillStyle=PAL.ink;c.fillText(`满阱 ${Math.round(FW).toLocaleString()} e⁻（按 3500 e⁻/µm² 估）　动态范围 ${(20*Math.log10(dr)).toFixed(0)} dB ≈ ${Math.log2(dr).toFixed(1)} 档`,4,13);
+  c.fillStyle=PAL.amber;c.fillText('实线：实际信噪比',4,28);c.fillStyle=PAL.dim;c.fillText('虚线：只有散粒噪声的理想情况',120,28);
+  /* 噪声分量分解图：σ_shot / σ_read / σ_dark / σ_total 四条曲线，交叉点标出 */
+  {const nc=cx2('nbreak'),nW=330,nH=160,nL=40,nB=26;
+   const nX=v=>nL+Math.log10(Math.max(v,1))/6*(nW-nL-8), nY=v=>nH-nB-(Math.log10(Math.max(v,.1))+1)/3*(nH-nB-24);
+   nc.fillStyle=PAL.paper;nc.fillRect(0,0,nW,nH);nc.font=FONT;nc.strokeStyle=PAL.grid;nc.fillStyle=PAL.dim;nc.lineWidth=1;
+   for(let e=0;e<=6;e++){nc.beginPath();nc.moveTo(nX(10**e),22);nc.lineTo(nX(10**e),nH-nB);nc.stroke();nc.fillText(e?'10'+'⁰¹²³⁴⁵⁶'[e]:'1',nX(10**e)-7,nH-nB+13);}
+   for(let e=-1;e<=2;e++){nc.beginPath();nc.moveTo(nL,nY(10**e));nc.lineTo(nW-8,nY(10**e));nc.stroke();nc.fillText(String(10**e),4,nY(10**e)+4);}
+   nc.fillStyle=PAL.ink;nc.fillText('σ (e⁻)',4,15);nc.fillText('信号电子数 →',nW-100,nH-2);
+   const nline=(f,col,dash)=>{nc.strokeStyle=col;nc.setLineDash(dash||[]);nc.lineWidth=2;nc.beginPath();for(let i=0;i<=240;i++){const S=10**(i/240*6);if(S>FW)break;nc.lineTo(nX(S),nY(f(S)));}nc.stroke();nc.setLineDash([]);};
+   nline(S=>Math.sqrt(S),PAL.b,[4,4]);                                                             // 散粒：虚蓝 √N
+   nline(_=>rn,PAL.r,[4,4]);                                                                       // 读出：虚红 固定
+   nline(_=>Math.sqrt(dk),'#b48cff',[4,4]);                                                        // 暗流：虚紫 固定
+   if(prnu>0)nline(S=>prnu*S,PAL.cyan,[2,3]);                                                      // PRNU：青 ∝ S（勾选才画）
+   nline(_=>Math.sqrt(adcVar),PAL.amber,[6,3]);                                                    // ADC 量化：橙 固定
+   nline(S=>Math.sqrt(S+rn*rn+dk+prnu*prnu*S*S+adcVar),PAL.g);                                     // 总噪声：实绿
+   const cross=rn*rn;nc.strokeStyle=PAL.amber;nc.setLineDash([2,2]);nc.beginPath();nc.moveTo(nX(cross),22);nc.lineTo(nX(cross),nH-nB);nc.stroke();nc.setLineDash([]);
+   nc.fillStyle=PAL.amber;nc.fillText(`读噪 = 散粒 @ ${Math.round(cross)} e⁻`,nX(cross)-10,20);
+   nc.fillStyle=PAL.b;nc.fillText('散粒',nL+8,36);nc.fillStyle=PAL.r;nc.fillText('读出',nL+40,36);nc.fillStyle='#b48cff';nc.fillText('暗流',nL+72,36);nc.fillStyle=PAL.cyan;nc.fillText(prnu>0?'PRNU':'',nL+104,36);nc.fillStyle=PAL.amber;nc.fillText(`ADC ${bits}b`,nL+140,36);nc.fillStyle=PAL.g;nc.fillText('总噪声',nL+190,36);}
   const pc=cx2('npatch'),Pw=110,Ph=70;pc.font=FONT;[5,50,500].forEach((ph,k)=>{const S=ph*p*p*.7,n=Math.sqrt(S+rn*rn+dk),id=pc.createImageData(Pw,Ph);
-    for(let i=0;i<Pw*Ph;i++){const v=Math.max(0,Math.min(255,128*(S+n*gauss())/S));id.data[i*4]=id.data[i*4+1]=id.data[i*4+2]=v;id.data[i*4+3]=255;}pc.putImageData(id,k*Pw,0);
-    pc.fillStyle='rgba(13,20,32,.78)';pc.fillRect(k*Pw,Ph-30,Pw,30);pc.fillStyle='#e6ebf4';pc.fillText(`${Math.round(S).toLocaleString()} e⁻`,k*Pw+5,Ph-17);pc.fillText(`信噪比 ${(S/n).toFixed(1)}`,k*Pw+5,Ph-4);});}
+    for(let i=0;i<Pw*Ph;i++){const v=Math.max(0,Math.min(255,128*(S+Math.sqrt(S+rn*rn+dk+prnu*prnu*S*S+adcVar)*gauss())/S));id.data[i*4]=id.data[i*4+1]=id.data[i*4+2]=v;id.data[i*4+3]=255;}pc.putImageData(id,k*Pw,0);
+    pc.fillStyle='rgba(247,243,234,.88)';pc.fillRect(k*Pw,Ph-30,Pw,30);pc.fillStyle=PAL.ink;pc.fillText(`${Math.round(S).toLocaleString()} e⁻`,k*Pw+5,Ph-17);pc.fillText(`信噪比 ${(S/n).toFixed(1)}`,k*Pw+5,Ph-4);});}
 ['np','nr','nd'].forEach(id=>$(id).oninput=drawSnr);
+['nprnu','nbits'].forEach(id=>$(id).onchange=drawSnr);
+{const c=cx2('snr'),Wc=330,Hc=200;c.fillStyle=PAL.paper;c.fillRect(0,0,Wc,Hc);} // 初始底色
 
 /* ---------- 单斜率 ADC ---------- */
-PANIM.adcwrap=t=>{const c=cx2('adcc'),Wc=330,Hc=210,ph=(t%6)/6,rp=Math.min(1,Math.max(0,(ph-.08)/.8)),V4=[.22,.58,.83,.41],cols=['#ef5a5f','#48c26a','#48c26a','#5a95ff'],pw=190,L=30,top=26,bot=Hc-34,Yv=v=>bot-v*(bot-top);
-  c.clearRect(0,0,Wc,Hc);c.font=FONT;c.lineWidth=1;c.strokeStyle='rgba(147,160,184,.35)';c.strokeRect(L,top,pw,bot-top);c.fillStyle='#93a0b8';c.fillText('电压',2,top+8);c.fillText('时间（时钟数）→',L+pw-96,bot+14);
+PANIM.adcwrap=t=>{const c=cx2('adcc'),Wc=330,Hc=210,ph=(t%6)/6,rp=Math.min(1,Math.max(0,(ph-.08)/.8)),V4=[.22,.58,.83,.41],cols=[PAL.r,PAL.g,PAL.g,PAL.b],pw=190,L=30,top=26,bot=Hc-34,Yv=v=>bot-v*(bot-top);
+  c.fillStyle=PAL.paper;c.fillRect(0,0,Wc,Hc);c.font=FONT;c.lineWidth=1;c.strokeStyle=PAL.grid;c.strokeRect(L,top,pw,bot-top);c.fillStyle=PAL.dim;c.fillText('电压',2,top+8);c.fillText('时间（时钟数）→',L+pw-96,bot+14);
   V4.forEach((v,k)=>{c.strokeStyle=cols[k];c.setLineDash([3,3]);c.beginPath();c.moveTo(L,Yv(v));c.lineTo(L+pw,Yv(v));c.stroke();c.setLineDash([]);});
-  c.strokeStyle='#e6ebf4';c.lineWidth=2;c.beginPath();c.moveTo(L,Yv(0));c.lineTo(L+rp*pw,Yv(rp));c.stroke();c.lineWidth=1;
-  const cnt=Math.round(rp*1023);c.fillStyle='#e6ebf4';c.fillText(`斜坡电压 · 计数器 = ${cnt}`,L,14);c.fillStyle='#93a0b8';c.fillText('列  比较器  锁存值',L+pw+8,top+8);
+  c.strokeStyle=PAL.ink;c.lineWidth=2;c.beginPath();c.moveTo(L,Yv(0));c.lineTo(L+rp*pw,Yv(rp));c.stroke();c.lineWidth=1;
+  const cnt=Math.round(rp*1023);c.fillStyle=PAL.ink;c.fillText(`斜坡电压 · 计数器 = ${cnt}`,L,14);c.fillStyle=PAL.dim;c.fillText('列  比较器  锁存值',L+pw+8,top+8);
   V4.forEach((v,k)=>{const fl=rp>=v,y=top+34+k*30;if(fl){c.fillStyle=cols[k];c.beginPath();c.arc(L+v*pw,Yv(v),4,0,7);c.fill();}
-    c.fillStyle=cols[k];c.fillText(String(k+1),L+pw+12,y);c.fillStyle=fl?'#ffc45c':'#56657e';c.fillRect(L+pw+34,y-10,16,12);c.fillStyle=fl?'#e6ebf4':'#93a0b8';c.fillText(fl?String(Math.round(v*1023)):String(cnt),L+pw+66,y);});
-  c.fillStyle='#93a0b8';c.fillText('虚线 = 各列像素电压；黄格 = 比较器已翻转，计数锁住',2,Hc-4);};
+    c.fillStyle=cols[k];c.fillText(String(k+1),L+pw+12,y);c.fillStyle=fl?PAL.amber:PAL.grid;c.fillRect(L+pw+34,y-10,16,12);c.fillStyle=fl?PAL.ink:PAL.dim;c.fillText(fl?String(Math.round(v*1023)):String(cnt),L+pw+66,y);});
+  c.fillStyle=PAL.dim;c.fillText('虚线 = 各列像素电压；黄格 = 比较器已翻转，计数锁住',2,Hc-4);};
+{const c=cx2('adcc'),Wc=330,Hc=210;c.fillStyle=PAL.paper;c.fillRect(0,0,Wc,Hc);} // 初始底色
 
 /* ---------- 卷帘快门 vs 全局快门 ---------- */
 PANIM.shutwrap=t=>{const c=cx2('shc'),Wc=330,Hc=180,pw=155,ph=120,top=24,T=3,cyc=Math.floor(t/T),u=(t%T)/T,rd=Math.min(1,u/.8),Tr=1.2,bar=tt=>((tt*260)%(pw+40))-20;
-  c.clearRect(0,0,Wc,Hc);c.font='12px ui-monospace,Menlo,monospace';
-  [0,1].forEach(m=>{const x0=m*(pw+20),rows=Math.floor(rd*ph),t0=cyc*T;c.save();c.fillStyle='#0a0f18';c.fillRect(x0,top,pw,ph);c.fillStyle='#e6ebf4';c.fillText(m?'全局快门':'卷帘快门（逐行）',x0,16);
-    c.beginPath();c.rect(x0,top,pw,ph);c.clip();c.fillStyle='#ffc45c';for(let y=0;y<(m?ph:rows);y++)c.fillRect(x0+bar(m?t0:t0+y/ph*Tr),top+y,14,1);
-    if(!m&&rd<1){c.fillStyle='#4fd8e8';c.fillRect(x0,top+rows,pw,2);}c.restore();});
-  c.fillStyle='#93a0b8';c.font=FONT;c.fillText('一根竖着的黄条在快速右移；青线是正在读出的那一行',0,Hc-8);};
+  c.fillStyle=PAL.paper;c.fillRect(0,0,Wc,Hc);c.font='12px ui-monospace,Menlo,monospace';
+  [0,1].forEach(m=>{const x0=m*(pw+20),rows=Math.floor(rd*ph),t0=cyc*T;c.save();c.fillStyle=PAL.paper;c.fillRect(x0,top,pw,ph);c.fillStyle=PAL.ink;c.fillText(m?'全局快门':'卷帘快门（逐行）',x0,16);
+    c.beginPath();c.rect(x0,top,pw,ph);c.clip();c.fillStyle=PAL.amber;for(let y=0;y<(m?ph:rows);y++)c.fillRect(x0+bar(m?t0:t0+y/ph*Tr),top+y,14,1);
+    if(!m&&rd<1){c.fillStyle=PAL.cyan;c.fillRect(x0,top+rows,pw,2);}c.restore();});
+  c.fillStyle=PAL.dim;c.font=FONT;c.fillText('一根竖着的黄条在快速右移；青线是正在读出的那一行',0,Hc-8);};
+{const c=cx2('shc'),Wc=330,Hc=180;c.fillStyle=PAL.paper;c.fillRect(0,0,Wc,Hc);} // 初始底色

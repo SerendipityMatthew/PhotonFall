@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>存储技术时间线 · PhotonFall</title>
+<meta name="description" content="照片和视频存储的每项关键技术：CF、SD、microSD、XQD、CFexpress、UFS、NVMe、硬盘与 SSD 录制、无线传输……最先用在相机、手机、安防车载还是电脑等其他设备？">
+<style>
+:root{--bg:#0d1420;--bg2:#162033;--ink:#e6ebf4;--dim:#9aa6bb;--line:rgba(230,235,244,.14);
+  --phone:#5a95ff;--auto:#ef5a5f;--ind:#36c47f;--cam:#e3a33a;--accent:#f0a487;
+  --sans:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC",system-ui,sans-serif;
+  --serif:"Songti SC","Noto Serif SC",Georgia,serif;--mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace}
+*{box-sizing:border-box}
+html{font-size:clamp(15px,.55vw + 7px,32px)}
+html{scroll-behavior:smooth}
+body{margin:0;font-size:1rem;background:radial-gradient(120% 60% at 50% 0%,#1d2a44 0%,var(--bg) 55%) fixed,var(--bg);color:var(--ink);font:1rem/1.6 var(--sans);overflow-x:hidden}
+a{color:inherit}
+#bar{position:fixed;z-index:20;top:0;left:0;height:3px;width:0;background:linear-gradient(90deg,var(--phone),var(--auto),var(--ind),var(--cam))}
+header{position:sticky;top:0;z-index:10;display:flex;align-items:center;gap:0.667rem;padding:0.8rem 1.07rem;background:rgba(13,20,32,.72);backdrop-filter:blur(0.667rem);-webkit-backdrop-filter:blur(0.667rem);border-bottom:1px solid var(--line)}
+header a,header button{border:1px solid var(--line);border-radius:66.6rem;background:rgba(22,32,51,.7);color:var(--ink);font:500 0.867rem/1 var(--sans);padding:0.6rem 0.933rem;text-decoration:none;cursor:pointer}
+header a:hover,header button:hover{border-color:var(--accent)}
+header .sp{flex:1}
+.hero{max-width:80vw;margin:0 auto;padding:clamp(2.67rem,9vh,6.4rem) 1.07rem 1.6rem;text-align:center}
+.eye{margin:0 0 0.8rem;font:600 0.8rem/1 var(--mono);letter-spacing:.22em;text-transform:uppercase;color:var(--accent)}
+h1{margin:0;font:800 clamp(2.27rem,5vw,7rem)/1.08 var(--sans);letter-spacing:-.02em;background:linear-gradient(100deg,#ffe9c7,#f0a487 40%,#a9d4ff 80%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.sub{max-width:41.3rem;margin:1.2rem auto 0;color:var(--dim)}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0.667rem;max-width:48rem;margin:2rem auto 0;padding:0;list-style:none}
+.stats li{display:flex}
+@media (max-width:560px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.stats button{width:100%;border:1.5px solid var(--c);border-radius:0.933rem;background:rgba(22,32,51,.6);color:var(--ink);padding:0.8rem 0.933rem;cursor:pointer;font:inherit;transition:opacity .2s,transform .2s,background .2s}
+.stats button:hover{transform:translateY(-2px)}
+.stats button[aria-pressed=false]{opacity:.35}
+.stats b{display:block;font:800 2rem/1 var(--mono);color:var(--c)}
+.stats span{font-size:0.867rem;color:var(--dim)}
+.hint{margin:0.8rem 0 0;font-size:0.8rem;color:var(--dim)}
+.legend{display:flex;justify-content:center;gap:1.07rem;margin:0.667rem 0 0;font-size:0.8rem;color:var(--dim)}
+.legend i{display:inline-block;width:0.933rem;height:0.667rem;border-radius:3px;margin-right:0.4rem;vertical-align:-1px;border:1.5px solid var(--dim)}
+.legend .solid i{background:var(--dim)}
+
+/* 时间线主体 */
+.tl{position:relative;max-width:80vw;margin:1.6rem auto 0;padding:1.33rem 1.07rem 5.33rem;list-style:none}
+.tl::before,.tl .fill{content:"";position:absolute;top:0;left:50%;width:3px;margin-left:-1.5px;border-radius:3px}
+.tl::before{bottom:0;background:var(--line)}
+.tl .fill{height:0;background:linear-gradient(180deg,var(--cam),var(--auto),var(--ind),var(--phone));box-shadow:0 0 0.933rem rgba(240,164,135,.5)}
+.yr{position:relative;display:flex;justify-content:center;margin:2.27rem 0 0.933rem}
+.yr span{position:relative;z-index:1;padding:0.4rem 1.07rem;border-radius:66.6rem;background:var(--bg2);border:1px solid var(--line);font:800 1.33rem/1 var(--mono);letter-spacing:.04em;box-shadow:0 0 0 0.4rem var(--bg)}
+.it{position:relative;width:50%;padding:0.533rem 2.27rem 0.533rem 0}
+.it.r{margin-left:50%;padding:0.533rem 0 0.533rem 2.27rem}
+.it::after{content:"";position:absolute;top:1.73rem;right:-.533rem;width:1.07rem;height:1.07rem;border-radius:50%;background:var(--bg);border:3px solid var(--c);box-shadow:0 0 0.8rem var(--c)}
+.it.r::after{right:auto;left:-.533rem}
+.it.first::after{background:var(--c)}
+.card{position:relative;padding:0.933rem 1.07rem;border-radius:0.933rem;background:linear-gradient(180deg,rgba(28,40,62,.92),rgba(20,30,48,.92));border:1px solid var(--line);border-top:3px solid var(--c);box-shadow:0 0.667rem 2rem rgba(0,0,0,.25);
+  opacity:0;transform:translateY(1.6rem) scale(.98);transition:opacity .6s ease,transform .6s ease}
+.it.in .card{opacity:1;transform:none}
+.card::before{content:"";position:absolute;top:1.6rem;right:-.533rem;width:0.933rem;height:0.933rem;background:inherit;border-right:1px solid var(--line);border-top:1px solid var(--line);transform:rotate(45deg)}
+.it.r .card::before{right:auto;left:-.533rem;transform:rotate(-135deg)}
+.tag{display:inline-flex;gap:0.4rem;align-items:center;font:600 0.733rem/1 var(--sans);letter-spacing:.04em}
+.tag em{font-style:normal;padding:0.267rem 0.533rem;border-radius:66.6rem;background:var(--c);color:#0d1420}
+.tag .flw{background:transparent;border:1px solid var(--c);color:var(--c)}
+.card h3{margin:0.667rem 0 2px;font:700 1.2rem/1.3 var(--sans)}
+.card .prod{margin:0;font:500 0.867rem/1.4 var(--mono);color:var(--c)}
+.card p.d{margin:0.533rem 0 0;font-size:0.933rem;color:var(--dim)}
+.card .to{display:flex;flex-wrap:wrap;gap:0.4rem;margin:0.667rem 0 0;font-size:0.8rem;color:var(--dim);align-items:center}
+.card .to a{padding:3px 0.6rem;border-radius:66.6rem;border:1px solid var(--cc);color:var(--cc);text-decoration:none}
+.card .to a:hover{background:var(--cc);color:#0d1420}
+.it.off{display:none}
+.it.flash .card{box-shadow:0 0 0 2px var(--c),0 0.667rem 2rem rgba(0,0,0,.25)}
+.refs{margin-top:1.2rem;text-align:left}.refs summary{cursor:pointer;text-align:center}.refs ol{columns:2 22rem;font-size:.8rem;line-height:1.5}.refs a{color:var(--dim)}
+footer{max-width:80vw;margin:0 auto;padding:0 1.07rem 4rem;text-align:center;font-size:0.867rem;color:var(--dim)}
+
+@media (max-width:720px){
+  .hero,.tl,footer{max-width:none}
+  .tl::before,.tl .fill{left:1.6rem}
+  .it,.it.r{width:auto;margin-left:0;padding:0.533rem 0 0.533rem 3.47rem}
+  .it::after,.it.r::after{left:1.07rem;right:auto}
+  .card::before,.it.r .card::before{right:auto;left:-.533rem;transform:rotate(-135deg)}
+  .yr{justify-content:flex-start}
+  .yr span{margin-left:0}
+}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.card{transition:none;opacity:1;transform:none}}
+</style>
+</head>
+<body data-tl="stor">
+<div id="bar" aria-hidden="true"></div>
+<header>
+  <a href="index.html#/" id="home">⌂ PhotonFall</a>
+  <a href="index.html#/step/34" id="steplink"></a>
+  <span class="sp"></span>
+  <button type="button" id="lang"></button>
+</header>
+<section class="hero">
+  <p class="eye" id="eyebrow">Storage &amp; Transfer</p>
+  <h1 id="h1"></h1>
+  <p class="sub" id="sub"></p>
+  <ul class="stats" id="stats"></ul>
+  <p class="hint" id="hint"></p>
+  <p class="legend" id="legend"></p>
+</section>
+<ol class="tl" id="tl"><li class="fill" aria-hidden="true"></li></ol>
+<footer id="foot"></footer>
+
+<script src="js/i18n.js"></script>
+<script src="js/tl-core.js"></script>
+<script src="js/stortl.js"></script>
+<script src="js/tl-page.js"></script>
+</body>
+</html>

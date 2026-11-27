@@ -1,0 +1,25 @@
+/* 时间线页的「发展史」弹窗（js/tl-page.js 动态加载这个文件） */
+.hbtn{margin-top:.8rem;padding:.4rem .8rem;border:1px solid var(--c);border-radius:999px;background:transparent;color:var(--c);font:600 .8rem/1 var(--sans);cursor:pointer}
+.hbtn:hover{background:var(--c);color:#0d1420}
+#hist{width:min(46rem,92vw);max-height:88vh;padding:1.6rem 1.8rem 1.4rem;border:1px solid var(--line);border-radius:1rem;background:#121b2c;color:var(--ink);box-shadow:0 30px 80px rgba(0,0,0,.6);overflow:auto}
+#hist::backdrop{background:rgba(5,9,16,.72);backdrop-filter:blur(4px)}
+#hist .hx{position:sticky;top:0;float:right;width:2.2rem;height:2.2rem;margin:-.6rem -.8rem 0 0;border:1px solid var(--line);border-radius:50%;background:#1b2639;color:var(--ink);font:1.2rem/1 var(--sans);cursor:pointer}
+#hist .heye{margin:0;font:600 .75rem/1.4 var(--mono);letter-spacing:.08em;color:var(--accent)}
+#hist h2{margin:.3rem 0 .4rem;font:800 1.8rem/1.2 var(--sans)}
+#hist .hd{margin:0 0 1.2rem;color:var(--dim)}
+.hs{position:relative;margin:0;padding:0 0 0 1.2rem;list-style:none;border-left:2px solid var(--line)}
+.hs li{position:relative;margin:0 0 1rem;padding-left:.8rem}
+.hs li::before{content:"";position:absolute;left:-1.62rem;top:.35rem;width:.75rem;height:.75rem;border-radius:50%;background:var(--sc);box-shadow:0 0 10px var(--sc)}
+.hs b{font:800 .95rem/1 var(--mono);margin-right:.5rem}
+.hs em{font-style:normal;font:600 .7rem/1 var(--sans);padding:.2rem .5rem;border-radius:999px;background:var(--sc);color:#0d1420;vertical-align:.1rem}
+.hs p{margin:.35rem 0 0;line-height:1.6}
+.hs a{margin-left:.15rem;font-size:.75rem;color:var(--sc);text-decoration:none}
+.st-idea{--sc:#b48cff}.st-paper{--sc:#5a95ff}.st-proto{--sc:#36c4c4}.st-corp{--sc:#e3a33a}.st-mass{--sc:#36c47f}.st-ver{--sc:#8fd3ff}.st-rival{--sc:#9aa6bb}.st-end{--sc:#ef5a5f}
+.hbox{margin:1rem 0 0;padding:.8rem 1rem;border-radius:.7rem;background:rgba(54,196,127,.08);border:1px solid rgba(54,196,127,.35)}
+.hbox.end{background:rgba(239,90,95,.08);border-color:rgba(239,90,95,.35)}
+.hbox h3{margin:0 0 .3rem;font:700 .85rem/1.3 var(--sans)}
+.hbox p{margin:0;line-height:1.6}
+.hrefs{margin-top:1rem;font-size:.8rem;color:var(--dim)}
+.hrefs summary{cursor:pointer}
+.hrefs a{color:var(--dim)}
+@media (max-width:720px){#hist{padding:1.2rem 1rem}#hist h2{font-size:1.4rem}}
