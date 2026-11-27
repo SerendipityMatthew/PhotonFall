@@ -23,7 +23,7 @@ TIMELINES.af = {
     [1987, "cam", "环形超声波马达 · Canon EF 300mm f/2.8L USM", "Ring ultrasonic motor · Canon EF 300mm f/2.8L USM", 2, "motor"],
     [1988, "cam", "预测追焦 · Minolta α-7000i", "Predictive focus tracking · Minolta α-7000i", 1, "predict"],
     [1989, "cam", "十字型对焦点 · Canon EOS-1", "Cross-type AF sensor · Canon EOS-1", 1, "cross"],
-    [1995, "ind", "反差对焦 · Sony EVI-D30 云台视频会议摄像机（约）", "Contrast-detect AF · Sony EVI-D30 PTZ conferencing camera (approx.)", 0, "cdaf"],
+    [1996, "ind", "反差对焦 · Sony EVI-D30 云台视频会议摄像机", "Contrast-detect AF · Sony EVI-D30 PTZ conferencing camera", 0, "cdaf"],
     [2003, "phone", "反差对焦 · NTT DoCoMo P505iS", "Contrast-detect AF · NTT DoCoMo P505iS", 0, "cdaf"],
     [2005, "cam", "人脸检测对焦 · Nikon Coolpix 7900 / 5900", "Face-detection AF · Nikon Coolpix 7900 / 5900", 1, "face"],
     [2005, "cam", "触摸对焦 · Sony Cyber-shot DSC-N1", "Touch focus · Sony Cyber-shot DSC-N1", 1, "touch"],
@@ -198,7 +198,7 @@ TIMELINES.af = {
       },
       {
           "t": "Varioptic Arctic 320",
-          "u": "https://optics.org/article/24590"
+          "u": "https://web.archive.org/web/20200923230125/https://optics.org/article/24590"
       },
       {
           "t": "Cognex DataMan 液体镜头",
@@ -234,7 +234,7 @@ TIMELINES.af = {
       },
       {
           "t": "DJI Ronin 4D LiDAR 对焦",
-          "u": "https://www.dji.com/media-center/announcements/dji-ronin-4d"
+          "u": "https://www.mynewsdesk.com/uk/dji/pressreleases/dji-revolutionizes-filmmaking-with-worlds-first-4-axis-cinema-camera-3137828"
       },
       {
           "t": "Panasonic DFD 技术",

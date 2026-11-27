@@ -11,7 +11,7 @@ TIMELINES.wb = {
   ],
   rows: [
     [1973, "ind", "一键白平衡（对白卡测定） · RCA TK-45A 广播摄像机", "One-push white balance (white card) · RCA TK-45A broadcast camera", 1, "onepush"],
-    [1982, "cam", "自动白平衡 AWB（约） · JVC KY-1900", "Automatic white balance (AWB, approx.) · JVC KY-1900", 1, "awb"],
+    [1978, "cam", "自动白平衡 AWB · Hitachi SK-90 便携摄像机", "Automatic white balance (AWB) · Hitachi SK-90 portable camera", 1, "awb"],
     [1986, "cam", "外置 AWB 色温传感器 · Panasonic NV-M5 摄像机（约）", "External AWB color sensor · Panasonic NV-M5 camcorder (approx.)", 1, "ctsensor"],
     [1990, "auto", "彩色 CCTV 自动白平衡（约） · 三星（今 Hanwha）彩色 CCTV", "AWB in colour CCTV (approx.) · Samsung (now Hanwha) colour CCTV camera", 0, "awb"],
     [1995, "cam", "白平衡预设（白炽灯/荧光灯/晴天/阴天/阴影） · Nikon E2 / Fujix DS-505", "WB presets (incandescent / fluorescent / sun / cloud / shade) · Nikon E2 / Fujix DS-505", 1, "presets"],
@@ -229,7 +229,7 @@ TIMELINES.wb = {
       },
       {
           "t": "Canon EOS R1 / R5 Mark II 发布",
-          "u": "https://hk.canon/en/consumer/eos-r1-and-eos-r5-mark-ii-embargo/news"
+          "u": "https://web.archive.org/web/20240811182941/https://hk.canon/en/consumer/eos-r1-and-eos-r5-mark-ii-embargo/news"
       },
       {
           "t": "Samsung EyeComfort 模式",

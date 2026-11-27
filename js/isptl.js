@@ -26,7 +26,7 @@ TIMELINES.isp = {
     [2009, "cam", "机内 HDR 合成 · Pentax K-7", "In-camera HDR merge · Pentax K-7", 0, "wdr"],
     [2009, "cam", "手持自动 HDR · Sony α550", "Handheld Auto HDR · Sony α550", 2, "wdr"],
     [2010, "phone", "HDR 拍照 · iPhone 4（iOS 4.1）", "HDR photo · iPhone 4 (iOS 4.1)", 0, "wdr"],
-    [2010, "auto", "数字透雾（约） · PENTAX PAIR 监控镜头", "Digital defog (approx.) · PENTAX PAIR surveillance lenses", 1, "defog"],
+    [2010, "auto", "数字透雾 · PENTAX PAIR 监控镜头", "Digital defog · PENTAX PAIR surveillance lenses", 1, "defog"],
     [2011, "phone", "视频电子防抖 · iPhone 4S", "Video EIS · iPhone 4S", 0, "eis"],
     [2011, "cam", "S-Log 下放准专业机 · Sony PMW-F3 固件", "S-Log for prosumer · Sony PMW-F3 firmware", 2, "log"],
     [2012, "cam", "人脸与眼部优先对焦 · Olympus OM-D E-M5", "Face & Eye Priority AF · Olympus OM-D E-M5", 1, "eyeaf"],
@@ -252,7 +252,7 @@ TIMELINES.isp = {
       },
       {
           "t": "Sony F35 S-Log",
-          "u": "https://studiodaily.com/2008/02/sony-expands-line-of-high-end-digital-cinematography-systems"
+          "u": "https://web.archive.org/web/20200205101454/https://www.studiodaily.com/2008/02/sony-expands-line-of-high-end-digital-cinematography-systems/"
       },
       {
           "t": "iPhone 15 Pro Log",

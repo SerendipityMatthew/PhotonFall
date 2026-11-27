@@ -1578,7 +1578,7 @@ TIMELINES.disp.hist = {
    },
    {
     "t": "The Next Web: Razer Phone hands-on (2017)",
-    "u": "https://thenextweb.com/news/hands-on-the-razer-phone-comes-with-a-120hz-display-and-incredibly-good-speakers"
+    "u": "https://web.archive.org/web/20220817095740/https://thenextweb.com/news/hands-on-the-razer-phone-comes-with-a-120hz-display-and-incredibly-good-speakers"
    },
    {
     "t": "Apple Newsroom: iPhone 13 Pro and iPhone 13 Pro Max (2021)",

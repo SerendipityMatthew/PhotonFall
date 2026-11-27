@@ -240,7 +240,7 @@ html[lang=en] .limits-box::before{content:'⚠ Model limits: '}
 .iqt td:first-child{white-space:nowrap;color:var(--ink);font-weight:600}
 
 /* ---------- 控件（各面板，按步骤搬进卡片或抽屉） ---------- */
-#fxctl{display:grid;gap:0.5rem}#fxctl .fxbtns{flex-wrap:wrap}#fxctl .fxhow{margin:0;font-size:0.78rem;line-height:1.55;color:var(--ink-dim)}#fxctl .fxreset{justify-self:start;font-size:0.75rem}
+#fxctl{display:grid;gap:0.5rem}#fxctl .fxbtns{flex-wrap:wrap}#fxctl .fxgrp{margin:.2rem 0 -.2rem;font-size:.7rem;font-weight:600;letter-spacing:.06em;color:var(--ink-dim)}#fxctl .fxhow{margin:0;font-size:0.78rem;line-height:1.55;color:var(--ink-dim)}#fxctl .fxreset{justify-self:start;font-size:0.75rem}
 .ctl{display:grid;gap:0.75rem;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:0.875rem}
 .ctl label,.chkl{display:grid;grid-template-columns:1fr auto;align-items:baseline;font-size:0.8125rem;color:var(--ink-dim);gap:2px 0.5rem}
 .ctl output,.chkl output{font:500 0.7812rem var(--mono);color:var(--ink)!important;font-variant-numeric:tabular-nums}

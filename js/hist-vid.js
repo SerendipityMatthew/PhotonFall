@@ -485,7 +485,7 @@ TIMELINES.vid.hist = {
    },
    {
     "t": "Apple Unveils All-New Family of iMacs Featuring Desktop Video",
-    "u": "https://tech-insider.org/mac/research/1999/1005.html"
+    "u": "https://web.archive.org/web/20170118163332/http://tech-insider.org/mac/research/1999/1005.html"
    },
    {
     "t": "Sony is halting production of recordable Blu-ray, MiniDiscs and MiniDV cassettes (Engadget)",
@@ -630,7 +630,7 @@ TIMELINES.vid.hist = {
    },
    {
     "t": "Toshiba Introduces its First DVD-Video Player in Japan (1996)",
-    "u": "https://tech-insider.org/digital-video/research/1996/0926-a.html"
+    "u": "https://toshiba-mirai-kagakukan.jp/a-guide/en/history-zone/ichigoki/dvd.htm"
    },
    {
     "t": "Hitachi DVD-RAM camcorder press release (2000-06-08)",
@@ -2415,7 +2415,7 @@ TIMELINES.vid.hist = {
    },
    {
     "t": "Sony: PXW-Z90, HXR-NX80, FDR-AX700 4K HDR (HLG) camcorders",
-    "u": "https://pro.sony/en_HK/press/1237495212198"
+    "u": "https://www.mynewsdesk.com/sony-europe/pressreleases/sony-announces-three-new-palm-camcorders-featuring-stunning-autofocus-performance-with-273-point-phase-detection-af-sensor-and-4k-hdr-recording-2147952"
    },
    {
     "t": "Wikipedia: NHK BS8K",
