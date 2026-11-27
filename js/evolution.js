@@ -296,6 +296,46 @@ const EVO=[
  draw(c,w,h){const u=evoBg(c,w,h);c.strokeStyle=EVO_INK;for(let i=0;i<4;i++){c.beginPath();c.moveTo(w*.1+i*u*.08,h*.75);c.lineTo(w*.2+i*u*.08,h*.25);c.stroke();}
   c.strokeStyle=EVO_ACC;for(let i=0;i<4;i++){c.beginPath();c.moveTo(w*.62+i*u*.08,h*.75);c.lineTo(w*.62+i*u*.08,h*.25);c.stroke();}
   evoText(c,'卷帘',w*.25,h*.88);evoText(c,'全局',w*.73,h*.88,EVO_ACC);}},
+
+/* ===== 第 7 章拍摄效果相关 ===== */
+{id:'aeb',year:1985,era:'film',lane:'product',title:'自动包围曝光',
+ solved:'按一次快门自动连拍几张不同曝光的照片，拿不准曝光时总有一张对的。',
+ newProblem:'一个场景要占好几张胶片或存储空间，事后还得一张张挑。',
+ driver:'反转片宽容度小，逆光、雪地这类场景测光容易差一两档。',
+ industry:'包围曝光从手动操作变成相机功能，后来成了 HDR 合成的素材来源。',
+ story:'1985 年 Minolta α-9000（Maxxum 9000）配 Program Back Super 90 背板，可以自动连拍最多 9 张不同曝光；1987 年 Canon EOS 620 把自动包围曝光做进机身。数码时代它成了 HDR 合成的标准拍法。来源：Minolta 9000 资料、Canon Camera Museum（EOS 620）。',
+ steps:[9,39],
+ draw(c,w,h){evoBars(c,w,h,[.35,.6,.9],['−2','0','+2'],1);}},
+
+{id:'hdr-merge',year:2001,era:'cmos',lane:'proc',title:'多曝光 HDR 合成',
+ solved:'几张不同曝光的照片合成一张，亮处和暗处的细节都保住。',
+ newProblem:'压回屏幕范围时容易出光晕、发灰，手持拍会对不齐，动的东西出鬼影。',
+ driver:'真实场景亮暗差十几到二十档，一次曝光和屏幕都装不下。',
+ industry:'HDR 从实验室论文变成软件、相机功能，最后成了手机默认拍照方式。',
+ story:'Paul Debevec 和 Jitendra Malik 在 SIGGRAPH 1997 发表从多张曝光恢复辐射图的方法；USC ICT 约 2001 年推出 HDRShop，2003 年 Photomatix 让摄影师也能用。2010 年 iPhone 4 在 iOS 4.1 加入 HDR 拍照，多帧合成进入手机。来源：Debevec & Malik（SIGGRAPH 1997）、USC ICT HDRShop、Apple。',
+ steps:[29,39],
+ draw(c,w,h){const u=evoBg(c,w,h);['#2a2622','#8a7f72','#efe6d6'].forEach((col,i)=>{c.fillStyle=col;c.fillRect(w*.06,h*.12+i*u*.26,u*.32,u*.22);c.strokeRect(w*.06,h*.12+i*u*.26,u*.32,u*.22);});
+  evoArrow(c,w*.5,h/2,w*.64,h/2,EVO_ACC);const g=c.createLinearGradient(w*.7,0,w*.94,0);g.addColorStop(0,'#3a3530');g.addColorStop(1,'#f3ead9');c.fillStyle=g;c.fillRect(w*.7,h*.3,w*.24,h*.4);c.strokeRect(w*.7,h*.3,w*.24,h*.4);}},
+
+{id:'live-composite',year:2014,era:'bsi',lane:'product',title:'实时合成曝光',
+ solved:'长曝光时相机只把变亮的地方叠上去，星轨、光绘、车流一边拍一边看，不怕过曝。',
+ newProblem:'画面里亮的东西一直累积，背景暗处没有长曝光的细节；需要三脚架。',
+ driver:'传统 B 门长曝光要靠经验猜时间，曝光过头就整张报废。',
+ industry:'相机开始把「拍完再合成」做进机身，后来手机的长曝光、星空模式都是同一路子。',
+ story:'2012 年 Olympus OM-D E-M5 加入 Live Bulb / Live Time，长曝光时能看到画面逐渐变亮；2014 年 1 月 E-M10 推出 Live Composite，只累积比上一帧更亮的像素。之后手机也有了流光快门和实况照片长曝光。来源：Olympus 新闻稿（2014）、ePHOTOzine。',
+ steps:[38],
+ draw(c,w,h){const u=evoBg(c,w,h);c.fillStyle='#1b2433';c.fillRect(0,0,w,h);c.strokeStyle='#cfe0ff';for(let r=1;r<6;r++){c.beginPath();c.arc(w*.7,h*.15,r*u*.13,1.7,2.6);c.stroke();}
+  c.strokeStyle=EVO_ACC;c.lineWidth*=2;c.beginPath();c.moveTo(w*.1,h*.85);c.bezierCurveTo(w*.3,h*.5,w*.5,h*.95,w*.7,h*.7);c.stroke();}},
+
+{id:'portrait-mode',year:2016,era:'phone',lane:'proc',title:'人像模式与算法虚化',
+ solved:'小传感器手机也能拍出背景虚化：先估出景深图，再按距离把背景模糊。',
+ newProblem:'头发丝、眼镜、透明物体容易抠错，光斑形状和过渡和真镜头不一样。',
+ driver:'手机镜头焦距只有几毫米，光学上几乎全清楚，拍人像不够有层次。',
+ industry:'虚化从镜头卖点变成算法卖点，双摄、ToF 和景深神经网络都为它服务。',
+ story:'2014 年 HTC One M8 用双摄视差估景深，拍完可以改虚化；2016 年 10 月 iPhone 7 Plus 在 iOS 10.1 推出人像模式，让「手机虚化」成了主流功能；2017 年 Google Pixel 2 用单摄加神经网络做到同样效果。来源：HTC、Apple 新闻稿（2016）、Google AI Blog（2017）。',
+ steps:[36,37,41],
+ draw(c,w,h){const u=evoBg(c,w,h);[[.15,.3],[.3,.7],[.82,.25],[.88,.72],[.2,.55]].forEach(([x,y])=>{c.fillStyle='rgba(200,80,45,.25)';c.beginPath();c.arc(w*x,h*y,u*.12,0,7);c.fill();});
+  c.fillStyle=EVO_INK;c.beginPath();c.arc(w/2,h*.38,u*.1,0,7);c.fill();c.fillRect(w/2-u*.12,h*.5,u*.24,u*.3);}},
 ];
 
 /* 某一步挂哪些演进卡：steps 含 n 的节点，按年份排 */
