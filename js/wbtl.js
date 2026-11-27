@@ -229,7 +229,7 @@ TIMELINES.wb = {
       },
       {
           "t": "Canon EOS R1 / R5 Mark II 发布",
-          "u": "https://hk.canon/en/consumer/eos-r1-and-eos-r5-mark-ii-embargo/news"
+          "u": "https://web.archive.org/web/20240811182941/https://hk.canon/en/consumer/eos-r1-and-eos-r5-mark-ii-embargo/news"
       },
       {
           "t": "Samsung EyeComfort 模式",

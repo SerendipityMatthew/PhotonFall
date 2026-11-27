@@ -315,7 +315,7 @@ TIMELINES.is.hist = {
    },
    {
     "t": "AbelCine: NAB 2018 Steadicam M-1 Volt",
-    "u": "https://www.abelcine.com/articles/blog-and-knowledge/tech-news/nab-2018-steadicam-m-1-volt"
+    "u": "https://web.archive.org/web/20220928093803/https://www.abelcine.com/articles/blog-and-knowledge/tech-news/nab-2018-steadicam-m-1-volt"
    },
    {
     "t": "Tiffen: Steadicam Volt Honored with 2024 Emmy Award",
@@ -591,8 +591,8 @@ TIMELINES.is.hist = {
     "u": "https://graphics.stanford.edu/papers/stabilization/"
    },
    {
-    "t": "Expert Reviews: Panasonic announces 2012 camcorder range",
-    "u": "https://www.expertreviews.co.uk/?p=24729"
+    "t": "Engadget: Panasonic refreshes HD camcorder range (CES 2012)",
+    "u": "https://www.engadget.com/2012-01-09-panasonic-refreshes-hd-camcorder-range-3mos-1mos-and-waterproo.html"
    },
    {
     "t": "Google Research: Fused Video Stabilization on the Pixel 2 and Pixel 2 XL",
@@ -869,7 +869,7 @@ TIMELINES.is.hist = {
    },
    {
     "t": "Canon Technology: EOS R5 (2020)",
-    "u": "https://global.canon/en/technology/r5-2020.html"
+    "u": "https://web.archive.org/web/20210413170929/https://global.canon/en/technology/r5-2020.html"
    },
    {
     "t": "Apple's iPhone 12 Pro camera upgrades (TechCrunch)",
@@ -1129,7 +1129,7 @@ TIMELINES.is.hist = {
    },
    {
     "t": "DJI unveils DJI Avata (DJI)",
-    "u": "https://www.dji.com/media-center/announcements/dji-unveils-dji-avata-the-ultimate-immersive-drone-experience"
+    "u": "https://www.mynewsdesk.com/uk/dji/pressreleases/dji-unveils-dji-avata-the-ultimate-immersive-drone-experience-3199681"
    },
    {
     "t": "Antigravity A1 Is the World's First All-in-One 8K 360-Degree Drone (PetaPixel)",
@@ -1261,7 +1261,7 @@ TIMELINES.is.hist = {
    },
    {
     "t": "DJI Makes Your Smartphone Smarter with the New Osmo Mobile",
-    "u": "https://www.dji.com/media-center/announcements/dji-makes-your-smartphone-smarter-with-the-new-osmo-mobile"
+    "u": "https://www.mynewsdesk.com/uk/dji/pressreleases/dji-makes-your-smartphone-smarter-with-the-new-osmo-mobile-1622373"
    },
    {
     "t": "Engadget: DJI's stabilized Osmo Pocket camera costs $349",
@@ -1527,7 +1527,7 @@ TIMELINES.is.hist = {
    },
    {
     "t": "TNW: Hands-on - Olympus 300mm f/4 lens has ridiculously good stabilization",
-    "u": "https://thenextweb.com/news/hands-on-olympus-300mm-f4-lens-has-ridiculously-good-stabilization"
+    "u": "https://web.archive.org/web/20220127181800/https://thenextweb.com/news/hands-on-olympus-300mm-f4-lens-has-ridiculously-good-stabilization"
    },
    {
     "t": "Imaging Resource: New 12-100mm f/4 IS Pro, 25mm f/1.2 Pro (2016-09-19)",
@@ -2298,7 +2298,7 @@ TIMELINES.is.hist = {
    },
    {
     "t": "Hasselblad announces new H3DII-39MS Multi-Shot DSLR (DCViews)",
-    "u": "https://www.dcviews.com/press/Hasselblad-H3DII-39MS.htm"
+    "u": "https://web.archive.org/web/20080411121802/http://www.dcviews.com/press/Hasselblad-H3DII-39MS.htm"
    },
    {
     "t": "Introducing the Oppo Find 7: The World's First Smartphone That Takes 50MP Photos (PetaPixel)",

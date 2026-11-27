@@ -1159,7 +1159,7 @@ TIMELINES.color.hist = {
    },
    {
     "t": "HUAWEI P40 Pro+ camera design",
-    "u": "https://consumer.huawei.com/en/campaign/p40/sophisticated-camera-system"
+    "u": "https://web.archive.org/web/20200803160016/https://consumer.huawei.com/en/campaign/p40/sophisticated-camera-system/"
    },
    {
     "t": "Huawei P50 Pro Camera test - DXOMARK",
@@ -1416,7 +1416,7 @@ TIMELINES.color.hist = {
    },
    {
     "t": "FilmLight company history",
-    "u": "https://www.filmlight.ltd.uk/company/history/history.php"
+    "u": "https://www.filmlight.ltd.uk/contacts/history/history.php"
    },
    {
     "t": "Sony F35 Operation Manual - Monitor LUT",
@@ -1428,7 +1428,7 @@ TIMELINES.color.hist = {
    },
    {
     "t": "Cube LUT Specification 1.0 - Adobe",
-    "u": "https://wwwimages2.adobe.com/content/dam/acom/en/products/speedgrade/cc/pdfs/cube-lut-specification-1.0.pdf"
+    "u": "https://web.archive.org/web/20201027210201/https://wwwimages2.adobe.com/content/dam/acom/en/products/speedgrade/cc/pdfs/cube-lut-specification-1.0.pdf"
    },
    {
     "t": "Academy Color Encoding System - Wikipedia",
@@ -2409,7 +2409,7 @@ TIMELINES.color.hist = {
    },
    {
     "t": "Sony: PXW-Z90, HXR-NX80, FDR-AX700 4K HDR (HLG) camcorders",
-    "u": "https://pro.sony/en_HK/press/1237495212198"
+    "u": "https://www.mynewsdesk.com/sony-europe/pressreleases/sony-announces-three-new-palm-camcorders-featuring-stunning-autofocus-performance-with-273-point-phase-detection-af-sensor-and-4k-hdr-recording-2147952"
    },
    {
     "t": "Wikipedia: NHK BS8K",

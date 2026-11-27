@@ -148,7 +148,7 @@ TIMELINES.color = {
       },
       {
           "t": "JVC KY-1900 介绍",
-          "u": "https://wiki.ystv.co.uk/wiki/JVC_KY-1900"
+          "u": "https://www.hdwarrior.co.uk/2012/01/22/jvc-ky-1900-back-to-the-future-1984/"
       },
       {
           "t": "ColorSync 简史",

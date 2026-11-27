@@ -1848,7 +1848,7 @@ TIMELINES.wb.hist = {
    },
    {
     "t": "HUAWEI P40 Pro+ camera design",
-    "u": "https://consumer.huawei.com/en/campaign/p40/sophisticated-camera-system"
+    "u": "https://web.archive.org/web/20200803160016/https://consumer.huawei.com/en/campaign/p40/sophisticated-camera-system/"
    },
    {
     "t": "Huawei P50 Pro Camera test - DXOMARK",

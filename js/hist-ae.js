@@ -1630,7 +1630,7 @@ TIMELINES.ae.hist = {
    },
    {
     "t": "The Next Web: iOS 4.1 hands on, HDR",
-    "u": "https://thenextweb.com/news/ios-4-1-hands-on-is-hdr-really-that-good"
+    "u": "https://web.archive.org/web/20220119030936/https://thenextweb.com/news/ios-4-1-hands-on-is-hdr-really-that-good"
    },
    {
     "t": "Google Research: HDR+ with Bracketing on Pixel Phones",
@@ -2193,7 +2193,7 @@ TIMELINES.ae.hist = {
    },
    {
     "t": "iOS 4.1 hands-on: Is HDR really that good? (The Next Web)",
-    "u": "https://thenextweb.com/news/ios-4-1-hands-on-is-hdr-really-that-good"
+    "u": "https://web.archive.org/web/20220119030936/https://thenextweb.com/news/ios-4-1-hands-on-is-hdr-really-that-good"
    },
    {
     "t": "HDR+: Low Light and High Dynamic Range photography in the Google Camera App (Google Research Blog)",

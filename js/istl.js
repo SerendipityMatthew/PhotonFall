@@ -211,7 +211,7 @@ TIMELINES.is = {
       },
       {
           "t": "Freefly MōVI M10 开始发货",
-          "u": "https://digitalcinemareport.com/news/m%C5%8Dvi-m10-handheld-stabilizer-now-shipping"
+          "u": "https://web.archive.org/web/20140411215050/http://digitalcinemareport.com/news/m%C5%8Dvi-m10-handheld-stabilizer-now-shipping"
       },
       {
           "t": "DJI Ronin 维基百科",
@@ -223,7 +223,7 @@ TIMELINES.is = {
       },
       {
           "t": "DJI Osmo Mobile 发布",
-          "u": "https://www.dji.com/media-center/announcements/dji-makes-your-smartphone-smarter-with-the-new-osmo-mobile"
+          "u": "https://www.mynewsdesk.com/uk/dji/pressreleases/dji-makes-your-smartphone-smarter-with-the-new-osmo-mobile-1622373"
       },
       {
           "t": "Insta360 ONE X 发布",
@@ -255,7 +255,7 @@ TIMELINES.is = {
       },
       {
           "t": "Axis 防抖白皮书",
-          "u": "https://whitepapers.axis.com/image-stabilization"
+          "u": "https://whitepapers.axis.com/en-us/image-stabilization"
       }
   ],
   el: 'istl', page: 'stabilization-timeline.html', histSrc: 'js/hist-is.js',

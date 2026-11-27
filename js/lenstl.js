@@ -290,7 +290,7 @@ TIMELINES.lens = {
       },
       {
           "t": "Varioptic 首款液体镜头",
-          "u": "https://optics.org/article/31500"
+          "u": "https://web.archive.org/web/20200810020759/https://optics.org/article/31500"
       },
       {
           "t": "Microscan 液体镜头读码器",
