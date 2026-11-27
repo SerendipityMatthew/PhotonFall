@@ -42,19 +42,19 @@ const FX = [
   /* ---------- 第二批 ---------- */
   {id:'fgblur', cat:'dof', zh:'前景虚化', en:'Foreground blur', lens:4, f:50, s:3, N:1.2, t:1/1000,
    how:['50mm f/1.2，镜头贴近前景的叶子，对焦后面的主体：前景化成一层柔和的色块','50mm f/1.2 right up to the leaves, focused on the subject behind: the foreground melts into a soft wash']},
-  {id:'stack', cam:[-8, 5, 10], look:[-14, 0, 0], cat:'dof', zh:'景深合成', en:'Focus stacking', lens:6, f:90, s:1.2, N:4, t:1/250, fx:'stack',
+  {id:'stack', cam:[-4, 7, 26], look:[-26, 0, 0], cat:'dof', zh:'景深合成', en:'Focus stacking', lens:6, f:90, s:1.2, N:4, t:1/250, fx:'stack',
    how:['三脚架，焦点从近到远拍一串（3D 里对焦平面在扫），每层取最清楚的合成：大光圈也能前后全清楚','On a tripod, shoot a series focused near to far (the 3D focal plane sweeps), keep the sharpest of each layer: everything sharp even at a wide aperture']},
   {id:'paint', cam:[-12, 1.6, 6], look:[-19, 0.6, 0], cat:'motion', zh:'光绘', en:'Light painting', lens:3, f:50, s:3, N:8, t:1/4, dark:9, fx:'paint',
    how:['暗处 B 门曝光 10–30 s，拿灯在主体前画：光走过的路都留在照片里，人穿深色衣服不会留影','Bulb exposure of 10–30 s in the dark, draw with a light in front of the subject: its whole path stays in the photo, a person in dark clothes leaves no trace']},
-  {id:'lapse', cam:[-2, 5, 20], look:[-14, 5, 0], cat:'motion', zh:'延时摄影', en:'Time-lapse', lens:3, f:50, s:3, N:8, t:1/250, fx:'lapse',
+  {id:'lapse', cam:[-36, 14, 130], look:[-24, 10, 0], cat:'motion', zh:'延时摄影', en:'Time-lapse', lens:3, f:50, s:3, N:8, t:1/250, fx:'lapse',
    how:['间隔 2–10 s 拍几百张，合成视频：几小时的太阳东升西落压成几秒；曝光和白平衡要锁定','Shoot hundreds of frames 2–10 s apart and make a video: hours of sunrise to sunset in seconds; lock exposure and white balance']},
   {id:'highkey', grp:1, cat:'light', zh:'高调', en:'High key', lens:0, f:85, s:3, N:2.8, t:1/250, ev:1.5, fx:'highkey',
    how:['曝光 +1 到 +2 档、背景打亮、少阴影：画面明亮轻盈，主体别过曝','+1 to +2 EV, bright background, few shadows: light and airy, keep the subject from clipping']},
   {id:'lowkey', grp:1, cat:'light', zh:'低调', en:'Low key', lens:0, f:85, s:3, N:4, t:1/250, ev:-2, fx:'lowkey',
    how:['暗背景，只用一束侧光照主体，曝光 −1 到 −2 档：大面积暗部衬托亮处','Dark background, one side light on the subject, −1 to −2 EV: large shadows set off the highlights']},
-  {id:'golden', grp:0, cam:[-2, 4, 18], look:[-14, 2, 0], cat:'light', zh:'黄金时刻', en:'Golden hour', lens:0, f:85, s:3, N:2.8, t:1/250, fx:'golden',
+  {id:'golden', grp:0, cam:[-16, 9, 62], look:[0, 3, 0], cat:'light', zh:'黄金时刻', en:'Golden hour', lens:0, f:85, s:3, N:2.8, t:1/250, fx:'golden',
    how:['日出后、日落前约 1 小时：太阳低、光暖、影子长（看 3D 里太阳落低、光变橙）','About an hour after sunrise or before sunset: low warm sun, long shadows (watch the 3D sun drop and turn orange)']},
-  {id:'blue', grp:0, cam:[-2, 4, 18], look:[-14, 1, 0], cat:'light', zh:'蓝调时刻', en:'Blue hour', lens:0, f:85, s:3, N:2.8, t:1/15, dark:6, fx:'blue',
+  {id:'blue', grp:0, cam:[-16, 9, 62], look:[0, 3, 0], cat:'light', zh:'蓝调时刻', en:'Blue hour', lens:0, f:85, s:3, N:2.8, t:1/15, dark:6, fx:'blue',
    how:['日落后约 20–40 分钟：太阳落到地平线下，天空深蓝、灯刚亮，三脚架慢门','About 20–40 min after sunset: sun below the horizon, deep blue sky, lights just on; tripod and slow shutter']},
   {id:'warm', grp:2, cat:'light', zh:'暖调', en:'Warm tone', lens:0, f:85, s:3, N:2.8, t:1/250, fx:'warm',
    how:['白平衡色温调高（如 7000 K）或往琥珀方向偏移：画面偏暖、温馨','Raise the white-balance temperature (e.g. 7000 K) or shift toward amber: warm and cozy']},
@@ -64,13 +64,13 @@ const FX = [
    how:['黑白模式；后期用红色通道压暗蓝天、提亮皮肤，层次更强','Monochrome mode; in post use the red channel to darken blue sky and brighten skin for more separation']},
   {id:'film', grp:2, cat:'light', zh:'胶片感', en:'Film look', lens:0, f:85, s:3, N:2.8, t:1/250, fx:'film',
    how:['胶片模拟或 LUT：暗部略抬、高光柔和、偏一点暖、加颗粒和暗角','Film simulation or LUT: lifted blacks, soft highlights, a little warmth, grain and vignette']},
-  {id:'flare', grp:0, cam:[-2, 5, 18], look:[-14, 5, 0], cat:'light', zh:'眩光', en:'Lens flare', lens:3, f:55, s:3, N:5.6, t:1/500, fx:'flare',
+  {id:'flare', grp:0, cam:[-16, 9, 62], look:[0, 3, 0], cat:'light', zh:'眩光', en:'Lens flare', lens:3, f:55, s:3, N:5.6, t:1/500, fx:'flare',
    how:['让太阳在画面边缘，选镀膜少的老镜头：光在镜片之间来回反射，沿一条线出现光斑','Put the sun at the frame edge and use a lightly coated lens: light bounces between elements and leaves ghosts along a line']},
   {id:'fisheye', cat:'persp', zh:'鱼眼', en:'Fisheye', lens:3, f:40, s:3, N:5.6, t:1/250, fx:'fisheye',
    how:['鱼眼镜头 180° 视角：直线向外弯，越靠边越弯；水平线过中心才是直的','Fisheye lens, 180° view: straight lines bow outward, more toward the edges; a horizon through the center stays straight']},
   {id:'grid', cat:'persp', zh:'三分法构图', en:'Rule of thirds', lens:0, f:85, s:3, N:2.8, t:1/250, fx:'grid',
    how:['打开取景器网格，主体放在三分线交点、地平线放在三分线上；引导线从边角引向主体','Turn on the grid, put the subject on a third-line intersection and the horizon on a third line; let leading lines run in from a corner']},
-  {id:'superres', cam:[1.6, 1, 2.6], look:[0, 0, 0], cat:'comp', zh:'超分辨率', en:'Super-resolution', lens:0, f:85, s:3, N:5.6, t:1/250, fx:'superres',
+  {id:'superres', cam:[-1.5, 1.1, 2.4], look:[0, 0, 0], cat:'comp', zh:'超分辨率', en:'Super-resolution', lens:0, f:85, s:3, N:5.6, t:1/250, fx:'superres',
    how:['传感器按半个像素挪 4–16 次连拍（3D 里传感器在微动），合成后每个点颜色完整、细节更多；主体要静止','The sensor shifts by half a pixel for 4–16 shots (the 3D sensor jiggles); merged, every point has full color and more detail; subject must hold still']},
   {id:'astro', cam:[-6, 6, 16], look:[-10, 4, -4], cat:'comp', zh:'天文模式', en:'Astro mode', lens:3, f:35, s:30, N:2.8, t:1/4, dark:9, nf:.2, fx:'astro',
    how:['三脚架，手机自动连拍几分钟（每张 15 s 左右），对齐星点叠加，地景单独处理：星星是点不是线','On a tripod the phone shoots for minutes (≈15 s each), aligns the stars and stacks them, treats the foreground separately: stars stay points, not trails']},
@@ -238,13 +238,14 @@ function fx3dReset() {
   stars.visible = trails.visible = wand.visible = wandGlow.visible = false;
   sun.position.copy(SUN0); if (sunBall) sunBall.position.copy(SUN0); if (sunLbl) sunLbl.v.copy(SUN0).add(V(0, 1.1, 0));
   sun.color.setHex(SUNC0); sun.intensity = SUNI0;
+  if (sunBall) { sunBall.scale.setScalar(1); sunBall.material.color.setHex(0xffd66b); }
   senG.position.set(0, 0, 0);
 }
 fx3dReset();
 
 const setSun = (a, col, I) => {   // a：太阳高度角（弧度），绕场景在 x-y 平面里走一段弧
   const P = V(-18 + 24 * Math.cos(a), 24 * Math.sin(a) - 1, 9);
-  sun.position.copy(P); if (sunBall) sunBall.position.copy(P); if (sunLbl) sunLbl.v.copy(P).add(V(0, 1.1, 0));
+  sun.position.copy(P); if (sunBall) { sunBall.position.copy(P); sunBall.scale.setScalar(2.4); sunBall.material.color.setHex(col); } if (sunLbl) sunLbl.v.copy(P).add(V(0, 2.4, 0));   // 镜头拉远看太阳时放大，免得只剩几个像素
   sun.color.setHex(col); sun.intensity = I;
 };
 const lerpHex = (a, b, k) => new THREE.Color(a).lerp(new THREE.Color(b), k).getHex();
@@ -279,11 +280,11 @@ function fxFrame(t, dt) {
     st.lapseEl = k > 1 ? -1 : el;
     setSun(k > 1 ? -.4 : a, el < .25 ? lerpHex(0xff8a3c, 0xfff0cc, Math.max(0, el) / .25) : 0xfff0cc, k > 1 ? .08 : Math.max(.15, 1.25 * Math.min(1, el * 2)));
   }
-  if (fx === 'golden') setSun(.14, 0xff9a4a, 1.1);
+  if (fx === 'golden') setSun(.22, 0xff9a4a, 1.1);
   if (fx === 'blue') setSun(-.18, 0x5b7cff, .35);
   if (fx === 'flare') setSun(.32, 0xfff4dd, 1.6);
   if (fx === 'superres') {                                        // 传感器按半个像素走一个小方块：右、下、左、上
-    const q = Math.floor(e * 2.5) % 4, d = .05;
+    const q = Math.floor(e * 2.5) % 4, d = .09;   // 放大了看得见；真实位移是半个像素
     senG.position.set(0, [0, 0, d, d][q] - d / 2, [0, d, d, 0][q] - d / 2);
   }
   if (fx === 'zoom' && !fxAnim) {                                 // 爆炸变焦：曝光时转变焦环，3D 里变焦组来回走
