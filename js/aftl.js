@@ -198,7 +198,7 @@ TIMELINES.af = {
       },
       {
           "t": "Varioptic Arctic 320",
-          "u": "https://optics.org/article/24590"
+          "u": "https://web.archive.org/web/20200923230125/https://optics.org/article/24590"
       },
       {
           "t": "Cognex DataMan 液体镜头",
@@ -234,7 +234,7 @@ TIMELINES.af = {
       },
       {
           "t": "DJI Ronin 4D LiDAR 对焦",
-          "u": "https://www.dji.com/media-center/announcements/dji-ronin-4d"
+          "u": "https://www.mynewsdesk.com/uk/dji/pressreleases/dji-revolutionizes-filmmaking-with-worlds-first-4-axis-cinema-camera-3137828"
       },
       {
           "t": "Panasonic DFD 技术",

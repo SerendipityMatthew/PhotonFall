@@ -1914,7 +1914,7 @@ TIMELINES.shutter.hist = {
    },
    {
     "t": "ALEXA Studio Electronic and Mirror Shutter White Paper - ARRI",
-    "u": "https://www.arri.com/resource/blob/186770/ad23969317dafff402f0902d47bb4ab7/alexa-studio-electronic-and-mirror-shutter-white-paper-data.pdf"
+    "u": "https://web.archive.org/web/20201026094715/https://www.arri.com/resource/blob/186770/ad23969317dafff402f0902d47bb4ab7/alexa-studio-electronic-and-mirror-shutter-white-paper-data.pdf"
    },
    {
     "t": "Sigma announces the Sigma fp - Sigma press",
@@ -2232,7 +2232,7 @@ TIMELINES.shutter.hist = {
    },
    {
     "t": "Sony Pregius S 技术页",
-    "u": "https://www.sony-semicon.com/en/technology/industry/pregius-s.html"
+    "u": "https://www.sony-semicon.com/en/technology/industry/pregius.html"
    },
    {
     "t": "Sony 2-Layer Transistor Pixel 新闻稿",

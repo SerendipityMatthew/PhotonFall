@@ -753,7 +753,7 @@ TIMELINES.cmos.hist = {
    },
    {
     "t": "DJI Mini 3 Pro 发布",
-    "u": "https://www.dji.com/media-center/announcements/dji-mini-3-pro-global-announcement"
+    "u": "https://www.mynewsdesk.com/uk/dji/pressreleases/dji-mini-3-pro-redefines-what-a-sub-249g-camera-drone-can-do-3181137"
    },
    {
     "t": "Sony LYTIA 901 2 亿像素（TechInsights）",
@@ -1073,7 +1073,7 @@ TIMELINES.cmos.hist = {
    },
    {
     "t": "Sony Pregius S 技术页",
-    "u": "https://www.sony-semicon.com/en/technology/industry/pregius-s.html"
+    "u": "https://www.sony-semicon.com/en/technology/industry/pregius.html"
    },
    {
     "t": "Sony 2-Layer Transistor Pixel 新闻稿",
@@ -1202,7 +1202,7 @@ TIMELINES.cmos.hist = {
    },
    {
     "t": "Sony Pregius S 技术页",
-    "u": "https://www.sony-semicon.com/en/technology/industry/pregius-s.html"
+    "u": "https://www.sony-semicon.com/en/technology/industry/pregius.html"
    }
   ]
  },

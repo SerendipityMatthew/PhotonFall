@@ -2217,7 +2217,7 @@ TIMELINES.stor.hist = {
    },
    {
     "t": "Western Digital launches surveillance-oriented WD Purple series (PC Perspective, 2014)",
-    "u": "https://pcper.com/2014/02/western-digital-launches-surveillance-oriented-wd-purple-series-of-3-5-hdds/"
+    "u": "https://web.archive.org/web/20191210053536/https://pcper.com/2014/02/western-digital-launches-surveillance-oriented-wd-purple-series-of-3-5-hdds/"
    },
    {
     "t": "Seagate SkyHawk Surveillance HDD 10TB Review (StorageReview, 2016)",
@@ -2867,7 +2867,7 @@ TIMELINES.stor.hist = {
    },
    {
     "t": "DJI's New Inspire 3 Is The World's Ultimate Cinema Drone (DJI, 2023)",
-    "u": "https://www.dji.com/media-center/announcements/djis-new-inspire-3-is-the-worlds-ultimate-cinema-drone"
+    "u": "https://www.mynewsdesk.com/uk/dji/pressreleases/djis-new-inspire-3-is-the-worlds-ultimate-cinema-drone-3245502"
    },
    {
     "t": "Apple announces Final Cut Camera 2.0 (Apple Newsroom, 2025)",

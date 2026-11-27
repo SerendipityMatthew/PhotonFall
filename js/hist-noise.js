@@ -144,7 +144,7 @@ TIMELINES.noise.hist = {
    },
    {
     "t": "Panasonic: Organic CMOS image sensor technology (2013)",
-    "u": "https://news.panasonic.com/global/press/en130611-7"
+    "u": "https://web.archive.org/web/20230323111238/https://news.panasonic.com/global/press/en130611-7"
    }
   ]
  },
@@ -2400,7 +2400,7 @@ TIMELINES.noise.hist = {
    },
    {
     "t": "DJI Mini 3 Pro 发布",
-    "u": "https://www.dji.com/media-center/announcements/dji-mini-3-pro-global-announcement"
+    "u": "https://www.mynewsdesk.com/uk/dji/pressreleases/dji-mini-3-pro-redefines-what-a-sub-249g-camera-drone-can-do-3181137"
    },
    {
     "t": "Sony LYTIA 901 2 亿像素（TechInsights）",
@@ -2713,7 +2713,7 @@ TIMELINES.noise.hist = {
    },
    {
     "t": "EOS R1: Be One with Mastery (Canon Asia)",
-    "u": "https://asia.canon/en/consumer/eos-r1-be-one-with-mastery/news"
+    "u": "https://web.archive.org/web/20240805115749/https://asia.canon/en/consumer/eos-r1-be-one-with-mastery/news"
    }
   ]
  }

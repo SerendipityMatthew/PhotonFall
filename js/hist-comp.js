@@ -281,7 +281,7 @@ TIMELINES.comp.hist = {
    },
    {
     "t": "Hasselblad announces new H3DII-39MS Multi-Shot DSLR (DCViews)",
-    "u": "https://www.dcviews.com/press/Hasselblad-H3DII-39MS.htm"
+    "u": "https://web.archive.org/web/20080411121802/http://www.dcviews.com/press/Hasselblad-H3DII-39MS.htm"
    },
    {
     "t": "Introducing the Oppo Find 7: The World's First Smartphone That Takes 50MP Photos (PetaPixel)",
@@ -856,7 +856,7 @@ TIMELINES.comp.hist = {
    },
    {
     "t": "A sleek, new app-controlled telescope (Vaonis Stellina) — ESA",
-    "u": "https://www.esa.int/ESA_Multimedia/Images/2018/05/Vaonis_Stellina_telescope"
+    "u": "https://www.esa.int/articles/sleek-telescope-makes-it-in-the-big-apple"
    },
    {
     "t": "Astrophotography with Night Sight on Pixel Phones — Google Research",
@@ -1127,7 +1127,7 @@ TIMELINES.comp.hist = {
    },
    {
     "t": "Single Lens Stereo with a Plenoptic Camera — MIT",
-    "u": "https://persci.mit.edu/pub_abstracts/plenoptic_abs.html"
+    "u": "https://web.archive.org/web/20210418231325/http://persci.mit.edu/pub_abstracts/plenoptic_abs.html"
    },
    {
     "t": "Light Field Photography with a Hand-Held Plenoptic Camera — Stanford",
@@ -1968,7 +1968,7 @@ TIMELINES.comp.hist = {
    },
    {
     "t": "EOS R1: Be One with Mastery (Canon Asia)",
-    "u": "https://asia.canon/en/consumer/eos-r1-be-one-with-mastery/news"
+    "u": "https://web.archive.org/web/20240805115749/https://asia.canon/en/consumer/eos-r1-be-one-with-mastery/news"
    }
   ]
  },

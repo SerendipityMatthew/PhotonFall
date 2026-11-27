@@ -252,7 +252,7 @@ TIMELINES.isp = {
       },
       {
           "t": "Sony F35 S-Log",
-          "u": "https://studiodaily.com/2008/02/sony-expands-line-of-high-end-digital-cinematography-systems"
+          "u": "https://web.archive.org/web/20200205101454/https://www.studiodaily.com/2008/02/sony-expands-line-of-high-end-digital-cinematography-systems/"
       },
       {
           "t": "iPhone 15 Pro Log",

@@ -151,7 +151,7 @@ TIMELINES.stor = {
   refs: [
       {
           "t": "SanDisk：SD 卡 25 周年",
-          "u": "https://www.sandisk.com/company/newsroom/blogs/2025/an-enduring-legacy-the-sd-card-at-25"
+          "u": "https://www.sandisk.com/company/newsroom/blogs/2025/an-enduring-legacy-the-the-sd-card-at-25"
       },
       {
           "t": "Kodak DC25 首款 CF 卡相机",
@@ -227,7 +227,7 @@ TIMELINES.stor = {
       },
       {
           "t": "RED EPIC 开始交付",
-          "u": "https://studiodaily.com/2010/12/reds-epic-ships"
+          "u": "https://web.archive.org/web/20151013111239/http://www.studiodaily.com/2010/12/reds-epic-ships/"
       },
       {
           "t": "Panasonic 首批 SDXC 卡",

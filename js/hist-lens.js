@@ -1637,7 +1637,7 @@ TIMELINES.lens.hist = {
    },
    {
     "t": "Fujifilm: FUJINON XF56mmF1.2 R APD",
-    "u": "https://www.fujifilm-x.com/global/?p=16934"
+    "u": "https://www.fujifilm-x.com/global/products/lenses/xf56mmf12-r-apd/"
    },
    {
     "t": "Venus Optics Laowa 105mm f/2 Smooth Trans Focus - Wikipedia",
