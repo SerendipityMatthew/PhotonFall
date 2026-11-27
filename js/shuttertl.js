@@ -23,7 +23,7 @@ TIMELINES.shutter = {
     [1986, "cam", "焦平面全速闪光同步（FP） · Olympus OM-4T + F280", "Full-speed focal-plane flash sync (FP) · Olympus OM-4T + F280", 1, "hss"],
     [1987, "cam", "摄录机高速电子快门 1/4000 · Sony CCD-V90 Handycam Pro", "Camcorder high-speed electronic shutter 1/4000 · Sony CCD-V90 Handycam Pro", 1, "ccdshut"],
     [1988, "cam", "快门 1/8000 · Nikon F-801", "1/8000 shutter speed · Nikon F-801", 2, "vfp"],
-    [1988, "ind", "FIT CCD 电子快门（约） · Sony 广播摄像机", "FIT CCD electronic shutter (approx.) · Sony broadcast cameras", 0, "ccdshut"],
+    [1988, "ind", "CCD 电子快门 · Sony BVP-50 广播摄像机", "CCD electronic shutter · Sony BVP-50 broadcast camera", 0, "ccdshut"],
     [1991, "ind", "预触发循环缓存（约） · Kodak 专利 / Ektapro EM 高速摄像机", "Pre-trigger ring buffer (approx.) · Kodak patent / Ektapro EM high-speed camera", 1, "precap"],
     [1996, "ind", "CMOS 卷帘电子快门 · VLSI Vision / Vivitar 彩色 CMOS 摄像头", "CMOS rolling electronic shutter · VLSI Vision / Vivitar color CMOS camera", 1, "cmosrs"],
     [1999, "phone", "手机 CMOS 卷帘快门 · Kyocera VP-210", "CMOS rolling shutter in a phone · Kyocera VP-210", 0, "cmosrs"],
