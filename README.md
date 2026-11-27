@@ -55,7 +55,13 @@ node tests/physics.js
 #   await smoke()   // 期望 {ok: true, fails: []}
 ```
 
-完整的冒烟测试大约要 25 秒。如果控制台或自动化工具有时间限制，先不加 await 启动（如 `window.__r = smoke()`），过一会儿再读结果（`await window.__r`）。页面在隐藏或后台标签页里时 requestAnimationFrame 可能不触发，动画相关的检查会失败。
+完整的冒烟测试在前台大约要 25 秒。如果控制台或自动化工具有时间限制，先不加 await 启动（如 `window.__r = smoke()`），过一会儿再读结果（`await window.__r`）。动画相关的检查按帧等待，页面在后台标签页里也能跑过，只是会慢很多（浏览器把后台页的动画降到每秒一两帧）。CSP 下不能 `eval`，可以改用插入 `<script src="/tests/smoke.js">` 再调用 `smoke()`。
+
+```bash
+# 来源链接检查（要联网，按需手动跑）：列出 js/ 里所有打不开的来源链接
+node tests/links.js            # 失效的链接让退出码为 1
+node tests/links.js --json out.json
+```
 
 ## 文件结构
 
@@ -103,6 +109,7 @@ js/hist-*.js            14 个主题的发展史数据，时间线页按需加�
 tests/check.js          Node 静态检查（11 项，零依赖）
 tests/physics.js        物理公式与标准曲线检查（13 项）
 tests/smoke.js          浏览器冒烟测试（在页面上下文中 await smoke()）
+tests/links.js          来源链接检查（联网，按需跑）
 ```
 
 脚本都是普通的 `<script>`，按 `index.html` 里的顺序加载，彼此共享顶层变量，所以加载顺序不能乱。新增一步的做法：在 `steps.js` 里加一条，场景代码放进对应章节的文件；如果需要新的 3D 组，记得在 `app.js` 的 `GR` 和动画循环里登记。

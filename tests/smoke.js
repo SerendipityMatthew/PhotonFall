@@ -8,6 +8,9 @@ async function smoke() {
   window.addEventListener('error', onerr);
 
   function wait(ms) { return new Promise(r => setTimeout(r, ms)); }
+  /* 动画相关的断言按帧等，不按毫秒等：页面在后台时 requestAnimationFrame 会被降到每秒一两帧，按毫秒等会误报 */
+  function frames(n) { return new Promise(r => { let k = 0; const f = () => (++k >= n ? r() : requestAnimationFrame(f)); requestAnimationFrame(f); }); }
+  async function until(cond, maxFrames = 600) { for (let k = 0; k < maxFrames && !cond(); k++) await frames(1); }
   function expect(cond, msg) { if (!cond) fails.push(msg); }
 
   // suppress onboard auto-show for all sections except [onboard]
@@ -18,11 +21,11 @@ async function smoke() {
   location.hash = '#/step/14'; await wait(300);
   expect(step === 14, '[route] hash → step 14');
   expect($('title').textContent.includes(STEPS[14].t), '[route] title');
-  const h0 = history.length;
+  const h0 = history.length, full = h0 >= 50;   // 浏览器单个标签的 history.length 到 50 就不再涨，同一标签多跑几次会满
   navigate({view:'step', n:15}); await wait(100);       // 14 属第 2 章，15 属第 3 章 → push
-  expect(history.length === h0 + 1, '[route] cross-chapter push');
+  expect(full || history.length === h0 + 1, '[route] cross-chapter push');
   navigate({view:'step', n:16}); await wait(100);       // 15、16 同在第 3 章 → replace
-  expect(history.length === h0 + 1, '[route] same-chapter replace');
+  expect(full || history.length === h0 + 1, '[route] same-chapter replace');
   history.back(); await wait(300);
   expect(step === 14, '[route] back');
   location.hash = '#/step/abc'; await wait(300);
@@ -139,7 +142,7 @@ async function smoke() {
   navigate({view:'step', n:0}); await wait(200);
   expect(tourOn === true, '[tour] auto starts on step 0');
   expect($('ctl').hidden && $('vfwrap').hidden, '[tour] camera controls hidden');
-  navigate({view:'step', n:5}); await wait(1500);
+  navigate({view:'step', n:5}); await until(() => !tween);
   expect(tourOn === false, '[tour] stops when leaving');
   expect(cam.position.distanceTo(new THREE.Vector3(...STEPS[5].cam)) < 0.5, '[tour] camera settles on step 5');
   navigate({view:'step', n:0}); await wait(200);
@@ -150,13 +153,13 @@ async function smoke() {
   const flow = $('flow');
   expect(!!flow && flow.offsetHeight > 0, '[tour] step 0 diagram visible');
   const curStage = () => { const c = flow && flow.querySelector('[aria-current]'); return c ? c.textContent : ''; };
-  await wait(100); const s0 = curStage();
-  tourT = 7.5; await wait(150);
+  await frames(3); const s0 = curStage();
+  tourT = 7.5; await frames(3);
   expect(s0 !== '' && curStage() !== s0, `[tour] highlighted stage changes (${s0} → ${curStage()})`);
   expect(visLabel(lensName()).el.classList.contains('hl'), '[tour] lens label highlighted in lens stage');
   expect(!drawerOpen && $('drawer').hidden, '[tour] 详细抽屉 stays closed');
   // 每段的标注整段都在（不只是开头 1.6 秒）；太阳不在第 0 步入门句里，只靠导览显示
-  showAllLabels = false; $('tourbtn').click(); await wait(1900);
+  showAllLabels = false; stopTour(); $('tourbtn').click(); await until(() => tourT >= 1.9);   // 按钮是开关：导览在跑时点它是停止，先停再点才是重播
   expect(tourOn && flowK === 'light' && !visLabel('太阳').el.hidden, `[tour] stage label pinned for whole stage (t=${tourT.toFixed(1)})`);
 
   // ---- [lensparts] ----  第 7 步：前组 / 补偿组 / 后组 只在本步出现，位置跟着镜片组走
@@ -332,17 +335,17 @@ async function smoke() {
   closeDrawer();
 
   // ---- [labels] ----  标注按需显示：默认只显示入门句提到的；切换全部；hl 临时显示隐藏的标注
-  showAllLabels = false; navigate({view:'step', n:16}); await wait(150);
+  showAllLabels = false; navigate({view:'step', n:16}); await frames(3);
   const vis = () => labels.filter(l => !l.el.hidden).map(l => l.el.textContent).sort();
   const want = [...new Set(mentioned(STEPS[16].lead))].sort();
   expect(vis().length > 0 && vis().every(t => want.includes(t)), '[labels] only mentioned visible');
-  $('lblbtn').click(); await wait(150);
+  $('lblbtn').click(); await frames(3);
   expect(showAllLabels && vis().length > want.length, '[labels] all shows more');
-  navigate({view:'step', n:15}); await wait(150);
+  navigate({view:'step', n:15}); await frames(3);
   expect(showAllLabels, '[labels] toggle persists');
-  $('lblbtn').click(); await wait(150);
+  $('lblbtn').click(); await frames(3);
   const hidden = labels.find(l => l.el.hidden && l.g.visible && !curMentioned.has(l.el.textContent));
-  if (hidden) { hl(hidden.el.textContent); await wait(150); expect(!hidden.el.hidden, '[labels] hl temporarily shows hidden label'); }
+  if (hidden) { hl(hidden.el.textContent); await frames(3); expect(!hidden.el.hidden, '[labels] hl temporarily shows hidden label'); }
 
   // ---- [onboard] ----
   try { localStorage.removeItem(ONBOARD_KEY); } catch {}
