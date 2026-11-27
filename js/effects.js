@@ -25,11 +25,11 @@ const FX = [
    how:['1/4 s 曝光的同时转变焦环：画面从中心向外放射','Turn the zoom ring during a 1/4 s exposure: streaks radiate from the center']},
   {id:'trails', cam:[-6, 6, 16], look:[-10, 4, -4], cat:'motion', zh:'星轨', en:'Star trails', lens:3, f:40, s:30, N:2.8, t:1/4, dark:8, fx:'trails',
    how:['广角大光圈（如 24mm f/1.4），三脚架，单张 15–30 s 连拍上百张再叠加（或一次曝光 30 分钟以上）','A wide fast lens (e.g. 24mm f/1.4) on a tripod: shoot hundreds of 15–30 s frames and stack them (or one 30-minute-plus exposure)']},
-  {id:'sil', cat:'light', zh:'逆光剪影', en:'Backlit silhouette', lens:0, f:85, s:3, N:8, t:1/1000, fx:'sil',
+  {id:'sil', grp:0, cat:'light', zh:'逆光剪影', en:'Backlit silhouette', lens:0, f:85, s:3, N:8, t:1/1000, fx:'sil',
    how:['按亮背景测光（或减 2–3 档曝光补偿），主体压成全黑的轮廓','Meter for the bright background (or dial −2 to −3 EV): the subject becomes a black outline']},
-  {id:'star', cat:'light', zh:'星芒', en:'Sunstar / starburst', lens:3, f:24, s:3, N:16, t:1/15, fx:'star',
+  {id:'star', grp:0, cat:'light', zh:'星芒', en:'Sunstar / starburst', lens:3, f:24, s:3, N:16, t:1/15, fx:'star',
    how:['f/11–f/16 拍点光源：叶片奇数时芒数 = 叶片数 × 2（11 片 → 22 芒），偶数时 = 叶片数','f/11–f/16 on point lights: odd blade counts give 2× spikes (11 blades → 22), even counts give one per blade']},
-  {id:'hdr', cat:'light', zh:'HDR 明暗都有', en:'HDR, detail in both ends', lens:0, f:85, s:3, N:4, t:1/250, fx:'hdr',
+  {id:'hdr', grp:1, cat:'light', zh:'HDR 明暗都有', en:'HDR, detail in both ends', lens:0, f:85, s:3, N:4, t:1/250, fx:'hdr',
    how:['包围曝光（−2 / 0 / +2）合成，或手机 HDR：压高光、提暗部、保留局部对比','Bracket −2 / 0 / +2 and merge, or phone HDR: pull highlights, lift shadows, keep local contrast']},
   {id:'wide', cat:'persp', zh:'广角夸张透视', en:'Wide-angle exaggeration', lens:1, f:16, s:2.3, N:4, t:1/250, pd:-.7, fx:'wide',
    how:['16mm 走近到主体跟前：主体一样大，前景变得巨大、背景缩得很小','16mm walked up close: the subject stays the same size, the foreground balloons and the background shrinks']},
@@ -48,23 +48,23 @@ const FX = [
    how:['暗处 B 门曝光 10–30 s，拿灯在主体前画：光走过的路都留在照片里，人穿深色衣服不会留影','Bulb exposure of 10–30 s in the dark, draw with a light in front of the subject: its whole path stays in the photo, a person in dark clothes leaves no trace']},
   {id:'lapse', cam:[-2, 5, 20], look:[-14, 5, 0], cat:'motion', zh:'延时摄影', en:'Time-lapse', lens:3, f:50, s:3, N:8, t:1/250, fx:'lapse',
    how:['间隔 2–10 s 拍几百张，合成视频：几小时的太阳东升西落压成几秒；曝光和白平衡要锁定','Shoot hundreds of frames 2–10 s apart and make a video: hours of sunrise to sunset in seconds; lock exposure and white balance']},
-  {id:'highkey', cat:'light', zh:'高调', en:'High key', lens:0, f:85, s:3, N:2.8, t:1/250, ev:1.5, fx:'highkey',
+  {id:'highkey', grp:1, cat:'light', zh:'高调', en:'High key', lens:0, f:85, s:3, N:2.8, t:1/250, ev:1.5, fx:'highkey',
    how:['曝光 +1 到 +2 档、背景打亮、少阴影：画面明亮轻盈，主体别过曝','+1 to +2 EV, bright background, few shadows: light and airy, keep the subject from clipping']},
-  {id:'lowkey', cat:'light', zh:'低调', en:'Low key', lens:0, f:85, s:3, N:4, t:1/250, ev:-2, fx:'lowkey',
+  {id:'lowkey', grp:1, cat:'light', zh:'低调', en:'Low key', lens:0, f:85, s:3, N:4, t:1/250, ev:-2, fx:'lowkey',
    how:['暗背景，只用一束侧光照主体，曝光 −1 到 −2 档：大面积暗部衬托亮处','Dark background, one side light on the subject, −1 to −2 EV: large shadows set off the highlights']},
-  {id:'golden', cam:[-2, 4, 18], look:[-14, 2, 0], cat:'light', zh:'黄金时刻', en:'Golden hour', lens:0, f:85, s:3, N:2.8, t:1/250, fx:'golden',
+  {id:'golden', grp:0, cam:[-2, 4, 18], look:[-14, 2, 0], cat:'light', zh:'黄金时刻', en:'Golden hour', lens:0, f:85, s:3, N:2.8, t:1/250, fx:'golden',
    how:['日出后、日落前约 1 小时：太阳低、光暖、影子长（看 3D 里太阳落低、光变橙）','About an hour after sunrise or before sunset: low warm sun, long shadows (watch the 3D sun drop and turn orange)']},
-  {id:'blue', cam:[-2, 4, 18], look:[-14, 1, 0], cat:'light', zh:'蓝调时刻', en:'Blue hour', lens:0, f:85, s:3, N:2.8, t:1/15, dark:6, fx:'blue',
+  {id:'blue', grp:0, cam:[-2, 4, 18], look:[-14, 1, 0], cat:'light', zh:'蓝调时刻', en:'Blue hour', lens:0, f:85, s:3, N:2.8, t:1/15, dark:6, fx:'blue',
    how:['日落后约 20–40 分钟：太阳落到地平线下，天空深蓝、灯刚亮，三脚架慢门','About 20–40 min after sunset: sun below the horizon, deep blue sky, lights just on; tripod and slow shutter']},
-  {id:'warm', cat:'light', zh:'暖调', en:'Warm tone', lens:0, f:85, s:3, N:2.8, t:1/250, fx:'warm',
+  {id:'warm', grp:2, cat:'light', zh:'暖调', en:'Warm tone', lens:0, f:85, s:3, N:2.8, t:1/250, fx:'warm',
    how:['白平衡色温调高（如 7000 K）或往琥珀方向偏移：画面偏暖、温馨','Raise the white-balance temperature (e.g. 7000 K) or shift toward amber: warm and cozy']},
-  {id:'cool', cat:'light', zh:'冷调', en:'Cool tone', lens:0, f:85, s:3, N:2.8, t:1/250, fx:'cool',
+  {id:'cool', grp:2, cat:'light', zh:'冷调', en:'Cool tone', lens:0, f:85, s:3, N:2.8, t:1/250, fx:'cool',
    how:['白平衡色温调低（如 3800 K）或往蓝方向偏移：画面偏冷、安静','Lower the white-balance temperature (e.g. 3800 K) or shift toward blue: cool and calm']},
-  {id:'bw', cat:'light', zh:'黑白', en:'Black and white', lens:0, f:85, s:3, N:2.8, t:1/250, fx:'bw',
+  {id:'bw', grp:2, cat:'light', zh:'黑白', en:'Black and white', lens:0, f:85, s:3, N:2.8, t:1/250, fx:'bw',
    how:['黑白模式；后期用红色通道压暗蓝天、提亮皮肤，层次更强','Monochrome mode; in post use the red channel to darken blue sky and brighten skin for more separation']},
-  {id:'film', cat:'light', zh:'胶片感', en:'Film look', lens:0, f:85, s:3, N:2.8, t:1/250, fx:'film',
+  {id:'film', grp:2, cat:'light', zh:'胶片感', en:'Film look', lens:0, f:85, s:3, N:2.8, t:1/250, fx:'film',
    how:['胶片模拟或 LUT：暗部略抬、高光柔和、偏一点暖、加颗粒和暗角','Film simulation or LUT: lifted blacks, soft highlights, a little warmth, grain and vignette']},
-  {id:'flare', cam:[-2, 5, 18], look:[-14, 5, 0], cat:'light', zh:'眩光', en:'Lens flare', lens:3, f:55, s:3, N:5.6, t:1/500, fx:'flare',
+  {id:'flare', grp:0, cam:[-2, 5, 18], look:[-14, 5, 0], cat:'light', zh:'眩光', en:'Lens flare', lens:3, f:55, s:3, N:5.6, t:1/500, fx:'flare',
    how:['让太阳在画面边缘，选镀膜少的老镜头：光在镜片之间来回反射，沿一条线出现光斑','Put the sun at the frame edge and use a lightly coated lens: light bounces between elements and leaves ghosts along a line']},
   {id:'fisheye', cat:'persp', zh:'鱼眼', en:'Fisheye', lens:3, f:40, s:3, N:5.6, t:1/250, fx:'fisheye',
    how:['鱼眼镜头 180° 视角：直线向外弯，越靠边越弯；水平线过中心才是直的','Fisheye lens, 180° view: straight lines bow outward, more toward the edges; a horizon through the center stays straight']},
@@ -76,6 +76,7 @@ const FX = [
    how:['三脚架，手机自动连拍几分钟（每张 15 s 左右），对齐星点叠加，地景单独处理：星星是点不是线','On a tripod the phone shoots for minutes (≈15 s each), aligns the stars and stacks them, treats the foreground separately: stars stay points, not trails']},
 ];
 
+const FX_GRP = [['光线', 'Light'], ['影调', 'Tone'], ['色彩', 'Color']];
 const fxEn = () => typeof getLang === 'function' && getLang() === 'en';
 let fxCur = null, fxAnim = null, fxT0 = 0;
 
@@ -83,7 +84,12 @@ function renderFx() {
   const el = $('fxctl'), s = STEPS[step];
   if (!el || !s || !s.fx) return;
   const en = fxEn(), list = FX.filter(p => p.cat === s.fx);
-  el.innerHTML = `<div class="row fxbtns">${list.map(p => `<button type="button" data-fx="${p.id}" aria-pressed="${fxCur === p.id}">${en ? p.en : p.zh}</button>`).join('')}</div>
+  const btn = p => `<button type="button" data-fx="${p.id}" aria-pressed="${fxCur === p.id}">${en ? p.en : p.zh}</button>`;
+  /* 效果多的一步（第 39 步 12 个）按 grp 分成几组，每组一行小标题，手机抽屉里不至于一大片按钮 */
+  const rows = list.some(p => p.grp != null)
+    ? FX_GRP.map((g, i) => `<p class="fxgrp">${g[en ? 1 : 0]}</p><div class="row fxbtns">${list.filter(p => p.grp === i).map(btn).join('')}</div>`).join('')
+    : `<div class="row fxbtns">${list.map(btn).join('')}</div>`;
+  el.innerHTML = `${rows}
     <p class="fxhow">${fxCur && list.some(p => p.id === fxCur) ? FX.find(p => p.id === fxCur).how[en ? 1 : 0] : (en ? 'Pick an effect: the lens, aperture and shutter move to its settings, and the viewfinder shows the result.' : '点一个效果：镜头、光圈、快门会自动调到对应设置，取景器里看结果。')}</p>
     <button type="button" class="fxreset">${en ? 'Back to plain view' : '恢复普通取景'}</button>`;
   el.querySelectorAll('[data-fx]').forEach(b => b.onclick = () => applyFx(b.dataset.fx));
@@ -290,7 +296,7 @@ function fxFrame(t, dt) {
 }
 
 /* 取景器第二批特效 */
-let fishMap = null;
+let fishMap = null, fishOut = null, fishOut32 = null;
 const drawVF1 = drawVF;
 drawVF = function (t) {
   drawVF1(t);
@@ -326,9 +332,10 @@ drawVF = function (t) {
     if (!fishMap) { fishMap = new Int32Array(W * HH); const R = Math.hypot(cx, cy) * .78;
       for (let y = 0; y < HH; y++) for (let x = 0; x < W; x++) { const dx = (x - cx) / R, dy = (y - cy) / R, k = 1 + .5 * (dx * dx + dy * dy), sx2 = Math.round(cx + dx * k * R), sy2 = Math.round(cy + dy * k * R);
         fishMap[y * W + x] = sx2 >= 0 && sx2 < W && sy2 >= 0 && sy2 < HH ? sy2 * W + sx2 : -1; } }
-    const src = vg.getImageData(0, 0, W, HH), out = vg.createImageData(W, HH), a = src.data, b = out.data;
-    for (let i = 0; i < W * HH; i++) { const j = fishMap[i]; if (j >= 0) { b[i * 4] = a[j * 4]; b[i * 4 + 1] = a[j * 4 + 1]; b[i * 4 + 2] = a[j * 4 + 2]; } b[i * 4 + 3] = 255; }
-    vg.putImageData(out, 0, 0); vignette(.6, .42);
+    if (!fishOut) { fishOut = vg.createImageData(W, HH); fishOut32 = new Uint32Array(fishOut.data.buffer); }
+    const src32 = new Uint32Array(vg.getImageData(0, 0, W, HH).data.buffer), BLACK = 0xff000000;   /* 一次拷整个像素（4 字节），比逐通道快几倍 */
+    for (let i = 0; i < W * HH; i++) { const j = fishMap[i]; fishOut32[i] = j >= 0 ? src32[j] | BLACK : BLACK; }
+    vg.putImageData(fishOut, 0, 0); vignette(.6, .42);
   }
   else if (fx === 'grid') {                                       // 三分线 + 交点；主体在右上交点附近
     vg.strokeStyle = 'rgba(255,255,255,.7)'; vg.lineWidth = 1; vg.setLineDash([4, 4]);
