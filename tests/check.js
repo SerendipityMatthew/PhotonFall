@@ -96,8 +96,8 @@ check('route: historyMode', () => {
 check('steps: shape', () => {
   const S = ctx.STEPS, C = ctx.CHAPTERS;
   assert.strictEqual(C.length, 8);
-  assert.strictEqual(S.length, 42);
-  const want = [0, ...Array(10).fill(1), ...Array(4).fill(2), ...Array(3).fill(3), ...Array(4).fill(4), ...Array(5).fill(5), ...Array(10).fill(6), ...Array(5).fill(7)];
+  assert.strictEqual(S.length, 44);
+  const want = [0, ...Array(10).fill(1), ...Array(4).fill(2), ...Array(3).fill(3), ...Array(4).fill(4), ...Array(5).fill(5), ...Array(10).fill(6), ...Array(7).fill(7)];
   assert.deepStrictEqual([...S.map(s => s.ch)], want);
   S.forEach((s, i) => {
     for (const k of ['t', 'g', 'adv']) assert.ok(typeof s[k] === 'string' && s[k].length, `step ${i} ${k}`);
@@ -111,7 +111,7 @@ check('steps: shape', () => {
   assert.ok(S[8].pn.includes('coatpn'), 'step 8 keeps the coating button');
   assert.ok(!S.some(s => s.t === '镜头镀膜、眩光与鬼影'), 'old coating step merged away');
   assert.strictEqual(S[36].t, '计算摄影 · ML 场景分析：人像、对焦、降噪');
-  assert.strictEqual(S[S.length - 1].t, '拍摄效果 · 计算摄影效果');
+  assert.strictEqual(S[S.length - 1].t, '拍摄效果 · 视频拍摄');
   S.slice(37).forEach((s, i) => assert.ok(s.fx && s.g === 'macro' && s.pn.includes('fxctl'), `step ${37 + i} is a shooting-effects step`));
 });
 
@@ -203,7 +203,7 @@ check('timelines: rows and histories', () => {
   }
 });
 check('layout: fig', () => {
-  const want = {1:'vffig',2:'vffig',3:'vffig',4:'pdc',5:'vffig',6:'vffig',7:'vffig',8:'reflc',9:'vffig',10:'ibc',12:'spec',16:'pot',17:'pot',22:'snr',23:'dnwrap',24:'adcc',25:'shc',26:'i8fig',37:'vffig',38:'vffig',39:'vffig',40:'vffig',41:'vffig'};
+  const want = {1:'vffig',2:'vffig',3:'vffig',4:'pdc',5:'vffig',6:'vffig',7:'vffig',8:'reflc',9:'vffig',10:'ibc',12:'spec',16:'pot',17:'pot',22:'snr',23:'dnwrap',24:'adcc',25:'shc',26:'i8fig',37:'vffig',38:'vffig',39:'vffig',40:'vffig',41:'vffig',42:'vffig',43:'vffig'};
   ctx.STEPS.forEach((s, i) => assert.strictEqual(s.fig, want[i], `step ${i} fig`));
   assert.strictEqual(ctx.CARD_CTL.length, 23);
 });
