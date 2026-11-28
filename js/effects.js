@@ -429,23 +429,27 @@ const FLASH = {fill: 1, direct: 1, slowsync: 1, front: 1, rear: 1, hss: 1};
 /* 闪光时刻：一个 2 s 周期里快门开 0.1–1.3 s；前帘在开头闪，后帘在结尾闪，高速同步整段连闪 */
 const flashAt = (fx, ph) => fx === 'hss' ? ph > .1 && ph < 1.3 && ph % .08 < .03 ? 0 : -1 : ph - (fx === 'rear' ? 1.3 : .1);
 
+/* 闪光灯、快门盘在各自那一步一直摆着（导语里的关键词点了要找得到）；ND 镜只在没选效果或选了「加 ND64」时装上 */
+const fxVis = () => { const c = (STEPS[step] || {}).fx, fx = st.fx; flashG.visible = c === 'flash'; shutG.visible = c === 'video'; ndG.visible = c === 'video' && (!fx || fx === 'vnd'); };
+const fxStep0 = fxStep;
+fxStep = function (s) { fxStep0(s); fxVis(); };
 const fx3dReset0 = fx3dReset;
-fx3dReset = function () { fx3dReset0(); flashG.visible = shutG.visible = ndG.visible = false; flashLight.intensity = 0; };
+fx3dReset = function () { fx3dReset0(); flashLight.intensity = 0; flashPulse.material.opacity = 0; };
 const fxFrame0 = fxFrame;
 fxFrame = function (t, dt) {
   fxFrame0(t, dt);
   const fx = st.fx, e = Math.max(0, performance.now() / 1000 - fxT0);
-  flashG.visible = !!FLASH[fx]; shutG.visible = !!VFPS[fx]; ndG.visible = fx === 'vnd';
+  fxVis();
   if (FLASH[fx]) {
     const a = flashAt(fx, e % 2), on = a >= 0 && a < .35, k = on ? a / .35 : 1;
     flashLight.intensity = on ? 9 * (1 - k) ** 2 : 0;
     flashPulse.scale.setScalar(.3 + 22 * k); flashPulse.material.opacity = on ? .3 * (1 - k) : 0;   // 光往外走，越远越淡：照度 ∝ 1/r²
     flashLens.material.color.setHex(on && k < .3 ? 0xffffff : 0xb9c4d0);
   }
-  if (VFPS[fx]) {
-    const ang = Math.min(2 * Math.PI, 2 * Math.PI * VFPS[fx][0] * st.t);   // 快门角：每帧里开口占多少
+  if (shutG.visible) {
+    const fps = (VFPS[fx] || [30])[0], ang = Math.min(2 * Math.PI, 2 * Math.PI * fps * st.t);   // 没选效果时按 30p 和当前快门画   // 快门角：每帧里开口占多少
     if (Math.abs(ang - discAng) > 1e-3) { disc.geometry.dispose(); disc.geometry = new THREE.CircleGeometry(DISC_R, 48, ang, 2 * Math.PI - ang); discAng = ang; }
-    disc.rotation.x = -e * 2 * Math.PI * .5 * Math.sqrt(VFPS[fx][0] / 30);   // 真实是每秒 30 转，这里放慢到看得清
+    disc.rotation.x = -t * 2 * Math.PI * .5 * Math.sqrt(fps / 30);   // 真实是每秒 30 转，这里放慢到看得清
   }
 };
 
