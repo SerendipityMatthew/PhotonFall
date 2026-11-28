@@ -199,7 +199,7 @@ const EVO=[
  driver:'4K、HDR 和网络视频让数据量暴涨，普通创作者也想要电影感。',
  industry:'相机成了视频工具，调色和高效编码进入普通创作者的工作流。',
  story:'2013 年 4 月，H.265（HEVC）通过成为 ITU-T 标准，目标是在相同画质下比 H.264 再省约一半码率。2014 年索尼 α7S 把专业摄影机上的 S-Log2 曲线带进小型全画幅相机。后来不少相机和手机都用 H.265 录 4K 甚至 8K。来源：ITU、Imaging Resource、Wikipedia「High Efficiency Video Coding」。',
- steps:[30,32,33],
+ steps:[30,32,33,43],
  draw(c,w,h){const u=evoBg(c,w,h);c.fillStyle=EVO_INK;c.fillRect(w*.15,h*.3,w*.7,h*.15);c.fillStyle=EVO_ACC;c.fillRect(w*.15,h*.6,w*.35,h*.15);
   c.textAlign='left';evoText(c,'H.264',w*.17,h*.22);evoText(c,'H.265',w*.17,h*.52,EVO_ACC);}},
 
@@ -292,7 +292,7 @@ const EVO=[
  driver:'体育和新闻摄影要拍极快的动作，还想彻底摆脱机械快门。',
  industry:'“取消机械快门”从口号变成现实，堆栈式的电路层是它能做出来的关键。',
  story:'2023 年 11 月 7 日，索尼发布 α9 III，称是第一台全画幅全局快门相机：2460 万像素，每秒最高 120 张，闪光同步可以到 1/80000 秒。代价是基础感光度从 ISO 250 起。来源：PetaPixel（2023）、Rangefinder、Sony 新闻稿。',
- steps:[25,27,38],
+ steps:[25,27,38,42],
  draw(c,w,h){const u=evoBg(c,w,h);c.strokeStyle=EVO_INK;for(let i=0;i<4;i++){c.beginPath();c.moveTo(w*.1+i*u*.08,h*.75);c.lineTo(w*.2+i*u*.08,h*.25);c.stroke();}
   c.strokeStyle=EVO_ACC;for(let i=0;i<4;i++){c.beginPath();c.moveTo(w*.62+i*u*.08,h*.75);c.lineTo(w*.62+i*u*.08,h*.25);c.stroke();}
   evoText(c,'卷帘',w*.25,h*.88);evoText(c,'全局',w*.73,h*.88,EVO_ACC);}},
@@ -304,7 +304,7 @@ const EVO=[
  driver:'反转片宽容度小，逆光、雪地这类场景测光容易差一两档。',
  industry:'包围曝光从手动操作变成相机功能，后来成了 HDR 合成的素材来源。',
  story:'1985 年 Minolta α-9000（Maxxum 9000）配 Program Back Super 90 背板，可以自动连拍最多 9 张不同曝光；1987 年 Canon EOS 620 把自动包围曝光做进机身。数码时代它成了 HDR 合成的标准拍法。来源：Minolta 9000 资料、Canon Camera Museum（EOS 620）。',
- steps:[9,39],
+ steps:[9,39,42],
  draw(c,w,h){evoBars(c,w,h,[.35,.6,.9],['−2','0','+2'],1);}},
 
 {id:'hdr-merge',year:2001,era:'cmos',lane:'proc',title:'多曝光 HDR 合成',

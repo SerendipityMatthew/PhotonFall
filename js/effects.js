@@ -374,3 +374,127 @@ drawVF = function (t) {
     vg.fillStyle = 'rgba(79,216,232,.85)'; vg.fillRect(0, HH - 4, W * Math.min(1, e / 2.6), 4);
   }
 };
+
+/* ---------- 第三批：闪光（cat flash）和视频（cat video） ---------- */
+FX.push(
+  {id:'fill', cam:[-11, 8, 27], look:[-11, 1, 0], cat:'flash', zh:'逆光补光', en:'Fill flash in backlight', lens:0, f:85, s:3, N:8, t:1/250, fx:'fill',
+   how:['背景亮、人背光发暗：曝光按背景，闪光灯只把主体补亮（闪光补偿 −1 到 −2 档更自然）','Bright background, backlit subject: expose for the background and let the flash lift only the subject (−1 to −2 flash compensation looks natural)']},
+  {id:'direct', cam:[-11, 8, 27], look:[-11, 1, 0], cat:'flash', zh:'夜里直闪', en:'Plain flash at night', lens:3, f:50, s:3, N:2.8, t:1/250, iso:400, dark:7, fx:'direct',
+   how:['1/250 s、ISO 400：闪光把 3 m 的人照亮，但环境光只够 −6 档，背景全黑，「黑洞脸」','1/250 s, ISO 400: the flash lights the person at 3 m, but ambient is 6 stops under, so the background goes black']},
+  {id:'slowsync', cam:[-11, 8, 27], look:[-11, 1, 0], cat:'flash', zh:'慢速同步', en:'Slow sync', lens:3, f:50, s:3, N:2.8, t:1/4, iso:400, dark:7, fx:'slowsync',
+   how:['快门放慢到 1/4 s 让背景灯曝够，闪光那一下把人凝固：人和夜景都亮','Slow the shutter to 1/4 s so the background lights expose, while the flash freezes the person: both are bright']},
+  {id:'front', cam:[-11, 8, 27], look:[-11, 1, 0], cat:'flash', zh:'前帘同步', en:'Front-curtain sync', lens:3, f:50, s:3, N:8, t:1/4, iso:100, dark:2, fx:'front',
+   how:['快门一打开就闪：清楚的小球在起点，拖影在它前面，看起来像倒着走','Flash fires as the shutter opens: the sharp ball sits at the start and the trail runs ahead of it, so it looks like it moves backward']},
+  {id:'rear', cam:[-11, 8, 27], look:[-11, 1, 0], cat:'flash', zh:'后帘同步', en:'Rear-curtain sync', lens:3, f:50, s:3, N:8, t:1/4, iso:100, dark:2, fx:'rear',
+   how:['快门快关时才闪：拖影在后、清楚的小球在终点，运动方向读起来是对的','Flash fires just before the shutter closes: the trail is behind and the sharp ball at the end, so the motion reads right']},
+  {id:'hss', cam:[-11, 8, 27], look:[-11, 1, 0], cat:'flash', zh:'高速同步', en:'High-speed sync', lens:0, f:85, s:3, N:2, t:1/4000, fx:'hss',
+   how:['大太阳下 f/2 要 1/4000 s，超过闪光同步速度（约 1/200–1/250 s）：闪光灯改成连续快闪几十次，把走过的缝隙都照到，代价是有效功率掉一大截','f/2 in bright sun needs 1/4000 s, faster than X-sync (≈1/200–1/250 s): the flash pulses dozens of times to cover the moving slit, at the cost of most of its power']},
+  {id:'v180', cam:[3.2, 4.2, 6.5], look:[-.4, 1, 0], cat:'video', zh:'180° 快门', en:'180° shutter', lens:0, f:85, s:3, N:8, t:1/60, fx:'v30',
+   how:['30p 配 1/60 s（快门角 360° × 30 × 1/60 = 180°；24p 就配 1/50 s）：每帧一半时间在曝光，小球有一点自然的拖影','30p with 1/60 s (angle = 360° × 30 × 1/60 = 180°; 24p takes 1/50 s): each frame exposes half the time, so the ball has a little natural blur']},
+  {id:'vfast', cam:[3.2, 4.2, 6.5], look:[-.4, 1, 0], cat:'video', zh:'快门太快', en:'Shutter too fast', lens:0, f:85, s:3, N:2, t:1/1000, fx:'v30',
+   how:['30p 配 1/1000 s（约 11°）：每帧都清楚，但帧和帧之间没有拖影，动作一顿一顿的，像定格动画','30p with 1/1000 s (≈11°): every frame is sharp but nothing bridges the frames, so motion stutters like stop-motion']},
+  {id:'slomo', cam:[3.2, 4.2, 6.5], look:[-.4, 1, 0], cat:'video', zh:'升格慢动作', en:'Slow motion', lens:0, f:85, s:3, N:4, t:1/250, fx:'v120',
+   how:['120p 配 1/250 s 拍，按 30p 播：时间慢 4 倍，快门仍按 180° 规则跟着帧率提高','Shoot 120p at 1/250 s and play at 30p: time slows 4×, and the shutter still follows the 180° rule for the higher frame rate']},
+  {id:'nond', cam:[-15, 3.5, 9], look:[-6, 0, 0], cat:'video', zh:'白天不加 ND', en:'Daylight, no ND', lens:0, f:85, s:3, N:2, t:1/60, iso:100, dark:-4, fx:'v30',
+   how:['大太阳下要 f/2 的虚化、又要 1/60 s 守 180° 规则：ISO 已经最低，画面还是过曝约 6 档','f/2 for blur in bright sun and 1/60 s for the 180° rule: ISO is already at its lowest and the frame is still about 6 stops over']},
+  {id:'nd', cam:[-15, 3.5, 9], look:[-6, 0, 0], cat:'video', zh:'加 ND64', en:'Add ND64', lens:0, f:85, s:3, N:2, t:1/60, iso:100, dark:2, fx:'vnd',
+   how:['镜头前加 ND64（减 6 档）：光圈、快门都不用改，曝光回到正常；可变 ND 能边拍边调','Put an ND64 (−6 stops) on the lens: aperture and shutter stay put and exposure is back to normal; a variable ND can be adjusted while rolling']},
+  {id:'vlog', cam:[3.2, 4.2, 6.5], look:[-.4, 1, 0], cat:'video', zh:'Log 灰片', en:'Log footage', lens:0, f:85, s:3, N:4, t:1/60, fx:'vlog',
+   how:['Log 曲线把十几档动态范围压进 10 bit：直接看发灰、饱和度低，但高光暗部都还在，留给调色','A log curve squeezes a dozen-plus stops into 10 bits: it looks flat and washed out, but highlights and shadows are kept for grading']},
+  {id:'vlut', cam:[3.2, 4.2, 6.5], look:[-.4, 1, 0], cat:'video', zh:'Log + LUT', en:'Log + LUT', lens:0, f:85, s:3, N:4, t:1/60, fx:'vlut',
+   how:['套厂家的还原 LUT（如 S-Log3 → Rec.709）再调色：对比和颜色回来了，暗部和高光可以按需要拉','Apply the maker\'s LUT (e.g. S-Log3 → Rec.709) and grade: contrast and color return, and shadows and highlights can be pushed as needed']},
+);
+
+/* 3D：机顶闪光灯 + 闪光脉冲；机身里的旋转快门盘（开口 = 快门角）；镜头前的 ND 镜 */
+const flashG = new THREE.Group(), shutG = new THREE.Group(), ndG = new THREE.Group(); macro.add(flashG, shutG, ndG);
+const flashHead = new THREE.Mesh(new THREE.BoxGeometry(.9, .75, 1.3), new THREE.MeshStandardMaterial({color: 0x23272e, roughness: .6}));
+flashHead.position.set(.43, 3.05, -1.1); flashG.add(flashHead);
+const flashLens = new THREE.Mesh(new THREE.PlaneGeometry(.62, 1.05), new THREE.MeshBasicMaterial({color: 0xdde6f0}));
+flashLens.rotation.y = -Math.PI / 2; flashLens.position.set(-.03, 3.05, -1.1); flashG.add(flashLens);
+const flashLight = new THREE.PointLight(0xf4f8ff, 0, 60, 2); flashLight.position.set(-.3, 3.05, -1.1); flashG.add(flashLight);
+const flashPulse = new THREE.Mesh(new THREE.SphereGeometry(1, 32, 16, 0, Math.PI * 2, 0, Math.PI), new THREE.MeshBasicMaterial({color: 0xe8f2ff, transparent: true, opacity: 0, depthWrite: false, side: THREE.DoubleSide}));
+flashPulse.position.copy(flashLight.position); flashG.add(flashPulse);
+label(flashG, '闪光灯', V(.43, 3.9, -1.1));
+const DISC_R = 1.7, discMat = new THREE.MeshStandardMaterial({color: 0xc9d2de, emissive: 0x3a4658, metalness: .4, roughness: .5, side: THREE.DoubleSide, transparent: true, opacity: .9});
+const disc = new THREE.Mesh(new THREE.CircleGeometry(DISC_R, 48), discMat);
+disc.rotation.y = Math.PI / 2; disc.position.set(-.38, 1.25, 0); shutG.add(disc);
+label(shutG, '旋转快门', V(-.38, 3.1, 1.2));
+const ndDisc = new THREE.Mesh(new THREE.CylinderGeometry(2.2, 2.2, .12, 48), new THREE.MeshStandardMaterial({color: 0x15171b, transparent: true, opacity: .72, roughness: .2, metalness: .3}));
+ndDisc.rotation.z = Math.PI / 2; ndDisc.position.set(-8.95, 0, 0); ndG.add(ndDisc);
+label(ndG, 'ND 减光镜', V(-8.95, 2.7, 0));
+flashG.visible = shutG.visible = ndG.visible = false;
+let discAng = -1;
+const VFPS = {v30: [30, 1], vnd: [30, 1], vlog: [30, 1], vlut: [30, 1], v120: [120, 4]};   // 拍摄帧率、慢放倍数（按 30p 播；快门档位是 1/60、1/250…，配 30p、120p 正好 180°）
+const FLASH = {fill: 1, direct: 1, slowsync: 1, front: 1, rear: 1, hss: 1};
+/* 闪光时刻：一个 2 s 周期里快门开 0.1–1.3 s；前帘在开头闪，后帘在结尾闪，高速同步整段连闪 */
+const flashAt = (fx, ph) => fx === 'hss' ? ph > .1 && ph < 1.3 && ph % .08 < .03 ? 0 : -1 : ph - (fx === 'rear' ? 1.3 : .1);
+
+const fx3dReset0 = fx3dReset;
+fx3dReset = function () { fx3dReset0(); flashG.visible = shutG.visible = ndG.visible = false; flashLight.intensity = 0; };
+const fxFrame0 = fxFrame;
+fxFrame = function (t, dt) {
+  fxFrame0(t, dt);
+  const fx = st.fx, e = Math.max(0, performance.now() / 1000 - fxT0);
+  flashG.visible = !!FLASH[fx]; shutG.visible = !!VFPS[fx]; ndG.visible = fx === 'vnd';
+  if (FLASH[fx]) {
+    const a = flashAt(fx, e % 2), on = a >= 0 && a < .35, k = on ? a / .35 : 1;
+    flashLight.intensity = on ? 9 * (1 - k) ** 2 : 0;
+    flashPulse.scale.setScalar(.3 + 22 * k); flashPulse.material.opacity = on ? .3 * (1 - k) : 0;   // 光往外走，越远越淡：照度 ∝ 1/r²
+    flashLens.material.color.setHex(on && k < .3 ? 0xffffff : 0xb9c4d0);
+  }
+  if (VFPS[fx]) {
+    const ang = Math.min(2 * Math.PI, 2 * Math.PI * VFPS[fx][0] * st.t);   // 快门角：每帧里开口占多少
+    if (Math.abs(ang - discAng) > 1e-3) { disc.geometry.dispose(); disc.geometry = new THREE.CircleGeometry(DISC_R, 48, ang, 2 * Math.PI - ang); discAng = ang; }
+    disc.rotation.x = -e * 2 * Math.PI * .5 * Math.sqrt(VFPS[fx][0] / 30);   // 真实是每秒 30 转，这里放慢到看得清
+  }
+};
+
+/* 取景器：闪光把主体照亮、时序图；视频按帧率抽帧、快门角示意、Log / LUT */
+const litCv = mkCanvas(W, HH), litG = litCv.getContext('2d');
+const drawVF2 = drawVF;
+drawVF = function (t) {
+  const fx = st.fx, en = fxEn();
+  if (VFPS[fx]) {
+    const [fps, slow] = VFPS[fx], tp = Math.floor(t * 30) / 30;   // 播放按 30p 一帧帧跳
+    drawVF2(tp / slow);
+    if (!('filter' in vg)) return;
+    if (fx === 'vlog' || fx === 'vlut') { fxG.clearRect(0, 0, W, HH); fxG.drawImage(vf, 0, 0);
+      vg.filter = fx === 'vlog' ? 'contrast(.58) saturate(.5) brightness(1.18)' : 'contrast(1.12) saturate(1.15)'; vg.drawImage(fxTmp, 0, 0); vg.filter = 'none';
+      if (fx === 'vlut') { vg.globalCompositeOperation = 'soft-light'; vg.globalAlpha = .18; vg.fillStyle = '#ff9a4a'; vg.fillRect(0, HH * .45, W, HH * .55); vg.fillStyle = '#1aa0b0'; vg.fillRect(0, 0, W, HH * .45); vg.globalAlpha = 1; vg.globalCompositeOperation = 'source-over'; } }
+    const deg = Math.min(360, 360 * fps * st.t), x = W - 26, y = 24, ph = t * 2 * Math.PI * .5;
+    vg.fillStyle = 'rgba(0,0,0,.55)'; vg.fillRect(W - 140, 6, 134, 36);
+    vg.fillStyle = '#39404a'; vg.beginPath(); vg.arc(x, y, 14, 0, 7); vg.fill();
+    vg.fillStyle = '#4fd8e8'; vg.beginPath(); vg.moveTo(x, y); vg.arc(x, y, 14, ph, ph + deg / 180 * Math.PI); vg.fill();
+    vg.fillStyle = '#fff'; vg.font = '11px system-ui, sans-serif';
+    vg.fillText(`${fps}p · 1/${Math.round(1 / st.t)} s`, W - 134, 20); vg.fillText(`${en ? 'angle' : '快门角'} ${Math.round(deg)}°${slow > 1 ? (en ? ` · ${slow}× slow` : ` · 慢 ${slow} 倍`) : ''}`, W - 134, 35);
+    vg.beginPath(); vg.fillStyle = '#e5484d'; vg.arc(14, 14, 4, 0, 7); vg.fill(); vg.fillStyle = '#fff'; vg.fillText('REC', 22, 18);
+    return;
+  }
+  if (!FLASH[fx] || !('filter' in vg)) return drawVF2(t);
+  const g = st.gain, T = st.t, ph = performance.now() / 1000 % 2, cx = W / 2, cy = HH / 2, p = img(st.f, 3) / 3 * PX;
+  /* 闪光那一刻的样子：曝光正常、时间极短（小球是清楚的），落在快门开 / 关的那一端 */
+  st.gain = 1; st.t = 1e-4; drawVF2(fx === 'front' ? t - T / 2 : fx === 'rear' ? t + T / 2 : t);   // 拖影以 ballX(t) 为中心，起点 t − T/2、终点 t + T/2
+  st.t = T; litG.globalCompositeOperation = 'source-over'; litG.clearRect(0, 0, W, HH); litG.drawImage(vf, 0, 0);
+  const m = litG.createRadialGradient(cx, cy, p * .1, cx, cy, p * .36); m.addColorStop(0, 'rgba(0,0,0,1)'); m.addColorStop(1, 'rgba(0,0,0,0)');   // 闪光只照得到近处：照度 ∝ 1/r²
+  litG.globalCompositeOperation = 'destination-in'; litG.fillStyle = m; litG.fillRect(0, 0, W, HH); litG.globalCompositeOperation = 'source-over';
+  st.gain = fx === 'fill' || fx === 'hss' ? g * .3 : g; drawVF2(t); st.gain = g;   // 逆光：按背景曝光，人是暗的
+  if (fx === 'fill' || fx === 'hss') { const s = vg.createLinearGradient(0, 0, 0, HH); s.addColorStop(0, 'rgba(255,214,150,.75)'); s.addColorStop(1, 'rgba(255,160,90,.25)');
+    vg.globalCompositeOperation = 'screen'; vg.fillStyle = s; vg.fillRect(0, 0, W, HH); }
+  if (fx !== 'fill' && fx !== 'hss') {                           // 夜里：环境压成夜色，慢速同步时背景灯曝够了
+    vg.globalCompositeOperation = 'multiply'; vg.fillStyle = fx === 'front' || fx === 'rear' ? 'rgba(40,52,100,.6)' : 'rgba(14,22,58,.75)'; vg.fillRect(0, 0, W, HH);
+    if (fx === 'slowsync') { const q = img(st.f, 8) / 8 * PX; vg.globalCompositeOperation = 'lighter';
+      LIGHTS.forEach(l => { const r = vg.createRadialGradient(cx + l.X * q, cy - .4 * q, 0, cx + l.X * q, cy - .4 * q, 12); r.addColorStop(0, l.c); r.addColorStop(1, 'rgba(0,0,0,0)'); vg.fillStyle = r; vg.fillRect(0, 0, W, HH); }); } }
+  vg.globalCompositeOperation = 'lighten'; vg.drawImage(litCv, 0, 0); vg.globalCompositeOperation = 'source-over';
+  /* 时序图：上面一行快门开着的时间，下面一行闪光；竖线是当前时刻 */
+  const X0 = 10, X1 = 150, Y = HH - 40, tx = s => X0 + (X1 - X0) * s / 2;
+  vg.fillStyle = 'rgba(0,0,0,.6)'; vg.fillRect(4, Y - 6, 196, 40);
+  vg.fillStyle = '#fff'; vg.font = '10px system-ui, sans-serif'; vg.fillText(en ? 'shutter' : '快门', X1 + 6, Y + 8); vg.fillText(en ? 'flash' : '闪光', X1 + 6, Y + 26);
+  vg.fillStyle = 'rgba(79,216,232,.85)';
+  if (fx === 'hss') { const k = ((ph - .1) / 1.2), sx0 = tx(.1 + 1.2 * Math.max(0, Math.min(1, k)));   // 缝隙扫过
+    vg.fillRect(tx(.1), Y + 4, tx(1.3) - tx(.1), 2); if (k > 0 && k < 1) vg.fillRect(sx0 - 5, Y, 10, 10); }
+  else vg.fillRect(tx(.1), Y, tx(1.3) - tx(.1), 10);
+  vg.fillStyle = '#ffe9a8';
+  const spike = s => vg.fillRect(tx(s) - 1, Y + 16, 3, 14);
+  if (fx === 'hss') for (let s = .1; s < 1.3; s += .08) spike(s); else spike(fx === 'rear' ? 1.27 : .1);
+  vg.fillStyle = '#fff'; vg.fillRect(tx(ph), Y - 4, 1, 36);
+};
